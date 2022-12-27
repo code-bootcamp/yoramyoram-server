@@ -1,10 +1,11 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   DeleteDateColumn,
   ManyToOne,
+  CreateDateColumn,
 } from 'typeorm';
 import { ProductCategory } from '../../productsCategories/entities/productCategory.entity';
 
@@ -17,34 +18,26 @@ export class Product {
 
   @Column()
   @Field(() => String)
-  title: string;
+  name: string;
+
+  @Column()
+  @Field(() => Int)
+  price: number;
 
   @Column()
   @Field(() => String)
-  detail: string;
+  description: string;
 
-  @Column()
-  @Field(() => String)
-  character: string;
+  @DeleteDateColumn()
+  deletedAt: Date;
 
-  @Column({ default: '' })
-  @Field(() => String)
-  point: string;
-
-  @Column({ default: '' })
-  @Field(() => String)
-  year: string;
-
-  @Column({ default: false }) //default값
-  @Field(() => Boolean)
-  isFinished: boolean;
+  @CreateDateColumn()
+  @Field(() => Date)
+  createdAt: Date;
 
   @Column({ default: false })
   @Field(() => Boolean)
   isDeleted: boolean;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
 
   @ManyToOne(() => ProductCategory)
   @Field(() => ProductCategory)
