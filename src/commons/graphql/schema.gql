@@ -43,17 +43,29 @@ type Mutation {
   createProduct(createProductInput: CreateProductInput!): Product!
   deleteProduct(productId: String!): Boolean!
   createProductCategory(name: String!): ProductCategory!
-  createUser(createUserInpput: CreateUserInpput!): User!
+  createUser(createUserInput: CreateUserInput!): User!
+  deleteUser(userId: String!): Boolean!
 }
 
 input CreateProductInput {
-  name: String!
-  price: Int!
-  description: String!
+  title: String!
+  detail: String!
+  character: String!
+  point: String!
+  year: String!
   productCategoryId: String!
 }
 
-input CreateUserInpput {
+input CreateProductInput {
+  title: String!
+  detail: String!
+  character: String!
+  point: String!
+  year: String!
+  productCategoryId: String!
+}
+
+input CreateUserInput {
   name: String!
   email: String!
   phone: String!
