@@ -7,6 +7,21 @@ type ProductCategory {
   category: String!
 }
 
+type Product {
+  product_id: String!
+  name: String!
+  price: Int!
+  description: String!
+  createdAt: DateTime!
+  isDeleted: Boolean!
+  productCategory: ProductCategory!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type User {
   id: String!
   name: String!
@@ -22,8 +37,16 @@ type Query {
 }
 
 type Mutation {
+  createProduct(createProductInput: CreateProductInput!): Product!
   createProductCategory(name: String!): ProductCategory!
   createUser(createUserInpput: CreateUserInpput!): User!
+}
+
+input CreateProductInput {
+  name: String!
+  price: Int!
+  description: String!
+  productCategoryId: String!
 }
 
 input CreateUserInpput {
