@@ -34,6 +34,13 @@ export class ProductsService {
     });
   }
 
+  findAllWithDelete(): Promise<Product[]> {
+    return this.productsRepository
+      .createQueryBuilder()
+      .withDeleted() // 넣어주면 가져옴
+      .getMany();
+  }
+
   //-------------------------*생성*----------------------------//
   async create({
     createProductInput,
@@ -56,5 +63,14 @@ export class ProductsService {
     });
 
     return result;
+  }
+
+  //-------------------------*삭제*----------------------------//
+  async delete({ productId }) {
+    // 1. 실제 삭제
+    const result = await this.productsRepository.softDelete({
+      product_id: productId,
+    });
+    return result.affected ? true : false;
   }
 }
