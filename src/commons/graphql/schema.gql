@@ -33,6 +33,8 @@ type User {
 }
 
 type Query {
+  fetchProducts: [Product!]!
+  fetchProduct(productId: String!): Product!
   findUserEmail(name: String!, phone: String!): String!
 }
 
