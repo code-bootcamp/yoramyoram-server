@@ -1,5 +1,6 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { CreateProductInput } from './dto/create-product.input';
+import { UpdateProductInput } from './dto/update-product.input';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './product.service';
 
@@ -38,5 +39,16 @@ export class ProductsResolver {
     @Args('productId') productId: string, //
   ) {
     return this.productsService.delete({ productId });
+  }
+
+  //-------------------------*업데이트*----------------------------//
+  @Mutation(() => Product)
+  async udpateProduct(
+    @Args('productId') productId: string,
+    @Args('updateProductInput') updateProductInput: UpdateProductInput,
+  ): Promise<Product> {
+    const product = await this.productsService.findOne({ productId });
+
+    return this.productsService.update({ product, updateProductInput });
   }
 }
