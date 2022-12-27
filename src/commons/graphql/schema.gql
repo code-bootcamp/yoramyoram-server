@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ProductCategory {
+  category_id: String!
+  category: String!
+}
+
+type Query {
+  sayHello: String!
+}
+
+type Mutation {
+  login(email: String!, password: String!): String!
+  createProductCategory(name: String!): ProductCategory!
+}
