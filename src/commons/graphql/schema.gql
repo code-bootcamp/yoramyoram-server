@@ -33,14 +33,27 @@ type User {
 }
 
 type Query {
+  fetchProducts: [Product!]!
+  fetchProduct(productId: String!): Product!
+  fetchProductsWithDeleted: [Product!]!
   findUserEmail(name: String!, phone: String!): String!
 }
 
 type Mutation {
   createProduct(createProductInput: CreateProductInput!): Product!
+  deleteProduct(productId: String!): Boolean!
   createProductCategory(name: String!): ProductCategory!
   createUser(createUserInput: CreateUserInput!): User!
   deleteUser(userId: String!): Boolean!
+}
+
+input CreateProductInput {
+  title: String!
+  detail: String!
+  character: String!
+  point: String!
+  year: String!
+  productCategoryId: String!
 }
 
 input CreateProductInput {
