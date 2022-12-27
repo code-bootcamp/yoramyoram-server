@@ -33,6 +33,6 @@ export class User {
   add_detail: string;
 
   @Column()
-  @Field(() => Date)
-  birth: Date;
+  @Field(() => String)
+  birth: string;
 }

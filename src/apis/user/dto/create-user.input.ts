@@ -14,12 +14,12 @@ export class CreateUserInpput {
   @Field(() => String)
   address: string;
 
-  // @Field(() => String)
+  @Field(() => String)
   password: string;
 
   @Field(() => String)
   add_detail: string;
 
-  @Field(() => Date)
-  birth: Date;
+  @Field(() => String)
+  birth: string;
 }
