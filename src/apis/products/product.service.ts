@@ -2,7 +2,10 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
-import { IProductsServiceCreate } from './interfaces/products-service.interface';
+import {
+  IProductsServiceCreate,
+  IProductsServiceFindOne,
+} from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
 
 @Injectable()
@@ -16,6 +19,29 @@ export class ProductsService {
     private readonly productsCategoriesRepository: Repository<ProductCategory>,
   ) {}
 
+  //-------------------------*조회*----------------------------//
+  findAll(): Promise<Product[]> {
+    return this.productsRepository.find({
+      relations: ['productCategory'],
+    });
+  }
+
+  //목록 단일 조회
+  findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
+    return this.productsRepository.findOne({
+      where: { product_id: productId },
+      relations: ['productCategory'],
+    });
+  }
+
+  findAllWithDelete(): Promise<Product[]> {
+    return this.productsRepository
+      .createQueryBuilder()
+      .withDeleted() // 넣어주면 가져옴
+      .getMany();
+  }
+
+  //-------------------------*생성*----------------------------//
   async create({
     createProductInput,
   }: IProductsServiceCreate): Promise<Product> {
@@ -37,5 +63,14 @@ export class ProductsService {
     });
 
     return result;
+  }
+
+  //-------------------------*삭제*----------------------------//
+  async delete({ productId }) {
+    // 1. 실제 삭제
+    const result = await this.productsRepository.softDelete({
+      product_id: productId,
+    });
+    return result.affected ? true : false;
   }
 }
