@@ -16,12 +16,12 @@ services:
   my-database:
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: 'mydocker10'
+      MYSQL_DATABASE: 'yoramyoram'
       MYSQL_ROOT_PASSWORD: 'root'
     ports:
       - 3306:3306
 
-  my-redis:
-    image: redis:latest
-    ports:
-      - 6379:6379
+  # my-redis:
+  #   image: redis:latest
+  #   ports:
+  #     - 6379:6379
