@@ -12,9 +12,9 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create({ createUserInpput }) {
+  async create({ createUserInput }) {
     const { name, email, phone, password, address, add_detail, birth } =
-      createUserInpput;
+      createUserInput;
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
@@ -46,5 +46,11 @@ export class UsersService {
     });
 
     return findEmail.email;
+  }
+
+  async delete({ userId }) {
+    const result = await this.userRepository.softDelete({ id: userId });
+
+    return result.affected ? true : false;
   }
 }
