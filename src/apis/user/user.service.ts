@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { findBreakingChanges } from 'graphql';
+import { IUsersServiceFindOne } from './interfaces/users-service.interface';
 
 @Injectable()
 export class UsersService {
@@ -34,7 +35,7 @@ export class UsersService {
     });
   }
 
-  async findOne(type) {
+  async emailFindOne(type) {
     const userId = await this.userRepository.findOne({
       where: type,
     });
@@ -52,5 +53,13 @@ export class UsersService {
     const result = await this.userRepository.softDelete({ id: userId });
 
     return result.affected ? true : false;
+  }
+
+  async findOne({ email }: IUsersServiceFindOne): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        email: email,
+      },
+    });
   }
 }
