@@ -5,6 +5,7 @@ import { Product } from './entities/product.entity';
 import {
   IProductsServiceCreate,
   IProductsServiceFindOne,
+  IProductsServiceUpdate,
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
 
@@ -72,5 +73,18 @@ export class ProductsService {
       product_id: productId,
     });
     return result.affected ? true : false;
+  }
+
+  //-------------------------*업데이트*-----------------//
+  update({
+    product,
+    updateProductInput,
+  }: IProductsServiceUpdate): Promise<Product> {
+    const result = this.productsRepository.save({
+      ...product,
+      ...updateProductInput,
+    });
+
+    return result;
   }
 }
