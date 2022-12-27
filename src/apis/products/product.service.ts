@@ -2,7 +2,10 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
-import { IProductsServiceCreate } from './interfaces/products-service.interface';
+import {
+  IProductsServiceCreate,
+  IProductsServiceFindOne,
+} from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
 
 @Injectable()
@@ -16,6 +19,22 @@ export class ProductsService {
     private readonly productsCategoriesRepository: Repository<ProductCategory>,
   ) {}
 
+  //-------------------------*조회*----------------------------//
+  findAll(): Promise<Product[]> {
+    return this.productsRepository.find({
+      relations: ['productCategory'],
+    });
+  }
+
+  //목록 단일 조회
+  findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
+    return this.productsRepository.findOne({
+      where: { product_id: productId },
+      relations: ['productCategory'],
+    });
+  }
+
+  //-------------------------*생성*----------------------------//
   async create({
     createProductInput,
   }: IProductsServiceCreate): Promise<Product> {
