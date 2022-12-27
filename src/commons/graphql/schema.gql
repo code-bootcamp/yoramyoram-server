@@ -1,0 +1,37 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ProductCategory {
+  category_id: String!
+  category: String!
+}
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  add_detail: String!
+  birth: String!
+}
+
+type Query {
+  findUserEmail(name: String!, phone: String!): String!
+}
+
+type Mutation {
+  createProductCategory(name: String!): ProductCategory!
+  createUser(createUserInpput: CreateUserInpput!): User!
+}
+
+input CreateUserInpput {
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  password: String!
+  add_detail: String!
+  birth: String!
+}
