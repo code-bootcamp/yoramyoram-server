@@ -7,11 +7,77 @@ type ProductCategory {
   category: String!
 }
 
+type Product {
+  product_id: String!
+  name: String!
+  price: Int!
+  description: String!
+  createdAt: DateTime!
+  isDeleted: Boolean!
+  productCategory: ProductCategory!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  add_detail: String!
+  birth: String!
+}
+
 type Query {
-  sayHello: String!
+  fetchProducts: [Product!]!
+  fetchProduct(productId: String!): Product!
+  fetchProductsWithDeleted: [Product!]!
+  findUserEmail(name: String!, phone: String!): String!
 }
 
 type Mutation {
-  login(email: String!, password: String!): String!
+  createProduct(createProductInput: CreateProductInput!): Product!
+  deleteProduct(productId: String!): Boolean!
+  udpateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
   createProductCategory(name: String!): ProductCategory!
+  createUser(createUserInput: CreateUserInput!): User!
+  deleteUser(userId: String!): Boolean!
+}
+
+input CreateProductInput {
+  title: String!
+  detail: String!
+  character: String!
+  point: String!
+  year: String!
+  productCategoryId: String!
+}
+
+input CreateProductInput {
+  title: String!
+  detail: String!
+  character: String!
+  point: String!
+  year: String!
+  productCategoryId: String!
+}
+input UpdateProductInput {
+  name: String
+  price: Int
+  description: String
+  productCategoryId: String
+}
+
+input CreateUserInpput {
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  password: String!
+  add_detail: String!
+  birth: String!
 }
