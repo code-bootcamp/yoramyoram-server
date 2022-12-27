@@ -44,16 +44,27 @@ type Mutation {
   deleteProduct(productId: String!): Boolean!
   udpateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
   createProductCategory(name: String!): ProductCategory!
-  createUser(createUserInpput: CreateUserInpput!): User!
+  createUser(createUserInput: CreateUserInput!): User!
+  deleteUser(userId: String!): Boolean!
 }
 
 input CreateProductInput {
-  name: String!
-  price: Int!
-  description: String!
+  title: String!
+  detail: String!
+  character: String!
+  point: String!
+  year: String!
   productCategoryId: String!
 }
 
+input CreateProductInput {
+  title: String!
+  detail: String!
+  character: String!
+  point: String!
+  year: String!
+  productCategoryId: String!
+}
 input UpdateProductInput {
   name: String
   price: Int
