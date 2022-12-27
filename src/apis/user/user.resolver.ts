@@ -23,7 +23,7 @@ export class UsersResolver {
     @Args('name') name: string, //
     @Args('phone') phone: string,
   ) {
-    return await this.userSerivice.findOne({ name, phone });
+    return await this.userSerivice.emailFindOne({ name, phone });
   }
 
   @Mutation(() => Boolean)
