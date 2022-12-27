@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { findBreakingChanges } from 'graphql';
 
 @Injectable()
 export class UsersService {
@@ -11,9 +12,9 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create({ CreateUserInpput }) {
+  async create({ createUserInput }) {
     const { name, email, phone, password, address, add_detail, birth } =
-      CreateUserInpput;
+      createUserInput;
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
@@ -22,7 +23,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    return this.userRepository.save({
+    return await this.userRepository.save({
       name,
       email,
       phone,
@@ -31,5 +32,25 @@ export class UsersService {
       add_detail,
       birth,
     });
+  }
+
+  async findOne(type) {
+    const userId = await this.userRepository.findOne({
+      where: type,
+    });
+
+    if (userId.name !== type.name) return '가입한 이름과 다릅니다 ';
+
+    const findEmail = await this.userRepository.findOne({
+      where: type.phone,
+    });
+
+    return findEmail.email;
+  }
+
+  async delete({ userId }) {
+    const result = await this.userRepository.softDelete({ id: userId });
+
+    return result.affected ? true : false;
   }
 }
