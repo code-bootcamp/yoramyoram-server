@@ -3,10 +3,14 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsCategoriesModule } from './apis/productsCategories/productsCategories.module';
+import { UsersModule } from './apis/user/user.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     ProductsCategoriesModule,
+    UsersModule,
+    ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',
