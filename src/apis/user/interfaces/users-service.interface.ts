@@ -6,3 +6,7 @@ export interface IUserSErviceCreate {
   add_detail: string;
   birth: Date;
 }
+
+export interface IUsersServiceFindOne {
+  email: string;
+}
