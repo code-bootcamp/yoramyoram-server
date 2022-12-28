@@ -49,7 +49,6 @@ type Query {
   fetchProducts: [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
-  sayHello: String!
   findUserEmail(name: String!, phone: String!): String!
 }
 
@@ -81,13 +80,6 @@ input UpdateCommentInput {
   content: String
   productId: String
   userId: String
-}
-
-input CreateProductInput {
-  name: String!
-  price: Int!
-  description: String!
-  productCategoryId: String!
 }
 
 input CreateProductInput {
