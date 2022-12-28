@@ -35,18 +35,19 @@ export class UsersService {
     });
   }
 
-  async emailFindOne(type) {
+  async emailFindOne({ name, phone }) {
+    console.log(name, phone);
     const userId = await this.userRepository.findOne({
-      where: type,
+      where: { phone },
     });
 
-    if (userId.name !== type.name) return '가입한 이름과 다릅니다 ';
+    console.log(userId);
 
-    const findEmail = await this.userRepository.findOne({
-      where: type.phone,
-    });
+    if (userId.phone !== phone || userId.name !== name) {
+      return '가입한 이름과 다릅니다 ';
+    }
 
-    return findEmail.email;
+    return userId.email;
   }
 
   async delete({ userId }) {
@@ -59,6 +60,14 @@ export class UsersService {
     return this.userRepository.findOne({
       where: {
         email: email,
+      },
+    });
+  }
+
+  async findOnePhone({ phone }) {
+    return await this.userRepository.findOne({
+      where: {
+        phone: phone,
       },
     });
   }

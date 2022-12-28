@@ -49,6 +49,7 @@ type Query {
   fetchProducts: [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
+  sayHello: String!
   findUserEmail(name: String!, phone: String!): String!
 }
 
@@ -60,11 +61,15 @@ type Mutation {
   deleteProduct(productId: String!): Boolean!
   udpateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
   login(email: String!, password: String!): String!
-  restoreAcessToken: String!
+
+restoreAcessToken: String!
   createProductCategory(name: String!): ProductCategory!
   createUser(createUserInput: CreateUserInput!): User!
   deleteUser(userId: String!): Boolean!
+  sendTokentoPhone(phone: String!): String!
+  checkTokenPhone(phone: String!, phoneToken: String!): String!
 }
+
 
 input CreateCommentInput {
   title: String!
@@ -88,7 +93,6 @@ input CreateProductInput {
   description: String!
   productCategoryId: String!
 }
-
 input UpdateProductInput {
   name: String
   price: Int

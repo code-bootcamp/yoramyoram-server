@@ -37,6 +37,7 @@
     "cache-manager": "^5.1.4",
     "cache-manager-redis-store": "2.0.0",
     "class-validator": "^0.13.2",
+    "coolsms-node-sdk": "^2.0.1",
     "graphql": "^16.6.0",
     "graphql-upload": "^13.0.0",
     "mysql2": "^2.3.3",
