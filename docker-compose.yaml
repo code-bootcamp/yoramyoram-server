@@ -21,7 +21,7 @@ services:
     ports:
       - 3306:3306
 
-  # my-redis:
-  #   image: redis:latest
-  #   ports:
-  #     - 6379:6379
+  my-redis:
+    image: redis:latest
+    ports:
+      - 6379:6379

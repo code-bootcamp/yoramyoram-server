@@ -4,8 +4,9 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   constructor() {
     super({
-      quest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), //
       secretOrKey: process.env.JWT_ACCESS_KEY,
+      passReqToCallback: true,
     });
   }
 
