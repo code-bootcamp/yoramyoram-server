@@ -7,7 +7,12 @@ import { AuthModule } from './apis/auth/auth.module';
 import { ProductsCategoriesModule } from './apis/productsCategories/productsCategories.module';
 import { UsersModule } from './apis/user/user.module';
 import { ConfigModule } from '@nestjs/config';
-
+import { RedisClientOptions } from 'redis';
+import { CommentsModule } from './apis/comments/comments.module';
+import { PhoneModule } from './apis/phone/phone.module';
+import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
+import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -42,6 +47,6 @@ import { ConfigModule } from '@nestjs/config';
   ],
 
   controllers: [],
-providers: [JwtAccessStrategy, JwtRefreshStrategy],
+  providers: [JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AppModule {}
