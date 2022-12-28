@@ -61,6 +61,7 @@ type Mutation {
   deleteProduct(productId: String!): Boolean!
   udpateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
   login(email: String!, password: String!): String!
+  restoreAcessToken: String!
   createProductCategory(name: String!): ProductCategory!
   createUser(createUserInput: CreateUserInput!): User!
   deleteUser(userId: String!): Boolean!
@@ -80,6 +81,13 @@ input UpdateCommentInput {
   content: String
   productId: String
   userId: String
+}
+
+input CreateProductInput {
+  name: String!
+  price: Int!
+  description: String!
+  productCategoryId: String!
 }
 
 input CreateProductInput {
