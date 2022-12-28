@@ -62,7 +62,8 @@ type Mutation {
   udpateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
   login(email: String!, password: String!): String!
 
-restoreAcessToken: String!
+restoreAccessToken: String!
+  logout: String!
   createProductCategory(name: String!): ProductCategory!
   createUser(createUserInput: CreateUserInput!): User!
   deleteUser(userId: String!): Boolean!

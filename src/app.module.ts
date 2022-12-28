@@ -7,10 +7,8 @@ import { AuthModule } from './apis/auth/auth.module';
 import { ProductsCategoriesModule } from './apis/productsCategories/productsCategories.module';
 import { UsersModule } from './apis/user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { CommentsModule } from './apis/comments/comments.module';
-import { PhoneModule } from './apis/phone/phone.module';
-import { RedisClientOptions } from 'redis';
-import * as redisStore from 'cache-manager-redis-store';
+
+
 @Module({
   imports: [
     CommentsModule,
@@ -44,6 +42,6 @@ import * as redisStore from 'cache-manager-redis-store';
   ],
 
   controllers: [],
-  providers: [],
+providers: [JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AppModule {}
