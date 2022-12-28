@@ -9,15 +9,13 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
     private readonly cacheManager: Cache,
   ) {
     super({
-
-
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.JWT_ACCESS_KEY,
       passReqToCallback: true,
     });
   }
 
-async validate(req, payload) {
+  async validate(req, payload) {
     const access_token = req.headers.authorization.replace('Bearer ', '');
 
     const result = await this.cacheManager.get(`access_token:${access_token}`);
@@ -25,9 +23,6 @@ async validate(req, payload) {
     if (result === 'accessToken') {
       throw new UnauthorizedException('이미 로그아웃된 토큰입니다.');
     }
-
-  validate(payload) {
-    // console.log(payload);
 
     return {
       email: payload.email,

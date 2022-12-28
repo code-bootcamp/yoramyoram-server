@@ -19,7 +19,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
       passReqToCallback: true,
     });
   }
- async validate(req, payload) {
+  async validate(req, payload) {
     // console.log(payload);
     const refresh_token = req.headers.cookie.replace('refreshToken=', '');
 
@@ -29,9 +29,6 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
     if (result) {
       throw new UnauthorizedException('로그아웃된 토큰입니다.');
     }
-      validate(payload) {
-    // console.log(payload);
-
 
     return {
       email: payload.email,
