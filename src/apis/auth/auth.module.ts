@@ -3,8 +3,9 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
+import { UsersService } from '../user/user.service';
+import { JwtRefreshStrategy } from 'src/commons/auth/jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { User } from '../user/entities/user.entity';
     ]),
   ],
   providers: [
+    JwtRefreshStrategy,
     AuthResolver, //
     AuthService,
     UsersService,

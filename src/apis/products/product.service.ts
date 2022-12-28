@@ -27,7 +27,6 @@ export class ProductsService {
     });
   }
 
-  //목록 단일 조회
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
@@ -59,7 +58,6 @@ export class ProductsService {
     //제품등록
     const result = await this.productsRepository.save({
       ...product,
-      // productImage: result,
       productCategory: { category_id: productCategoryId },
     });
 
@@ -68,7 +66,6 @@ export class ProductsService {
 
   //-------------------------*삭제*----------------------------//
   async delete({ productId }) {
-    // 1. 실제 삭제
     const result = await this.productsRepository.softDelete({
       product_id: productId,
     });
