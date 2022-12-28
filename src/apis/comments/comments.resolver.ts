@@ -1,5 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { CommentsService } from './comments.service';
 import { CreateCommentInput } from './dto/create-comment.input';
 import { UpdateCommentInput } from './dto/update-comment.input';
@@ -26,7 +27,7 @@ export class CommentsResolver {
   }
 
   //-------------------------*생성*----------------------------//
-  // @UseGuards()
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   createComment(
     @Args('createCommentInput') createCommentInput: CreateCommentInput,
@@ -35,6 +36,7 @@ export class CommentsResolver {
   }
 
   //-------------------------*업데이트*----------------------------//
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   async udpateComment(
     @Args('commentId') commentId: string,
@@ -46,7 +48,7 @@ export class CommentsResolver {
   }
 
   //-------------------------*삭제*----------------------------//
-  // @UseGuards()
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   async deleteComment(
     @Args('commentId') commentId: string, //
