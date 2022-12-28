@@ -1,5 +1,5 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './apis/products/product.module';
@@ -8,7 +8,9 @@ import { ProductsCategoriesModule } from './apis/productsCategories/productsCate
 import { UsersModule } from './apis/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { CommentsModule } from './apis/comments/comments.module';
-
+import { PhoneModule } from './apis/phone/phone.module';
+import { RedisClientOptions } from 'redis';
+import * as redisStore from 'cache-manager-redis-store';
 @Module({
   imports: [
     CommentsModule,
@@ -16,6 +18,7 @@ import { CommentsModule } from './apis/comments/comments.module';
     AuthModule,
     ProductsCategoriesModule,
     UsersModule,
+    PhoneModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -33,7 +36,13 @@ import { CommentsModule } from './apis/comments/comments.module';
       synchronize: true,
       logging: true,
     }),
+    CacheModule.register<RedisClientOptions>({
+      store: redisStore,
+      url: 'redis://my-redis:6379',
+      isGlobal: true,
+    }),
   ],
+
   controllers: [],
   providers: [],
 })
