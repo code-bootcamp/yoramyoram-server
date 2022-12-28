@@ -7,17 +7,16 @@ import { AuthModule } from './apis/auth/auth.module';
 import { ProductsCategoriesModule } from './apis/productsCategories/productsCategories.module';
 import { UsersModule } from './apis/user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import * as redisStore from 'cache-manager-redis-store';
-import { RedisClientOptions } from 'redis';
-import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
-import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
+
 
 @Module({
   imports: [
+    CommentsModule,
     ProductsModule,
     AuthModule,
     ProductsCategoriesModule,
     UsersModule,
+    PhoneModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -41,6 +40,8 @@ import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
       isGlobal: true,
     }),
   ],
-  providers: [JwtAccessStrategy, JwtRefreshStrategy],
+
+  controllers: [],
+providers: [JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AppModule {}
