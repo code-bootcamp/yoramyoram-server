@@ -1,5 +1,9 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+
 import { Payment } from 'src/apis/payment/entities/payment.entity';
+
+import { ProductTag } from 'src/apis/productsTags/entities/productTag.entity';
+
 import {
   Entity,
   Column,
@@ -7,6 +11,8 @@ import {
   DeleteDateColumn,
   ManyToOne,
   CreateDateColumn,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm';
 import { ProductCategory } from '../../productsCategories/entities/productCategory.entity';
 
@@ -47,4 +53,14 @@ export class Product {
   @ManyToOne(() => Payment)
   @Field(() => Payment)
   payment: Payment;
+  
+  @JoinTable()
+  @ManyToMany(() => ProductTag, (productTags) => productTags.products)
+  @Field(() => [ProductTag])
+  productTags: ProductTag[];
+
+ 
+
+  
+
 }

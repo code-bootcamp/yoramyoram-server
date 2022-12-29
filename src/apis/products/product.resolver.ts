@@ -13,6 +13,12 @@ export class ProductsResolver {
   fetchProducts(): Promise<Product[]> {
     return this.productsService.findAll();
   }
+
+  @Query(() => [Product])
+  searchProducts(@Args('word') word: string): Promise<Product[]> {
+    return this.productsService.searchAll({ word });
+  }
+
   //조회(한개)
   @Query(() => Product)
   fetchProduct(@Args('productId') productId: string): Promise<Product> {
@@ -43,12 +49,15 @@ export class ProductsResolver {
 
   //-------------------------*업데이트*----------------------------//
   @Mutation(() => Product)
-  async udpateProduct(
+  async updateProduct(
     @Args('productId') productId: string,
     @Args('updateProductInput') updateProductInput: UpdateProductInput,
-  ): Promise<Product> {
+  ) {
     const product = await this.productsService.findOne({ productId });
 
-    return this.productsService.update({ product, updateProductInput });
+    return this.productsService.update({
+      product,
+      updateProductInput,
+    });
   }
 }

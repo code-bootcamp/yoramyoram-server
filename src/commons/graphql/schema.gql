@@ -2,6 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+
 type User {
   id: String!
   name: String!
@@ -35,6 +36,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+
+type ProductTag {
+  id: String!
+  name: String!
+  products: [Product!]!
+}
+
+
 type ProductCategory {
   category_id: String!
   category: String!
@@ -48,7 +57,26 @@ type Product {
   createdAt: DateTime!
   isDeleted: Boolean!
   productCategory: ProductCategory!
+
   payment: Payment!
+
+  productTags: [ProductTag!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  add_detail: String!
+  birth: String!
+
 }
 
 type Comment {
@@ -67,6 +95,7 @@ type Query {
   fetchComment(commentId: String!): Comment!
   fetchCommentsWithDeleted: [Comment!]!
   fetchProducts: [Product!]!
+  searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
   findUserEmail(name: String!, phone: String!): String!
@@ -78,7 +107,7 @@ type Mutation {
   deleteComment(commentId: String!): Boolean!
   createProduct(createProductInput: CreateProductInput!): Product!
   deleteProduct(productId: String!): Boolean!
-  udpateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
+  updateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
   login(email: String!, password: String!): String!
   restoreAccessToken: String!
   logout: String!
@@ -112,6 +141,7 @@ input CreateProductInput {
   price: Int!
   description: String!
   productCategoryId: String!
+  productTags: [String!]!
 }
 
 input UpdateProductInput {
@@ -119,6 +149,7 @@ input UpdateProductInput {
   price: Int
   description: String
   productCategoryId: String
+  productTags: [String!]
 }
 
 input CreateUserInput {
