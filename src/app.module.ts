@@ -13,6 +13,7 @@ import { PhoneModule } from './apis/phone/phone.module';
 import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
+import { PaymentModule } from './apis/payment/payment.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import * as redisStore from 'cache-manager-redis-store';
     ProductsCategoriesModule,
     UsersModule,
     PhoneModule,
+    PaymentModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Payment } from 'src/apis/payment/entities/payment.entity';
 import {
   Entity,
   Column,
@@ -42,4 +43,8 @@ export class Product {
   @ManyToOne(() => ProductCategory)
   @Field(() => ProductCategory)
   productCategory: ProductCategory;
+
+  @ManyToOne(() => Payment)
+  @Field(() => Payment)
+  payment: Payment;
 }
