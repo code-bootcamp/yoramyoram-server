@@ -1,6 +1,6 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import {
   IProductsServiceCreate,
@@ -23,6 +23,12 @@ export class ProductsService {
   findAll(): Promise<Product[]> {
     return this.productsRepository.find({
       relations: ['productCategory'],
+    });
+  }
+
+  async searchAll({ word }): Promise<Product[]> {
+    return await this.productsRepository.findBy({
+      name: Like(`%${word}%`),
     });
   }
 
