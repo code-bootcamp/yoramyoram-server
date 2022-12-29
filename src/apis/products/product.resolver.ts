@@ -49,12 +49,15 @@ export class ProductsResolver {
 
   //-------------------------*업데이트*----------------------------//
   @Mutation(() => Product)
-  async udpateProduct(
+  async updateProduct(
     @Args('productId') productId: string,
     @Args('updateProductInput') updateProductInput: UpdateProductInput,
-  ): Promise<Product> {
+  ) {
     const product = await this.productsService.findOne({ productId });
 
-    return this.productsService.update({ product, updateProductInput });
+    return this.productsService.update({
+      product,
+      updateProductInput,
+    });
   }
 }

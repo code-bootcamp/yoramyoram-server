@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ProductTag {
+  id: String!
+  name: String!
+  products: [Product!]!
+}
+
 type ProductCategory {
   category_id: String!
   category: String!
@@ -15,6 +21,7 @@ type Product {
   createdAt: DateTime!
   isDeleted: Boolean!
   productCategory: ProductCategory!
+  productTags: [ProductTag!]!
 }
 
 """
@@ -50,7 +57,6 @@ type Query {
   searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
-  sayHello: String!
   findUserEmail(name: String!, phone: String!): String!
 }
 
@@ -60,10 +66,9 @@ type Mutation {
   deleteComment(commentId: String!): Boolean!
   createProduct(createProductInput: CreateProductInput!): Product!
   deleteProduct(productId: String!): Boolean!
-  udpateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
+  updateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
   login(email: String!, password: String!): String!
-
-restoreAccessToken: String!
+  restoreAccessToken: String!
   logout: String!
   createProductCategory(name: String!): ProductCategory!
   createUser(createUserInput: CreateUserInput!): User!
@@ -71,7 +76,6 @@ restoreAccessToken: String!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
 }
-
 
 input CreateCommentInput {
   title: String!
@@ -94,12 +98,15 @@ input CreateProductInput {
   price: Int!
   description: String!
   productCategoryId: String!
+  productTags: [String!]!
 }
+
 input UpdateProductInput {
   name: String
   price: Int
   description: String
   productCategoryId: String
+  productTags: [String!]
 }
 
 input CreateUserInput {
