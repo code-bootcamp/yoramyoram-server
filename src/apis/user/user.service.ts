@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { findBreakingChanges } from 'graphql';
+import { IUsersServiceFindOne } from './interfaces/users-service.interface';
 
 @Injectable()
 export class UsersService {
@@ -12,9 +13,9 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create({ createUserInpput }) {
+  async create({ createUserInput }) {
     const { name, email, phone, password, address, add_detail, birth } =
-      createUserInpput;
+      createUserInput;
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
@@ -34,17 +35,40 @@ export class UsersService {
     });
   }
 
-  async findOne(type) {
+  async emailFindOne({ name, phone }) {
+    console.log(name, phone);
     const userId = await this.userRepository.findOne({
-      where: type,
+      where: { phone },
     });
 
-    if (userId.name !== type.name) return '가입한 이름과 다릅니다 ';
+    console.log(userId);
 
-    const findEmail = await this.userRepository.findOne({
-      where: type.phone,
+    if (userId.phone !== phone || userId.name !== name) {
+      return '가입한 이름과 다릅니다 ';
+    }
+
+    return userId.email;
+  }
+
+  async delete({ userId }) {
+    const result = await this.userRepository.softDelete({ id: userId });
+
+    return result.affected ? true : false;
+  }
+
+  async findOne({ email }: IUsersServiceFindOne): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        email: email,
+      },
     });
+  }
 
-    return findEmail.email;
+  async findOnePhone({ phone }) {
+    return await this.userRepository.findOne({
+      where: {
+        phone: phone,
+      },
+    });
   }
 }

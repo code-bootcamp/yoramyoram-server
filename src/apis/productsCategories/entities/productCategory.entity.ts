@@ -8,7 +8,7 @@ export class ProductCategory {
   @Field(() => String)
   category_id: string;
 
-  @Column()
+  @Column({ unique: true })
   @Field(() => String)
   category: string;
 }

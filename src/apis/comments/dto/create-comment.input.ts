@@ -1,16 +1,19 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
 
 @InputType()
-export class CreateProductInput {
+export class CreateCommentInput {
   @Field(() => String)
-  name: string;
+  title: string;
 
   @Field(() => Int)
-  price: number;
+  star: number;
 
   @Field(() => String)
-  description: string;
+  content: string;
 
   @Field(() => String)
-  productCategoryId: string;
+  productId: string;
+
+  @Field(() => String)
+  userId: string;
 }
