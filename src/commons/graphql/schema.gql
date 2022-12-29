@@ -32,17 +32,61 @@ type User {
   birth: String!
 }
 
+type Comment {
+  comment_id: String!
+  title: String!
+  star: Int!
+  content: String!
+  createdAt: DateTime!
+  isDeleted: Boolean!
+  user: User!
+}
+
 type Query {
+  fetchComments: [Comment!]!
+  fetchComment(commentId: String!): Comment!
+  fetchCommentsWithDeleted: [Comment!]!
   fetchProducts: [Product!]!
   searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
+  fetchProductsWithDeleted: [Product!]!
+  sayHello: String!
   findUserEmail(name: String!, phone: String!): String!
 }
 
 type Mutation {
+  createComment(createCommentInput: CreateCommentInput!): Comment!
+  udpateComment(commentId: String!, updateCommentInput: UpdateCommentInput!): Comment!
+  deleteComment(commentId: String!): Boolean!
   createProduct(createProductInput: CreateProductInput!): Product!
+  deleteProduct(productId: String!): Boolean!
+  udpateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
+  login(email: String!, password: String!): String!
+
+restoreAccessToken: String!
+  logout: String!
   createProductCategory(name: String!): ProductCategory!
-  createUser(createUserInpput: CreateUserInpput!): User!
+  createUser(createUserInput: CreateUserInput!): User!
+  deleteUser(userId: String!): Boolean!
+  sendTokentoPhone(phone: String!): String!
+  checkTokenPhone(phone: String!, phoneToken: String!): String!
+}
+
+
+input CreateCommentInput {
+  title: String!
+  star: Int!
+  content: String!
+  productId: String!
+  userId: String!
+}
+
+input UpdateCommentInput {
+  title: String
+  star: Int
+  content: String
+  productId: String
+  userId: String
 }
 
 input CreateProductInput {
@@ -51,8 +95,14 @@ input CreateProductInput {
   description: String!
   productCategoryId: String!
 }
+input UpdateProductInput {
+  name: String
+  price: Int
+  description: String
+  productCategoryId: String
+}
 
-input CreateUserInpput {
+input CreateUserInput {
   name: String!
   email: String!
   phone: String!

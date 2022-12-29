@@ -1,5 +1,6 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { CreateProductInput } from './dto/create-product.input';
+import { UpdateProductInput } from './dto/update-product.input';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './product.service';
 
@@ -24,11 +25,36 @@ export class ProductsResolver {
     return this.productsService.findOne({ productId });
   }
 
+  //soft delete로 삭제된 데이터들도 모두 나오도록
+  @Query(() => [Product])
+  fetchProductsWithDeleted(): Promise<Product[]> {
+    return this.productsService.findAllWithDelete();
+  }
+
   //-------------------------*생성*----------------------------//
   @Mutation(() => Product)
   createProduct(
     @Args('createProductInput') createProductInput: CreateProductInput,
   ): Promise<Product> {
     return this.productsService.create({ createProductInput });
+  }
+
+  //-------------------------*삭제*----------------------------//
+  @Mutation(() => Boolean)
+  deleteProduct(
+    @Args('productId') productId: string, //
+  ) {
+    return this.productsService.delete({ productId });
+  }
+
+  //-------------------------*업데이트*----------------------------//
+  @Mutation(() => Product)
+  async udpateProduct(
+    @Args('productId') productId: string,
+    @Args('updateProductInput') updateProductInput: UpdateProductInput,
+  ): Promise<Product> {
+    const product = await this.productsService.findOne({ productId });
+
+    return this.productsService.update({ product, updateProductInput });
   }
 }
