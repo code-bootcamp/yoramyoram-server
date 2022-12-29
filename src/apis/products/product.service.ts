@@ -8,6 +8,7 @@ import {
   IProductsServiceUpdate,
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
+import { ProductTag } from '../productsTags/entities/productTag.entity';
 
 @Injectable()
 export class ProductsService {
@@ -18,19 +19,22 @@ export class ProductsService {
 
     @InjectRepository(ProductCategory)
     private readonly productsCategoriesRepository: Repository<ProductCategory>,
+
+    @InjectRepository(ProductTag)
+    private readonly productsTagsRepository: Repository<ProductTag>,
   ) {}
 
   //-------------------------*조회*----------------------------//
   findAll(): Promise<Product[]> {
     return this.productsRepository.find({
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productTags'],
     });
   }
 
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productTags'],
     });
   }
 
@@ -45,7 +49,7 @@ export class ProductsService {
   async create({
     createProductInput,
   }: IProductsServiceCreate): Promise<Product> {
-    const { productCategoryId, ...product } = createProductInput;
+    const { productCategoryId, productTags, ...product } = createProductInput;
 
     const category = await this.productsCategoriesRepository.findOne({
       where: { category_id: productCategoryId },
@@ -55,10 +59,32 @@ export class ProductsService {
         '상품카테고리와 함께 상품을 등록해주세요.',
       );
 
+    const temp = [];
+    for (let i = 0; i < productTags.length; i++) {
+      const tagname = productTags[i].replace('#', '');
+
+      const prevTag = await this.productsTagsRepository.findOne({
+        where: { name: tagname },
+      });
+
+      if (prevTag) {
+        temp.push(prevTag);
+      } else {
+        const newTag = await this.productsTagsRepository.save({
+          name: tagname,
+        });
+        console.log(newTag);
+        temp.push(newTag);
+      }
+    }
+
+    console.log(temp);
+
     //제품등록
     const result = await this.productsRepository.save({
       ...product,
       productCategory: { category_id: productCategoryId },
+      productTags: temp,
     });
 
     return result;
@@ -73,15 +99,37 @@ export class ProductsService {
   }
 
   //-------------------------*업데이트*-----------------//
-  update({
-    product,
-    updateProductInput,
-  }: IProductsServiceUpdate): Promise<Product> {
+  async update({ product, updateProductInput }: IProductsServiceUpdate) {
+    const { productCategoryId, productTags, ...products } = updateProductInput;
+    const categoryResult = await this.productsCategoriesRepository.findOne({
+      where: {
+        category_id: productCategoryId,
+      },
+    });
+    const temp = [];
+    for (let i = 0; i < productTags.length; i++) {
+      const tagname = productTags[i].replace('#', '');
+      const prevTag = await this.productsTagsRepository.findOne({
+        where: { name: tagname },
+      });
+      if (prevTag) {
+        temp.push(prevTag);
+      } else {
+        const newTag = await this.productsTagsRepository.save({
+          name: tagname,
+        });
+        console.log(newTag);
+        temp.push(newTag);
+      }
+    }
     const result = this.productsRepository.save({
       ...product,
-      ...updateProductInput,
+      productTags: temp,
+      productCategory: {
+        ...categoryResult,
+      },
+      ...products,
     });
-
     return result;
   }
 }
