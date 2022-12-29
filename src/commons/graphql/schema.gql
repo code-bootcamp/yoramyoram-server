@@ -47,6 +47,7 @@ type Query {
   fetchComment(commentId: String!): Comment!
   fetchCommentsWithDeleted: [Comment!]!
   fetchProducts: [Product!]!
+  searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
   sayHello: String!
