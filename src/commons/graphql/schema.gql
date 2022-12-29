@@ -34,6 +34,7 @@ type User {
 
 type Query {
   fetchProducts: [Product!]!
+  searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
   findUserEmail(name: String!, phone: String!): String!
 }

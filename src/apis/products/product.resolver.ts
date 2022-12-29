@@ -12,6 +12,12 @@ export class ProductsResolver {
   fetchProducts(): Promise<Product[]> {
     return this.productsService.findAll();
   }
+
+  @Query(() => [Product])
+  searchProducts(@Args('word') word: string): Promise<Product[]> {
+    return this.productsService.searchAll({ word });
+  }
+
   //조회(한개)
   @Query(() => Product)
   fetchProduct(@Args('productId') productId: string): Promise<Product> {
