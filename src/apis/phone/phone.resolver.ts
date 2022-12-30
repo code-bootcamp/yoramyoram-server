@@ -51,7 +51,7 @@ export class PhoneResolver {
       if (cachePhoneToken === phoneToken) {
         return '인증이 완료 되었습니다!';
       }
-      await this.cacheManager.set(phone, true, 800);
+      await this.cacheManager.set(phone, phoneToken, 800);
 
       this.cacheManager.get(phone).then((res) => console.log(res));
     } catch (error) {
