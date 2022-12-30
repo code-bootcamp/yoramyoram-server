@@ -21,7 +21,7 @@ export class UsersService {
     });
 
     if (user) throw new ConflictException('이미 등록된 이메일입니다!');
-
+    //중복 휴대폰으로 가입한 사람 있을시 에러
     const hashedPassword = await bcrypt.hash(password, 10);
 
     return await this.userRepository.save({
@@ -35,7 +35,7 @@ export class UsersService {
     });
   }
 
-  async emailFindOne({ name, phone }) {
+  async findOneEmail({ name, phone }) {
     console.log(name, phone);
     const userId = await this.userRepository.findOne({
       where: { phone },
@@ -70,5 +70,26 @@ export class UsersService {
         phone: phone,
       },
     });
+  }
+
+  async findOnePassword({ name, email }) {
+    return await this.userRepository.findOne({
+      where: { name: name, email: email },
+    });
+  }
+
+  async updatePassword({ password, phone }) {
+    // const user = await this.userRepository.findOne({ where: { phone: phone } });
+
+    const hashedpassword = await bcrypt.hash(password, 10);
+    try {
+      await this.userRepository.update(
+        { phone: phone },
+        { password: hashedpassword },
+      );
+      return '비밀번호 재설정이 성공하였습니다';
+    } catch (error) {
+      throw new ConflictException('비밀번호 재설정이 실패하였습니다');
+    }
   }
 }

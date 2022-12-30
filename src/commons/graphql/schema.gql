@@ -2,7 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-
 type User {
   id: String!
   name: String!
@@ -36,13 +35,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-
 type ProductTag {
   id: String!
   name: String!
   products: [Product!]!
 }
-
 
 type ProductCategory {
   category_id: String!
@@ -57,26 +54,8 @@ type Product {
   createdAt: DateTime!
   isDeleted: Boolean!
   productCategory: ProductCategory!
-
   payment: Payment!
-
   productTags: [ProductTag!]!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type User {
-  id: String!
-  name: String!
-  email: String!
-  phone: String!
-  address: String!
-  add_detail: String!
-  birth: String!
-
 }
 
 type Comment {
@@ -113,6 +92,8 @@ type Mutation {
   logout: String!
   createProductCategory(name: String!): ProductCategory!
   createUser(createUserInput: CreateUserInput!): User!
+  findUerPassword(name: String!, phone: String!, email: String!, token: String!): String!
+  updatePassword(password: String!, phone: String!): String!
   deleteUser(userId: String!): Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
