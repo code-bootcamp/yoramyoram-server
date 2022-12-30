@@ -7,7 +7,7 @@ import { ProductsService } from './product.service';
 import { ProductTag } from '../productsTags/entities/productTag.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, ProductCategory, ProductTag,])],
+  imports: [TypeOrmModule.forFeature([Product, ProductCategory, ProductTag])],
   providers: [ProductsResolver, ProductsService],
 })
 export class ProductsModule {}
