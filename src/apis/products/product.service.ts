@@ -30,15 +30,13 @@ export class ProductsService {
       relations: ['productCategory', 'productTags'],
     });
   }
-  
-  
+
   async searchAll({ word }): Promise<Product[]> {
     return await this.productsRepository.findBy({
       name: Like(`%${word}%`),
     });
   }
-  
-  
+
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },

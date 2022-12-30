@@ -69,6 +69,12 @@ type Comment {
   paymnet: Payment!
 }
 
+type ProductWishlist {
+  productwishlist_id: String!
+  user: User!
+  product: Product!
+}
+
 type Query {
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
@@ -77,6 +83,7 @@ type Query {
   searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
+  fetchmyWishlist: [ProductWishlist!]!
   findUserEmail(name: String!, phone: String!): String!
 }
 
@@ -91,6 +98,8 @@ type Mutation {
   restoreAccessToken: String!
   logout: String!
   createProductCategory(name: String!): ProductCategory!
+  addWishlist(userID: String!, productID: String!): ProductWishlist!
+  deleteMyWishlist(ProductWishlistId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUerPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
