@@ -14,6 +14,7 @@ import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
 import { PaymentModule } from './apis/payment/payment.module';
+import { ProductWishlistModule } from './apis/productsWishlists/productWishlist.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PaymentModule } from './apis/payment/payment.module';
     ProductsModule,
     AuthModule,
     ProductsCategoriesModule,
+    ProductWishlistModule,
     UsersModule,
     PhoneModule,
     PaymentModule,

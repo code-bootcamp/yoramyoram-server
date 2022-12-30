@@ -53,14 +53,9 @@ export class Product {
   @ManyToOne(() => Payment)
   @Field(() => Payment)
   payment: Payment;
-  
+
   @JoinTable()
   @ManyToMany(() => ProductTag, (productTags) => productTags.products)
   @Field(() => [ProductTag])
   productTags: ProductTag[];
-
- 
-
-  
-
 }
