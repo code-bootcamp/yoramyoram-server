@@ -35,7 +35,7 @@ export class AuthService {
     );
     res.setHeader(
       'Set-Cookie',
-      `refreshToken=${refreshToken}; path=/; domain=.wetrekking.kr; SameSite=None; Secure; httpOnly;`,
+      `refreshToken=${refreshToken}; path=/; domain=.yoramyoram.shop; SameSite=None; Secure; httpOnly;`,
     );
 
     return refreshToken;
