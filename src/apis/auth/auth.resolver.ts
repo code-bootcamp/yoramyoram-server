@@ -44,7 +44,11 @@ export class AuthResolver {
     if (!isAuth) throw new UnprocessableEntityException('암호가 틀렸습니다.');
 
     // 4. refreshToken(=JWT)을 만들어서 프론트엔드 브라우저 쿠키에 저장해서 보내주기
-    this.authService.setRefreshToken({ user, res: context.res });
+    this.authService.setRefreshToken({
+      user,
+      res: context.res,
+      req: context.req,
+    });
 
     // 5. 일치하는 유저도 있고, 비밀번호도 맞았다면?!
     //    => accessToken(=JWT)을 만들어서 브라우저에 전달하기

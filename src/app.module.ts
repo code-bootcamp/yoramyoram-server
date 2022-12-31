@@ -31,6 +31,23 @@ import { ProductWishlistModule } from './apis/productsWishlists/productWishlist.
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
+      cors: {
+        origin: [
+          'http://localhost:3000',
+          'https://yoramyoram-backend.shop',
+          'https://yoramyoram.shop',
+        ],
+        credentials: true,
+        exposedHeaders: ['Set-Cookie', 'Cookie'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        allowedHeaders: [
+          'Access-Control-Allow-Headers',
+          'Authorization',
+          'X-Requested-With',
+          'Content-Type',
+          'Accept',
+        ],
+      },
     }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
