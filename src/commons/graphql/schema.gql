@@ -83,6 +83,8 @@ type Query {
   searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
+  fetchProductsbyLowPrice: [Product!]!
+  fetchProductsbyHigherPrice: [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   findUserEmail(name: String!, phone: String!): String!
 }

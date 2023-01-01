@@ -51,6 +51,12 @@ export class ProductsService {
       .getMany();
   }
 
+  findAllbydesc(): Promise<Product[]> {
+    return this.productsRepository.find({
+      // relations: ['productCategory', 'productTags'],
+    });
+  }
+
   //-------------------------*생성*----------------------------//
   async create({
     createProductInput,
