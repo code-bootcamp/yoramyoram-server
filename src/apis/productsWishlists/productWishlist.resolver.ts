@@ -30,6 +30,7 @@ export class ProductWishlistResolver {
     });
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteMyWishlist(
     @Args('ProductWishlistId') productWishlistId: string, //
