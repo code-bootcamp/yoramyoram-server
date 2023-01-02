@@ -8,22 +8,48 @@ export class ProductWishlistService {
     private readonly productWishlistRepository: Repository<ProductWishlist>,
   ) {}
 
-  async createWish({ user, productID }) {
-    //   //---------------------------------------예외 처리부분--------------------------------------
-    //   // 위시리스트 레포지토리에서 프로덕트위시리스트 아이디 가져와서 유저아이디랑 프로덕트아이디 같으면 추가x
-    //   const existedWishlist = await this.productWishlistRepository.findOne({
-    //     where: { product: productID },
-    //   });
-    //   if (existedWishlist.includes(user) && existedWishlist.includes(productID)) {
-    //     return;
-    //   }
+  async createWish({ createProductWishInput }) {
+    const { userId, productId } = createProductWishInput;
+    const isDib = await this.productWishlistRepository
+      .createQueryBuilder()
+      .select()
+      .where('userId = :userId', { userId: userId })
+      .andWhere('productProductId = :productProductId', {
+        productProductId: productId,
+      })
+      .getOne();
 
-    //   //---------------------------------------------------------------------------------------
-    const result = await this.productWishlistRepository.save({
-      user,
-      productID,
-    });
-    return result;
+    let checkDib = false;
+    if (isDib) {
+      //이미 찜목록에 있다면
+      if (isDib.isDib) {
+        //true라면
+        await this.productWishlistRepository.save({
+          productwishlist_id: isDib.productwishlist_id,
+          product: { product_id: productId },
+          user: { id: userId },
+          isDib: false,
+        });
+        checkDib = false;
+      } else {
+        await this.productWishlistRepository.save({
+          productwishlist_id: isDib.productwishlist_id,
+          product: { product_id: productId },
+          user: { id: userId },
+          isDib: true,
+        });
+        checkDib = true;
+      }
+    } else {
+      //처음클릭이라면
+      await this.productWishlistRepository.save({
+        product: { product_id: productId },
+        user: { id: userId },
+        isDib: true,
+      });
+      checkDib = true;
+    }
+    return checkDib;
   }
 
   findAll(): Promise<ProductWishlist[]> {
@@ -33,7 +59,7 @@ export class ProductWishlistService {
   //-------------------------*삭제*----------------------------//
   async delete({ productWishlistId }) {
     const result = await this.productWishlistRepository.softDelete({
-      productwishlist_id: productWishlistId,
+      isDib: productWishlistId,
     });
     return result.affected ? true : false;
   }
