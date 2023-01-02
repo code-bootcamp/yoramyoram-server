@@ -32,42 +32,24 @@ export class ProductsResolver {
     return this.productsService.findAllWithDelete();
   }
 
-  // 낮은가격 순으로 상품조회
   @Query(() => [Product])
-  async fetchProductsbyLowPrice(): Promise<Product[]> {
-    const purelist = await this.productsService.findAllbydesc();
-
-    const LowPriceList = purelist.sort(function (product1, product2) {
-      const product1P = product1.price;
-      const product2P = product2.price;
-      if (product1P < product2P) {
-        return -1;
-      } else if (product1P > product2P) {
-        return 1;
-      }
-      return 0;
-    });
-
-    return LowPriceList;
+  sortByPriceASC() {
+    return this.productsService.sortByPriceASC();
   }
 
-  // 높은가격 순으로 상품조회
   @Query(() => [Product])
-  async fetchProductsbyHigherPrice(): Promise<Product[]> {
-    const purelist = await this.productsService.findAllbydesc();
+  sortByPriceDESC() {
+    return this.productsService.sortByPriceDESC();
+  }
 
-    const HighPriceList = purelist.sort(function (product1, product2) {
-      const product1P = product1.price;
-      const product2P = product2.price;
-      if (product1P > product2P) {
-        return -1;
-      } else if (product1P < product2P) {
-        return 1;
-      }
-      return 0;
-    });
+  @Query(() => [Product])
+  sortByCommentsASC() {
+    return this.productsService.sortByCommentsASC();
+  }
 
-    return HighPriceList;
+  @Query(() => [Product])
+  sortByCommentsDESC() {
+    return this.productsService.sortByCommentsDESC();
   }
 
   //-------------------------*생성*----------------------------//
