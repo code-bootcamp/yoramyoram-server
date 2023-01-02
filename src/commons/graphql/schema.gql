@@ -61,6 +61,7 @@ type Query {
 }
 
 type Mutation {
+  uploadImage(images: [Upload!]!): [String!]!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   udpateComment(commentId: String!, updateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
@@ -76,6 +77,9 @@ type Mutation {
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input CreateCommentInput {
   title: String!
