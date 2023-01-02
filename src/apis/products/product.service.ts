@@ -9,6 +9,7 @@ import {
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
 import { ProductTag } from '../productsTags/entities/productTag.entity';
+import { Comment } from '../comments/entities/comment.entity';
 
 @Injectable()
 export class ProductsService {
@@ -22,6 +23,9 @@ export class ProductsService {
 
     @InjectRepository(ProductTag)
     private readonly productsTagsRepository: Repository<ProductTag>,
+
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
 
   //-------------------------*조회*----------------------------//
@@ -45,18 +49,60 @@ export class ProductsService {
   }
 
   findAllWithDelete(): Promise<Product[]> {
-    return this.productsRepository
-      .createQueryBuilder()
-      .withDeleted() // 넣어주면 가져옴
-      .getMany();
+    return this.productsRepository.createQueryBuilder().withDeleted().getMany();
   }
 
-  findAllbydesc(): Promise<Product[]> {
-    return this.productsRepository.find({
-      // relations: ['productCategory', 'productTags'],
+  async sortByPriceASC() {
+    const list = await this.productsRepository.find({
+      order: {
+        price: 'ASC',
+      },
     });
+    return list;
   }
 
+  async sortByPriceDESC() {
+    const list = await this.productsRepository.find({
+      order: {
+        price: 'DESC',
+      },
+    });
+    return list;
+  }
+
+  async sortByCommentsASC() {
+    const ManyComments = await this.commentRepository
+      .createQueryBuilder()
+      .select('productProductId, COUNT(productProductId) AS ManyComments')
+      .groupBy('productProductId')
+      .orderBy('ManyComments', 'ASC')
+      .getRawMany();
+
+    const result = ManyComments.map(async (el) => {
+      return this.productsRepository.findOne({
+        where: { product_id: el.productProductId },
+        relations: ['productCategory', 'productTags'],
+      });
+    });
+    return result;
+  }
+
+  async sortByCommentsDESC() {
+    const ManyComments = await this.commentRepository
+      .createQueryBuilder()
+      .select('productProductId, COUNT(productProductId) AS ManyComments')
+      .groupBy('productProductId')
+      .orderBy('ManyComments', 'DESC')
+      .getRawMany();
+
+    const result = ManyComments.map(async (el) => {
+      return this.productsRepository.findOne({
+        where: { product_id: el.productProductId },
+        relations: ['productCategory', 'productTags'],
+      });
+    });
+    return result;
+  }
   //-------------------------*생성*----------------------------//
   async create({
     createProductInput,

@@ -66,6 +66,7 @@ type Comment {
   createdAt: DateTime!
   isDeleted: Boolean!
   user: User!
+  product: Product!
   paymnet: Payment!
 }
 
@@ -83,8 +84,10 @@ type Query {
   searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
-  fetchProductsbyLowPrice: [Product!]!
-  fetchProductsbyHigherPrice: [Product!]!
+  sortByPriceASC: [Product!]!
+  sortByPriceDESC: [Product!]!
+  sortByCommentsASC: [Product!]!
+  sortByCommentsDESC: [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   findUserEmail(name: String!, phone: String!): String!
 }
