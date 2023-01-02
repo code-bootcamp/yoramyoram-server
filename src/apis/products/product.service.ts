@@ -30,15 +30,13 @@ export class ProductsService {
       relations: ['productCategory', 'productTags'],
     });
   }
-  
-  
+
   async searchAll({ word }): Promise<Product[]> {
     return await this.productsRepository.findBy({
       name: Like(`%${word}%`),
     });
   }
-  
-  
+
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
@@ -51,6 +49,12 @@ export class ProductsService {
       .createQueryBuilder()
       .withDeleted() // 넣어주면 가져옴
       .getMany();
+  }
+
+  findAllbydesc(): Promise<Product[]> {
+    return this.productsRepository.find({
+      // relations: ['productCategory', 'productTags'],
+    });
   }
 
   //-------------------------*생성*----------------------------//

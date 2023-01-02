@@ -14,6 +14,9 @@ import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
 import { productsImagesModule } from './apis/files/productsImages.module';
+import { PaymentModule } from './apis/payment/payment.module';
+import { ProductWishlistModule } from './apis/productsWishlists/productWishlist.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -22,13 +25,32 @@ import { productsImagesModule } from './apis/files/productsImages.module';
     ProductsModule,
     AuthModule,
     ProductsCategoriesModule,
+    ProductWishlistModule,
     UsersModule,
     PhoneModule,
+    PaymentModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
+      cors: {
+        origin: [
+          'http://localhost:3000',
+          'https://yoramyoram-backend.shop',
+          'https://yoramyoram.shop',
+        ],
+        credentials: true,
+        exposedHeaders: ['Set-Cookie', 'Cookie'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        allowedHeaders: [
+          'Access-Control-Allow-Headers',
+          'Authorization',
+          'X-Requested-With',
+          'Content-Type',
+          'Accept',
+        ],
+      },
     }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
@@ -43,12 +65,12 @@ import { productsImagesModule } from './apis/files/productsImages.module';
     }),
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://my-redis:6379',
+      url: 'redis://10.6.144.3:6379',
       isGlobal: true,
     }),
   ],
 
-  controllers: [],
+  controllers: [AppController],
   providers: [JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AppModule {}

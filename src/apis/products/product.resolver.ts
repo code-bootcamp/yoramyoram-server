@@ -1,3 +1,4 @@
+import { ConsoleLogger } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
@@ -29,6 +30,44 @@ export class ProductsResolver {
   @Query(() => [Product])
   fetchProductsWithDeleted(): Promise<Product[]> {
     return this.productsService.findAllWithDelete();
+  }
+
+  // 낮은가격 순으로 상품조회
+  @Query(() => [Product])
+  async fetchProductsbyLowPrice(): Promise<Product[]> {
+    const purelist = await this.productsService.findAllbydesc();
+
+    const LowPriceList = purelist.sort(function (product1, product2) {
+      const product1P = product1.price;
+      const product2P = product2.price;
+      if (product1P < product2P) {
+        return -1;
+      } else if (product1P > product2P) {
+        return 1;
+      }
+      return 0;
+    });
+
+    return LowPriceList;
+  }
+
+  // 높은가격 순으로 상품조회
+  @Query(() => [Product])
+  async fetchProductsbyHigherPrice(): Promise<Product[]> {
+    const purelist = await this.productsService.findAllbydesc();
+
+    const HighPriceList = purelist.sort(function (product1, product2) {
+      const product1P = product1.price;
+      const product2P = product2.price;
+      if (product1P > product2P) {
+        return -1;
+      } else if (product1P < product2P) {
+        return 1;
+      }
+      return 0;
+    });
+
+    return HighPriceList;
   }
 
   //-------------------------*생성*----------------------------//
