@@ -19,14 +19,13 @@ export class ProductWishlistResolver {
 
   // 같은 유저아이디, 같은프로덕트아이디꺼 위시리스트 아이디 계속 다르게 저장됨 예외처리 필요
   @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => ProductWishlist)
+  @Mutation(() => Boolean)
   async addWishlist(
-    @Args('userID') user: string, //
-    @Args('productID') productID: string,
+    @Args('createProductWishInput')
+    createProductWishInput: CreateProductWishInput,
   ) {
     return this.productWishlistService.createWish({
-      user,
-      productID,
+      createProductWishInput,
     });
   }
 

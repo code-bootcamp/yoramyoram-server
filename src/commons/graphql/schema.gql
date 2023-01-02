@@ -65,6 +65,7 @@ type Comment {
 
 type ProductWishlist {
   productwishlist_id: String!
+  isDib: Boolean!
   user: User!
   product: Product!
 }
@@ -97,7 +98,7 @@ type Mutation {
   restoreAccessToken: String!
   logout: String!
   createProductCategory(name: String!): ProductCategory!
-  addWishlist(userID: String!, productID: String!): ProductWishlist!
+  addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
   deleteMyWishlist(ProductWishlistId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUerPassword(name: String!, phone: String!, email: String!, token: String!): String!
@@ -142,6 +143,11 @@ input UpdateProductInput {
   description: String
   productCategoryId: String
   productTags: [String!]
+}
+
+input CreateProductWishInput {
+  productId: String!
+  userId: String!
 }
 
 input CreateUserInput {
