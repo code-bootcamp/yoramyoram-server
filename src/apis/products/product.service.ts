@@ -8,7 +8,7 @@ import {
   IProductsServiceUpdate,
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
-import { ProductTag } from '../productsTags/entities/productTag.entity';
+import { Comment } from '../comments/entities/comment.entity';
 
 @Injectable()
 export class ProductsService {
@@ -20,8 +20,8 @@ export class ProductsService {
     @InjectRepository(ProductCategory)
     private readonly productsCategoriesRepository: Repository<ProductCategory>,
 
-    @InjectRepository(ProductTag)
-    private readonly productsTagsRepository: Repository<ProductTag>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
 
   //-------------------------*조회*----------------------------//
@@ -45,23 +45,65 @@ export class ProductsService {
   }
 
   findAllWithDelete(): Promise<Product[]> {
-    return this.productsRepository
-      .createQueryBuilder()
-      .withDeleted() // 넣어주면 가져옴
-      .getMany();
+    return this.productsRepository.createQueryBuilder().withDeleted().getMany();
   }
 
-  findAllbydesc(): Promise<Product[]> {
-    return this.productsRepository.find({
-      // relations: ['productCategory', 'productTags'],
+  async sortByPriceASC() {
+    const list = await this.productsRepository.find({
+      order: {
+        price: 'ASC',
+      },
     });
+    return list;
   }
 
+  async sortByPriceDESC() {
+    const list = await this.productsRepository.find({
+      order: {
+        price: 'DESC',
+      },
+    });
+    return list;
+  }
+
+  async sortByCommentsASC() {
+    const ManyComments = await this.commentRepository
+      .createQueryBuilder()
+      .select('productProductId, COUNT(productProductId) AS ManyComments')
+      .groupBy('productProductId')
+      .orderBy('ManyComments', 'ASC')
+      .getRawMany();
+
+    const result = ManyComments.map(async (el) => {
+      return this.productsRepository.findOne({
+        where: { product_id: el.productProductId },
+        relations: ['productCategory', 'productTags'],
+      });
+    });
+    return result;
+  }
+
+  async sortByCommentsDESC() {
+    const ManyComments = await this.commentRepository
+      .createQueryBuilder()
+      .select('productProductId, COUNT(productProductId) AS ManyComments')
+      .groupBy('productProductId')
+      .orderBy('ManyComments', 'DESC')
+      .getRawMany();
+
+    const result = ManyComments.map(async (el) => {
+      return this.productsRepository.findOne({
+        where: { product_id: el.productProductId },
+        relations: ['productCategory', 'productTags'],
+      });
+    });
+    return result;
+  }
   //-------------------------*생성*----------------------------//
   async create({
     createProductInput,
   }: IProductsServiceCreate): Promise<Product> {
-    const { productCategoryId, productTags, ...product } = createProductInput;
+    const { productCategoryId, ...product } = createProductInput;
 
     const category = await this.productsCategoriesRepository.findOne({
       where: { category_id: productCategoryId },
@@ -71,32 +113,10 @@ export class ProductsService {
         '상품카테고리와 함께 상품을 등록해주세요.',
       );
 
-    const temp = [];
-    for (let i = 0; i < productTags.length; i++) {
-      const tagname = productTags[i].replace('#', '');
-
-      const prevTag = await this.productsTagsRepository.findOne({
-        where: { name: tagname },
-      });
-
-      if (prevTag) {
-        temp.push(prevTag);
-      } else {
-        const newTag = await this.productsTagsRepository.save({
-          name: tagname,
-        });
-        console.log(newTag);
-        temp.push(newTag);
-      }
-    }
-
-    console.log(temp);
-
     //제품등록
     const result = await this.productsRepository.save({
       ...product,
       productCategory: { category_id: productCategoryId },
-      productTags: temp,
     });
 
     return result;
@@ -112,31 +132,14 @@ export class ProductsService {
 
   //-------------------------*업데이트*-----------------//
   async update({ product, updateProductInput }: IProductsServiceUpdate) {
-    const { productCategoryId, productTags, ...products } = updateProductInput;
+    const { productCategoryId, ...products } = updateProductInput;
     const categoryResult = await this.productsCategoriesRepository.findOne({
       where: {
         category_id: productCategoryId,
       },
     });
-    const temp = [];
-    for (let i = 0; i < productTags.length; i++) {
-      const tagname = productTags[i].replace('#', '');
-      const prevTag = await this.productsTagsRepository.findOne({
-        where: { name: tagname },
-      });
-      if (prevTag) {
-        temp.push(prevTag);
-      } else {
-        const newTag = await this.productsTagsRepository.save({
-          name: tagname,
-        });
-        console.log(newTag);
-        temp.push(newTag);
-      }
-    }
     const result = this.productsRepository.save({
       ...product,
-      productTags: temp,
       productCategory: {
         ...categoryResult,
       },
