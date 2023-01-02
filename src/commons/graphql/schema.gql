@@ -99,7 +99,6 @@ type Mutation {
   logout: String!
   createProductCategory(name: String!): ProductCategory!
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
-  deleteMyWishlist(ProductWishlistId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUerPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
