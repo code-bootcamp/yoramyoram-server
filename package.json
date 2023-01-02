@@ -52,6 +52,7 @@
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.10",
     "yarn": "^1.22.19"
+    
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

@@ -13,9 +13,11 @@ import { PhoneModule } from './apis/phone/phone.module';
 import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
+import { productsImagesModule } from './apis/files/productsImages.module';
 
 @Module({
   imports: [
+    productsImagesModule,
     CommentsModule,
     ProductsModule,
     AuthModule,
