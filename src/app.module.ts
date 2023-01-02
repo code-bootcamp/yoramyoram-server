@@ -13,10 +13,10 @@ import { PhoneModule } from './apis/phone/phone.module';
 import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
-import { productsImagesModule } from './apis/files/productsImages.module';
 import { PaymentModule } from './apis/payment/payment.module';
 import { ProductWishlistModule } from './apis/productsWishlists/productWishlist.module';
 import { AppController } from './app.controller';
+import { productsImagesModule } from './apis/productImages/productsImages.module';
 
 @Module({
   imports: [
@@ -65,7 +65,7 @@ import { AppController } from './app.controller';
     }),
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://10.6.144.3:6379',
+      url: 'redis://my-redis:6379',
       isGlobal: true,
     }),
   ],
