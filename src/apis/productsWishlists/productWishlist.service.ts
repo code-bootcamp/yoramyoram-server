@@ -22,24 +22,13 @@ export class ProductWishlistService {
     let checkDib = false;
     if (isDib) {
       //이미 찜목록에 있다면
-      if (isDib.isDib) {
-        //true라면
-        await this.productWishlistRepository.save({
-          productwishlist_id: isDib.productwishlist_id,
-          product: { product_id: productId },
-          user: { id: userId },
-          isDib: false,
-        });
-        checkDib = false;
-      } else {
-        await this.productWishlistRepository.save({
-          productwishlist_id: isDib.productwishlist_id,
-          product: { product_id: productId },
-          user: { id: userId },
-          isDib: true,
-        });
-        checkDib = true;
-      }
+      await this.productWishlistRepository.save({
+        productwishlist_id: isDib.productwishlist_id,
+        product: { product_id: productId },
+        user: { id: userId },
+        isDib: isDib.isDib ? false : true,
+      });
+      checkDib = isDib.isDib ? false : true;
     } else {
       //처음클릭이라면
       await this.productWishlistRepository.save({
@@ -54,13 +43,5 @@ export class ProductWishlistService {
 
   findAll(): Promise<ProductWishlist[]> {
     return this.productWishlistRepository.find({});
-  }
-
-  //-------------------------*삭제*----------------------------//
-  async delete({ productWishlistId }) {
-    const result = await this.productWishlistRepository.softDelete({
-      isDib: productWishlistId,
-    });
-    return result.affected ? true : false;
   }
 }
