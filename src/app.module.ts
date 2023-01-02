@@ -13,12 +13,14 @@ import { PhoneModule } from './apis/phone/phone.module';
 import { JwtAccessStrategy } from './commons/auth/jwt-access.strategy';
 import { JwtRefreshStrategy } from './commons/auth/jwt-refresh.strategy';
 import * as redisStore from 'cache-manager-redis-store';
+import { productsImagesModule } from './apis/files/productsImages.module';
 import { PaymentModule } from './apis/payment/payment.module';
 import { ProductWishlistModule } from './apis/productsWishlists/productWishlist.module';
 import { AppController } from './app.controller';
 
 @Module({
   imports: [
+    productsImagesModule,
     CommentsModule,
     ProductsModule,
     AuthModule,
