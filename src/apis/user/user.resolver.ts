@@ -41,7 +41,7 @@ export class UsersResolver {
 
   // ---- 비밀번호 찾기 휴대폰 인증 ----
   @Mutation(() => String)
-  async findUerPassword(
+  async findUserPassword(
     @Args('name') name: string,
     @Args('phone') phone: string,
     @Args('email') email: string,

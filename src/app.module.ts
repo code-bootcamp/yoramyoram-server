@@ -16,6 +16,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import { PaymentModule } from './apis/payment/payment.module';
 import { ProductWishlistModule } from './apis/productsWishlists/productWishlist.module';
 import { AppController } from './app.controller';
+import { ProductCartModule } from './apis/productsCart/productCart.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AppController } from './app.controller';
     AuthModule,
     ProductsCategoriesModule,
     ProductWishlistModule,
+    ProductCartModule,
     UsersModule,
     PhoneModule,
     PaymentModule,
@@ -63,7 +65,8 @@ import { AppController } from './app.controller';
     }),
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://10.6.144.3:6379',
+      //  url: 'redis://10.6.144.3:6379',
+      url: 'redis://my-redis:6379',
       isGlobal: true,
     }),
   ],
