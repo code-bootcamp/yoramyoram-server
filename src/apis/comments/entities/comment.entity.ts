@@ -48,6 +48,11 @@ export class Comment {
   @Field(() => User)
   user: User;
 
+  @JoinColumn()
+  @ManyToOne(() => Product)
+  @Field(() => Product)
+  product: Product;
+
   //payment테이블 만들면 그때 원투원으로 관계만들기
   @JoinColumn()
   @OneToOne(() => Payment)
