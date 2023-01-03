@@ -9,6 +9,7 @@ import {
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
 import { Comment } from '../comments/entities/comment.entity';
+import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 
 @Injectable()
 export class ProductsService {
@@ -22,6 +23,9 @@ export class ProductsService {
 
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+
+    @InjectRepository(ProductWishlist)
+    private readonly productWishListRepository: Repository<ProductWishlist>,
   ) {}
 
   //-------------------------*조회*----------------------------//
@@ -99,6 +103,7 @@ export class ProductsService {
     });
     return result;
   }
+
   //-------------------------*생성*----------------------------//
   async create({
     createProductInput,

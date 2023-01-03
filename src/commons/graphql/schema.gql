@@ -44,6 +44,8 @@ type Product {
   product_id: String!
   name: String!
   price: Int!
+  wishListCount: Int!
+  commentCount: Int!
   description: String!
   createdAt: DateTime!
   isDeleted: Boolean!

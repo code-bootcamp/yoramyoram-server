@@ -80,6 +80,12 @@ export class CommentsService {
       user: { id: userId },
     });
 
+    await this.productsRepository.save({
+      //상품평 작성하면 상품에 상품평count +1
+      product_id: productId,
+      commentCount: product.commentCount + 1,
+    });
+
     return result;
   }
 
