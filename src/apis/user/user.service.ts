@@ -20,8 +20,13 @@ export class UsersService {
       where: { email: email },
     });
 
+    const isphone = await this.userRepository.findOne({
+      where: { phone: phone },
+    });
     if (user) throw new ConflictException('이미 등록된 이메일입니다!');
-    //중복 휴대폰으로 가입한 사람 있을시 에러
+
+    if (isphone) throw new ConflictException('이미 등록된 전화번호 입니다!');
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     return await this.userRepository.save({
