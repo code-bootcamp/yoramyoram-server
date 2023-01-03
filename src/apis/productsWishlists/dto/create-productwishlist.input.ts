@@ -3,8 +3,8 @@ import { InputType, Field, Int } from '@nestjs/graphql';
 @InputType()
 export class CreateProductWishInput {
   @Field(() => String)
-  product: string;
+  productId: string;
 
   @Field(() => String)
-  user: string;
+  userId: string;
 }

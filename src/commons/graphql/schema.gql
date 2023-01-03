@@ -34,12 +34,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type ProductTag {
-  id: String!
-  name: String!
-  products: [Product!]!
-}
-
 type ProductCategory {
   category_id: String!
   category: String!
@@ -49,12 +43,13 @@ type Product {
   product_id: String!
   name: String!
   price: Int!
+  wishListCount: Int!
+  commentCount: Int!
   description: String!
   createdAt: DateTime!
   isDeleted: Boolean!
   productCategory: ProductCategory!
   payment: Payment!
-  productTags: [ProductTag!]!
 }
 
 type Comment {
@@ -65,11 +60,17 @@ type Comment {
   createdAt: DateTime!
   isDeleted: Boolean!
   user: User!
-  payment: Payment!
+
+
+
+  product: Product!
+  paymnet: Payment!
+
 }
 
 type ProductWishlist {
   productwishlist_id: String!
+  isDib: Boolean!
   user: User!
   product: Product!
 }
@@ -90,12 +91,17 @@ type Query {
   searchProducts(word: String!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
+  sortByPriceASC: [Product!]!
+  sortByPriceDESC: [Product!]!
+  sortByCommentsASC: [Product!]!
+  sortByCommentsDESC: [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
 }
 
 type Mutation {
+  uploadImage(images: [Upload!]!): [String!]!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   udpateComment(commentId: String!, updateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
@@ -106,10 +112,14 @@ type Mutation {
   restoreAccessToken: String!
   logout: String!
   createProductCategory(name: String!): ProductCategory!
+
   addWishlist(userID: String!, productID: String!): ProductWishlist!
   deleteMyWishlist(ProductWishlistId: String!): Boolean!
   createProductCart(productId: String!): ProductCart!
   deleteProductCart(productId: String!): ProductCart!
+
+  addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
+
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
@@ -119,6 +129,9 @@ type Mutation {
   createPayment(impUid: String!, point: Int!): Payment!
   canclePayment(impUid: String!, point: Int!): Payment!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input CreateCommentInput {
   title: String!
@@ -150,6 +163,11 @@ input UpdateProductInput {
   description: String
   productCategoryId: String
   productTags: [String!]
+}
+
+input CreateProductWishInput {
+  productId: String!
+  userId: String!
 }
 
 input CreateUserInput {

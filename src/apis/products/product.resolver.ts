@@ -1,4 +1,5 @@
-import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
+import { ConsoleLogger } from '@nestjs/common';
+import { Args, Mutation, Resolver, Query, Int } from '@nestjs/graphql';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { Product } from './entities/product.entity';
@@ -29,6 +30,26 @@ export class ProductsResolver {
   @Query(() => [Product])
   fetchProductsWithDeleted(): Promise<Product[]> {
     return this.productsService.findAllWithDelete();
+  }
+
+  @Query(() => [Product])
+  sortByPriceASC() {
+    return this.productsService.sortByPriceASC();
+  }
+
+  @Query(() => [Product])
+  sortByPriceDESC() {
+    return this.productsService.sortByPriceDESC();
+  }
+
+  @Query(() => [Product])
+  sortByCommentsASC() {
+    return this.productsService.sortByCommentsASC();
+  }
+
+  @Query(() => [Product])
+  sortByCommentsDESC() {
+    return this.productsService.sortByCommentsDESC();
   }
 
   //-------------------------*생성*----------------------------//
