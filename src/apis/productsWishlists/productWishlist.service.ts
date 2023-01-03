@@ -1,11 +1,15 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Product } from '../products/entities/product.entity';
 import { ProductWishlist } from './entities/productWishlist.entity';
 
 export class ProductWishlistService {
   constructor(
     @InjectRepository(ProductWishlist)
     private readonly productWishlistRepository: Repository<ProductWishlist>,
+
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   async createWish({ createProductWishInput }) {
@@ -37,6 +41,21 @@ export class ProductWishlistService {
         isDib: true,
       });
       checkDib = true;
+    }
+
+    const product = await this.productRepository.findOne({
+      where: { product_id: productId },
+    });
+    if (checkDib) {
+      await this.productRepository.save({
+        product_id: productId,
+        wishListCount: product.wishListCount + 1,
+      });
+    } else {
+      await this.productRepository.save({
+        product_id: productId,
+        wishListCount: product.wishListCount - 1,
+      });
     }
     return checkDib;
   }
