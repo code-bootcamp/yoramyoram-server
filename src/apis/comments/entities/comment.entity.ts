@@ -57,5 +57,5 @@ export class Comment {
   @JoinColumn()
   @OneToOne(() => Payment)
   @Field(() => Payment)
-  paymnet: Payment;
+  payment: Payment;
 }

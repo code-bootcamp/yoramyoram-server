@@ -9,7 +9,6 @@ type User {
   phone: String!
   address: String!
   add_detail: String!
-  birth: String!
   point: Int!
 }
 
@@ -61,13 +60,25 @@ type Comment {
   createdAt: DateTime!
   isDeleted: Boolean!
   user: User!
+
+
+
   product: Product!
   paymnet: Payment!
+
 }
 
 type ProductWishlist {
   productwishlist_id: String!
   isDib: Boolean!
+  user: User!
+  product: Product!
+}
+
+type ProductCart {
+  id: String!
+  createdAt: DateTime!
+  quantity: Int!
   user: User!
   product: Product!
 }
@@ -85,6 +96,7 @@ type Query {
   sortByCommentsASC: [Product!]!
   sortByCommentsDESC: [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
+  fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
 }
 
@@ -100,9 +112,16 @@ type Mutation {
   restoreAccessToken: String!
   logout: String!
   createProductCategory(name: String!): ProductCategory!
+
+  addWishlist(userID: String!, productID: String!): ProductWishlist!
+  deleteMyWishlist(ProductWishlistId: String!): Boolean!
+  createProductCart(productId: String!): ProductCart!
+  deleteProductCart(productId: String!): ProductCart!
+
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
+
   createUser(createUserInput: CreateUserInput!): User!
-  findUerPassword(name: String!, phone: String!, email: String!, token: String!): String!
+  findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
   deleteUser(userId: String!): Boolean!
   sendTokentoPhone(phone: String!): String!
@@ -158,5 +177,4 @@ input CreateUserInput {
   address: String!
   password: String!
   add_detail: String!
-  birth: String!
 }
