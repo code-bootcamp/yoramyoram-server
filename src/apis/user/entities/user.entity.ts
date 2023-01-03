@@ -37,9 +37,9 @@ export class User {
   @Field(() => String)
   add_detail: string;
 
-  @Column()
-  @Field(() => String)
-  birth: string;
+  // @Column()
+  // @Field(() => String)
+  // birth: string;
 
   @DeleteDateColumn()
   // @Field(() => Date)

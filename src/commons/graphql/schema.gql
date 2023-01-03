@@ -9,7 +9,6 @@ type User {
   phone: String!
   address: String!
   add_detail: String!
-  birth: String!
   point: Int!
 }
 
@@ -66,11 +65,19 @@ type Comment {
   createdAt: DateTime!
   isDeleted: Boolean!
   user: User!
-  paymnet: Payment!
+  payment: Payment!
 }
 
 type ProductWishlist {
   productwishlist_id: String!
+  user: User!
+  product: Product!
+}
+
+type ProductCart {
+  id: String!
+  createdAt: DateTime!
+  quantity: Int!
   user: User!
   product: Product!
 }
@@ -84,6 +91,7 @@ type Query {
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
+  fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
 }
 
@@ -100,8 +108,10 @@ type Mutation {
   createProductCategory(name: String!): ProductCategory!
   addWishlist(userID: String!, productID: String!): ProductWishlist!
   deleteMyWishlist(ProductWishlistId: String!): Boolean!
+  createProductCart(productId: String!): ProductCart!
+  deleteProductCart(productId: String!): ProductCart!
   createUser(createUserInput: CreateUserInput!): User!
-  findUerPassword(name: String!, phone: String!, email: String!, token: String!): String!
+  findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
   deleteUser(userId: String!): Boolean!
   sendTokentoPhone(phone: String!): String!
@@ -149,5 +159,4 @@ input CreateUserInput {
   address: String!
   password: String!
   add_detail: String!
-  birth: String!
 }
