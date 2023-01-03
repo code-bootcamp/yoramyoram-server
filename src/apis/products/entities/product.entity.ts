@@ -28,6 +28,14 @@ export class Product {
   price: number;
 
   @Column()
+  @Field(() => Int)
+  wishListCount: number;
+
+  @Column()
+  @Field(() => Int)
+  commentCount: number;
+
+  @Column()
   @Field(() => String)
   description: string;
 
