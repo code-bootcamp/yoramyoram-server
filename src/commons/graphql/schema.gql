@@ -95,6 +95,8 @@ type Query {
   sortByPriceDESC: [Product!]!
   sortByCommentsASC: [Product!]!
   sortByCommentsDESC: [Product!]!
+  sortByCreatedAtASC: [Product!]!
+  sortByCreatedAtDESC: [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!

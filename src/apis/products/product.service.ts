@@ -104,6 +104,23 @@ export class ProductsService {
     return result;
   }
 
+  async sortByCreatedAtASC() {
+    const list = await this.productsRepository
+      .createQueryBuilder()
+      .orderBy('createdAt', 'ASC')
+      .getMany();
+    return list;
+  }
+
+  async sortByCreatedAtDESC() {
+    const list = await this.productsRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+    return list;
+  }
+
   //-------------------------*생성*----------------------------//
   async create({
     createProductInput,
