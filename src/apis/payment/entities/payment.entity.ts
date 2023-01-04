@@ -37,7 +37,6 @@ export class Payment {
   @Field(() => PAYMENT_STATUS_ENUM)
   status: string;
 
-  //임포트 아이디가 얼마를 결재했는지 가격
   @Column()
   @Field(() => Int)
   point: number;
