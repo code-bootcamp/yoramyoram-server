@@ -36,7 +36,6 @@ export class UsersService {
       password: hashedPassword,
       address,
       add_detail,
-      birth,
     });
   }
 
