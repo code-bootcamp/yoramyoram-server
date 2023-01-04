@@ -10,7 +10,7 @@ export class ProductsImagesService {
     const bucket = process.env.GCP_BUCKET_NAME;
     const storage = new Storage({
       projectId: process.env.GCP_PROJECT_ID,
-      keyFilename: 'gcp-file-storage.json',
+      keyFilename: '/my-secret/gcp-file-storage.json',
     }).bucket(bucket);
 
     const results = await Promise.all(
