@@ -52,6 +52,16 @@ export class ProductsResolver {
     return this.productsService.sortByCommentsDESC();
   }
 
+  @Query(() => [Product])
+  sortByCreatedAtASC() {
+    return this.productsService.sortByCreatedAtASC();
+  }
+
+  @Query(() => [Product])
+  sortByCreatedAtDESC() {
+    return this.productsService.sortByCreatedAtDESC();
+  }
+
   //-------------------------*생성*----------------------------//
   @Mutation(() => Product)
   createProduct(
