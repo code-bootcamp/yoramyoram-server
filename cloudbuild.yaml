@@ -19,4 +19,4 @@ steps:
       - yoramyoram-sha256-1=asia.gcr.io/yoramyoram-373201/yoramyoram:0.7
     env:
       - CLOUDSDK_COMPUTE_ZONE=asia-northeast3
-      - CLOUD_CONTAINER_CLUSTER=autopilot-cluster-1
+      - CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1
