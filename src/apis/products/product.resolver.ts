@@ -12,6 +12,7 @@ export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
 
   //-------------------------*조회*----------------------------//
+
   @Query(() => [Product])
   fetchProducts(): Promise<Product[]> {
     return this.productsService.findAll();

@@ -46,8 +46,11 @@ type Product {
   wishListCount: Int!
   commentCount: Int!
   description: String!
-  createdAt: DateTime!
-  isDeleted: Boolean!
+  etc1Name: String!
+  etc1Value: String!
+  etc2Name: String!
+  etc2Value: String!
+  detailContent: String!
   productCategory: ProductCategory!
   payment: Payment!
 }
@@ -145,6 +148,11 @@ input CreateProductInput {
   name: String!
   price: Int!
   description: String!
+  etc1Name: String!
+  etc1Value: String!
+  etc2Name: String!
+  etc2Value: String!
+  detailContent: String!
   productCategoryId: String!
 }
 
@@ -152,6 +160,11 @@ input UpdateProductInput {
   name: String
   price: Int
   description: String
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
+  detailContent: String
   productCategoryId: String
 }
 
