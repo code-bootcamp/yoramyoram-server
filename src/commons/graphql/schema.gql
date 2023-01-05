@@ -60,12 +60,8 @@ type Comment {
   createdAt: DateTime!
   isDeleted: Boolean!
   user: User!
-
-
-
   product: Product!
-  paymnet: Payment!
-
+  payment: Payment!
 }
 
 type ProductWishlist {
@@ -100,6 +96,7 @@ type Query {
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
+  fetchLoginUser: User!
 }
 
 type Mutation {
@@ -114,18 +111,13 @@ type Mutation {
   restoreAccessToken: String!
   logout: String!
   createProductCategory(name: String!): ProductCategory!
-
-  addWishlist(userID: String!, productID: String!): ProductWishlist!
-  deleteMyWishlist(ProductWishlistId: String!): Boolean!
+  addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
   createProductCart(productId: String!): ProductCart!
   deleteProductCart(productId: String!): ProductCart!
-
-  addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
-
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
-  deleteUser(userId: String!): Boolean!
+  deleteUser: Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
   createPayment(impUid: String!, point: Int!): Payment!
@@ -140,7 +132,6 @@ input CreateCommentInput {
   star: Int!
   content: String!
   productId: String!
-  userId: String!
 }
 
 input UpdateCommentInput {
@@ -148,7 +139,6 @@ input UpdateCommentInput {
   star: Int
   content: String
   productId: String
-  userId: String
 }
 
 input CreateProductInput {
@@ -156,7 +146,6 @@ input CreateProductInput {
   price: Int!
   description: String!
   productCategoryId: String!
-  productTags: [String!]!
 }
 
 input UpdateProductInput {
@@ -164,7 +153,6 @@ input UpdateProductInput {
   price: Int
   description: String
   productCategoryId: String
-  productTags: [String!]
 }
 
 input CreateProductWishInput {

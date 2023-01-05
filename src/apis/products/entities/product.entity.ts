@@ -27,11 +27,11 @@ export class Product {
   @Field(() => Int)
   price: number;
 
-  @Column()
+  @Column({ default: 0 })
   @Field(() => Int)
   wishListCount: number;
 
-  @Column()
+  @Column({ default: 0 })
   @Field(() => Int)
   commentCount: number;
 
