@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Payment } from 'src/apis/payment/entities/payment.entity';
 import {
   Entity,
   Column,
@@ -6,6 +7,8 @@ import {
   DeleteDateColumn,
   ManyToOne,
   CreateDateColumn,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm';
 import { ProductCategory } from '../../productsCategories/entities/productCategory.entity';
 
@@ -23,6 +26,14 @@ export class Product {
   @Column()
   @Field(() => Int)
   price: number;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  wishListCount: number;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  commentCount: number;
 
   @Column()
   @Field(() => String)
@@ -42,4 +53,8 @@ export class Product {
   @ManyToOne(() => ProductCategory)
   @Field(() => ProductCategory)
   productCategory: ProductCategory;
+
+  @ManyToOne(() => Payment)
+  @Field(() => Payment)
+  payment: Payment;
 }

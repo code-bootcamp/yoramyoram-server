@@ -44,9 +44,10 @@ export class CommentsService {
 
   //-------------------------*생성*----------------------------//
   async create({
+    userId,
     createCommentInput,
   }: ICommentsServiceCreate): Promise<Comment> {
-    const { productId, userId } = createCommentInput;
+    const { productId } = createCommentInput;
 
     const product = await this.productsRepository.findOne({
       where: { product_id: productId },
@@ -80,6 +81,12 @@ export class CommentsService {
       user: { id: userId },
     });
 
+    await this.productsRepository.save({
+      //상품평 작성하면 상품에 상품평count +1
+      product_id: productId,
+      commentCount: product.commentCount + 1,
+    });
+
     return result;
   }
 
@@ -99,10 +106,12 @@ export class CommentsService {
   //-------------------------*업데이트*-----------------//
   update({
     comment,
+    userId,
     updateCommentInput,
   }: ICommentsServiceUpdate): Promise<Comment> {
     const result = this.commentsRepository.save({
       ...comment,
+      userId,
       ...updateCommentInput,
     });
 
