@@ -19,7 +19,4 @@ export class CreateUserInput {
 
   @Field(() => String)
   add_detail: string;
-
-  // @Field(() => String)
-  // birth: string;
 }
