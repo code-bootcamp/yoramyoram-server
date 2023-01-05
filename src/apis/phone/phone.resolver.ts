@@ -29,7 +29,7 @@ export class PhoneResolver {
       const Token = this.phoneService.createToken();
 
       const sendToken = this.phoneService.sendToken({ phone, Token });
-      await this.cacheManager.set(phone, Token, 300);
+      await this.cacheManager.set(phone, Token, 180);
       this.cacheManager.get(phone).then((res) => console.log(res));
 
       return `${sendToken}`;
@@ -51,7 +51,7 @@ export class PhoneResolver {
       if (cachePhoneToken === phoneToken) {
         return '인증이 완료 되었습니다!';
       }
-      await this.cacheManager.set(phone, phoneToken, 800);
+      await this.cacheManager.set(phone, phoneToken, 180);
 
       this.cacheManager.get(phone).then((res) => console.log(res));
     } catch (error) {
