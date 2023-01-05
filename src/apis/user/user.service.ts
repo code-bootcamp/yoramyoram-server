@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   async create({ createUserInput }) {
-    const { name, email, phone, password, address, add_detail, birth } =
+    const { name, email, phone, password, address, add_detail } =
       createUserInput;
     const user = await this.userRepository.findOne({
       where: { email: email },
@@ -25,7 +25,7 @@ export class UsersService {
     });
     if (user) throw new ConflictException('이미 등록된 이메일입니다!');
 
-    if (isphone) throw new ConflictException('이미 등록된 전화번호 입니다!');
+    // if (isphone) throw new ConflictException('이미 등록된 전화번호 입니다!');
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
