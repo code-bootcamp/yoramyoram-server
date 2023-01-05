@@ -99,6 +99,7 @@ type Query {
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
+  fetchLoginUser: User!
 }
 
 type Mutation {
@@ -119,7 +120,7 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
-  deleteUser(userId: String!): Boolean!
+  deleteUser: Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
   createPayment(impUid: String!, point: Int!): Payment!
@@ -134,7 +135,6 @@ input CreateCommentInput {
   star: Int!
   content: String!
   productId: String!
-  userId: String!
 }
 
 input UpdateCommentInput {
@@ -142,7 +142,6 @@ input UpdateCommentInput {
   star: Int
   content: String
   productId: String
-  userId: String
 }
 
 input CreateProductInput {

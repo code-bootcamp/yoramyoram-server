@@ -1,5 +1,7 @@
-import { ConsoleLogger } from '@nestjs/common';
-import { Args, Mutation, Resolver, Query, Int } from '@nestjs/graphql';
+import { ConsoleLogger, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Resolver, Query, Int, Context } from '@nestjs/graphql';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { Product } from './entities/product.entity';
@@ -66,17 +68,20 @@ export class ProductsResolver {
   //-------------------------*생성*----------------------------//
   @Mutation(() => Product)
   createProduct(
+    @Context() context: IContext,
     @Args('createProductInput') createProductInput: CreateProductInput,
   ): Promise<Product> {
     return this.productsService.create({ createProductInput });
   }
-
   //-------------------------*삭제*----------------------------//
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteProduct(
+    @Context() context: IContext,
     @Args('productId') productId: string, //
   ) {
-    return this.productsService.delete({ productId });
+    const user = context.req.user;
+    return this.productsService.delete({ user, productId });
   }
 
   //-------------------------*업데이트*----------------------------//

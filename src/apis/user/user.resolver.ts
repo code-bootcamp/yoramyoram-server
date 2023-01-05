@@ -2,7 +2,12 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import { UsersService } from './user.service';
-import { CACHE_MANAGER, Inject, UseGuards } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  ConsoleLogger,
+  Inject,
+  UseGuards,
+} from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -39,6 +44,15 @@ export class UsersResolver {
     return await this.userSerivice.findOneEmail({ name, phone });
   }
 
+  // ---- 로그인 유저정보 보기 ----
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => User)
+  fetchLoginUser(@Context() context: IContext) {
+    console.log(context.req.user);
+    console.log(context.req.user.email);
+    return this.userSerivice.findLogin({ context });
+  }
+
   // ---- 비밀번호 찾기 휴대폰 인증 ----
   @Mutation(() => String)
   async findUserPassword(
@@ -72,10 +86,12 @@ export class UsersResolver {
   }
 
   // ---- 회원 삭제 ----
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteUser(
-    @Args('userId') userId: string, //
+    @Context() context: IContext, //
   ) {
+    const userId = context.req.user.id;
     return this.userSerivice.delete({ userId });
   }
 }
