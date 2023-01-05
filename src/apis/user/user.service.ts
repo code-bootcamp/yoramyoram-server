@@ -20,7 +20,12 @@ export class UsersService {
       where: { email: email },
     });
 
+    const isphone = await this.userRepository.findOne({
+      where: { phone: phone },
+    });
     if (user) throw new ConflictException('이미 등록된 이메일입니다!');
+
+    if (isphone) throw new ConflictException('이미 등록된 전화번호 입니다!');
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -31,11 +36,10 @@ export class UsersService {
       password: hashedPassword,
       address,
       add_detail,
-      birth,
     });
   }
 
-  async emailFindOne({ name, phone }) {
+  async findOneEmail({ name, phone }) {
     console.log(name, phone);
     const userId = await this.userRepository.findOne({
       where: { phone },
@@ -68,6 +72,35 @@ export class UsersService {
     return await this.userRepository.findOne({
       where: {
         phone: phone,
+      },
+    });
+  }
+
+  async findOnePassword({ name, email }) {
+    return await this.userRepository.findOne({
+      where: { name: name, email: email },
+    });
+  }
+
+  async updatePassword({ password, phone }) {
+    // const user = await this.userRepository.findOne({ where: { phone: phone } });
+
+    const hashedpassword = await bcrypt.hash(password, 10);
+    try {
+      await this.userRepository.update(
+        { phone: phone },
+        { password: hashedpassword },
+      );
+      return '비밀번호 재설정이 성공하였습니다';
+    } catch (error) {
+      throw new ConflictException('비밀번호 재설정이 실패하였습니다');
+    }
+  }
+
+  findLogin({ context }) {
+    return this.userRepository.findOne({
+      where: {
+        email: context.req.user.email,
       },
     });
   }

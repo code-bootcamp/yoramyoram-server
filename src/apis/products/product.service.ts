@@ -1,6 +1,6 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import {
   IProductsServiceCreate,
@@ -8,6 +8,8 @@ import {
   IProductsServiceUpdate,
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
+import { Comment } from '../comments/entities/comment.entity';
+import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 
 @Injectable()
 export class ProductsService {
@@ -18,27 +20,105 @@ export class ProductsService {
 
     @InjectRepository(ProductCategory)
     private readonly productsCategoriesRepository: Repository<ProductCategory>,
+
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
+
+    @InjectRepository(ProductWishlist)
+    private readonly productWishListRepository: Repository<ProductWishlist>,
   ) {}
 
   //-------------------------*조회*----------------------------//
   findAll(): Promise<Product[]> {
     return this.productsRepository.find({
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productTags'],
+    });
+  }
+
+  async searchAll({ word }): Promise<Product[]> {
+    return await this.productsRepository.findBy({
+      name: Like(`%${word}%`),
     });
   }
 
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productTags'],
     });
   }
 
   findAllWithDelete(): Promise<Product[]> {
-    return this.productsRepository
+    return this.productsRepository.createQueryBuilder().withDeleted().getMany();
+  }
+
+  async sortByPriceASC() {
+    const list = await this.productsRepository.find({
+      order: {
+        price: 'ASC',
+      },
+    });
+    return list;
+  }
+
+  async sortByPriceDESC() {
+    const list = await this.productsRepository.find({
+      order: {
+        price: 'DESC',
+      },
+    });
+    return list;
+  }
+
+  async sortByCommentsASC() {
+    const ManyComments = await this.commentRepository
       .createQueryBuilder()
-      .withDeleted() // 넣어주면 가져옴
+      .select('productProductId, COUNT(productProductId) AS ManyComments')
+      .groupBy('productProductId')
+      .orderBy('ManyComments', 'ASC')
+      .getRawMany();
+
+    const result = ManyComments.map(async (el) => {
+      return this.productsRepository.findOne({
+        where: { product_id: el.productProductId },
+        relations: ['productCategory', 'productTags'],
+      });
+    });
+    return result;
+  }
+
+  async sortByCommentsDESC() {
+    const ManyComments = await this.commentRepository
+      .createQueryBuilder()
+      .select('productProductId, COUNT(productProductId) AS ManyComments')
+      .groupBy('productProductId')
+      .orderBy('ManyComments', 'DESC')
+      .getRawMany();
+
+    const result = ManyComments.map(async (el) => {
+      return this.productsRepository.findOne({
+        where: { product_id: el.productProductId },
+        relations: ['productCategory', 'productTags'],
+      });
+    });
+    return result;
+  }
+
+  async sortByCreatedAtASC() {
+    const list = await this.productsRepository
+      .createQueryBuilder()
+      .orderBy('createdAt', 'ASC')
       .getMany();
+    return list;
+  }
+
+  async sortByCreatedAtDESC() {
+    const list = await this.productsRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+    return list;
   }
 
   //-------------------------*생성*----------------------------//
@@ -65,7 +145,7 @@ export class ProductsService {
   }
 
   //-------------------------*삭제*----------------------------//
-  async delete({ productId }) {
+  async delete({ user, productId }) {
     const result = await this.productsRepository.softDelete({
       product_id: productId,
     });
@@ -73,15 +153,20 @@ export class ProductsService {
   }
 
   //-------------------------*업데이트*-----------------//
-  update({
-    product,
-    updateProductInput,
-  }: IProductsServiceUpdate): Promise<Product> {
+  async update({ product, updateProductInput }: IProductsServiceUpdate) {
+    const { productCategoryId, ...products } = updateProductInput;
+    const categoryResult = await this.productsCategoriesRepository.findOne({
+      where: {
+        category_id: productCategoryId,
+      },
+    });
     const result = this.productsRepository.save({
       ...product,
-      ...updateProductInput,
+      productCategory: {
+        ...categoryResult,
+      },
+      ...products,
     });
-
     return result;
   }
 }

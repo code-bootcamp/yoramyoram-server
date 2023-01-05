@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   DeleteDateColumn,
@@ -37,11 +37,15 @@ export class User {
   @Field(() => String)
   add_detail: string;
 
-  @Column()
-  @Field(() => String)
-  birth: string;
+  // @Column()
+  // @Field(() => String)
+  // birth: string;
 
   @DeleteDateColumn()
   // @Field(() => Date)
   deleteAt: Date;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  point: number;
 }

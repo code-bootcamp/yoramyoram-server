@@ -14,6 +14,6 @@ export class CreateCommentInput {
   @Field(() => String)
   productId: string;
 
-  @Field(() => String)
-  userId: string;
+  // @Field(() => String)
+  // paymentId: string;
 }
