@@ -16,7 +16,7 @@ steps:
       - set
       - image
       - deployment/yoramyoram-nestjs
-      - yoramyoram-sha256-1=asia.gcr.io/yoramyoram-373201/yoramyoram:0.4
+      - yoramyoram-sha256-1=asia.gcr.io/yoramyoram-373201/yoramyoram:0.6
     env:
       - CLOUDSDK_COMPUTE_ZONE=asia-northeast3
       - CLOUD_CONTAINER_CLUSTER=autopilot-cluster-1
