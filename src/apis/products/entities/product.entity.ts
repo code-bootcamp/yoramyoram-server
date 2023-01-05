@@ -27,11 +27,11 @@ export class Product {
   @Field(() => Int)
   price: number;
 
-  @Column()
+  @Column({ default: 0 })
   @Field(() => Int)
   wishListCount: number;
 
-  @Column()
+  @Column({ default: 0 })
   @Field(() => Int)
   commentCount: number;
 
@@ -39,15 +39,35 @@ export class Product {
   @Field(() => String)
   description: string;
 
+  @Column()
+  @Field(() => String)
+  etc1Name: string;
+
+  @Column()
+  @Field(() => String)
+  etc1Value: string;
+
+  @Column()
+  @Field(() => String)
+  etc2Name: string;
+
+  @Column()
+  @Field(() => String)
+  etc2Value: string;
+
+  @Column()
+  @Field(() => String)
+  detailContent: string;
+
   @DeleteDateColumn()
   deletedAt: Date;
 
   @CreateDateColumn()
-  @Field(() => Date)
+  // @Field(() => Date)
   createdAt: Date;
 
   @Column({ default: false })
-  @Field(() => Boolean)
+  // @Field(() => Boolean)
   isDeleted: boolean;
 
   @ManyToOne(() => ProductCategory)
