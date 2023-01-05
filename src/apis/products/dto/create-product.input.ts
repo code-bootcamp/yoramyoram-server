@@ -12,8 +12,20 @@ export class CreateProductInput {
   description: string;
 
   @Field(() => String)
-  productCategoryId: string;
+  etc1Name: string;
 
-  @Field(() => [String])
-  productTags: string[];
+  @Field(() => String)
+  etc1Value: string;
+
+  @Field(() => String)
+  etc2Name: string;
+
+  @Field(() => String)
+  etc2Value: string;
+
+  @Field(() => String)
+  detailContent: string;
+
+  @Field(() => String)
+  productCategoryId: string;
 }
