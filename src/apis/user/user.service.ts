@@ -96,4 +96,12 @@ export class UsersService {
       throw new ConflictException('비밀번호 재설정이 실패하였습니다');
     }
   }
+
+  findLogin({ context }) {
+    return this.userRepository.findOne({
+      where: {
+        email: context.req.user.email,
+      },
+    });
+  }
 }

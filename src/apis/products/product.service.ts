@@ -145,7 +145,7 @@ export class ProductsService {
   }
 
   //-------------------------*삭제*----------------------------//
-  async delete({ productId }) {
+  async delete({ user, productId }) {
     const result = await this.productsRepository.softDelete({
       product_id: productId,
     });
