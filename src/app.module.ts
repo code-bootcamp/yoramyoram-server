@@ -71,7 +71,7 @@ import { productsImagesModule } from './apis/productImages/productsImages.module
       store: redisStore,
 
       url: 'redis://10.6.144.3:6379',
-      //url: 'redis://my-redis:6379',
+      // url: 'redis://my-redis:6379',
       isGlobal: true,
     }),
   ],
