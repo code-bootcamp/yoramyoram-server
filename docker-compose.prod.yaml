@@ -1,9 +1,10 @@
 version: '3.7'
 
 services:
-  #컴퓨터이름
+  
+  #set image deployment/yoramyoram-nestjs yoramyoram-sha256-1=asia.gcr.io/yoramyoram-373201/yoramyoram:0.6
   my-backend:
-    image: asia.gcr.io/yoramyoram-373201/yoramyoram:0.4
+    image: asia.gcr.io/yoramyoram-373201/yoramyoram:0.1.1
     platform: linux/x86_64
     build:
       context: .
