@@ -74,6 +74,16 @@ type ProductWishlist {
   product: Product!
 }
 
+type AdminUser {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  add_detail: String!
+  point: Int!
+}
+
 type ProductCart {
   id: String!
   createdAt: DateTime!
@@ -83,6 +93,7 @@ type ProductCart {
 }
 
 type Query {
+  fetchLoginAdminUser: AdminUser!
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchCommentsWithDeleted: [Comment!]!
@@ -98,11 +109,18 @@ type Query {
   sortByCreatedAtDESC: [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
-  findUserEmail(name: String!, phone: String!): String!
   fetchLoginUser: User!
 }
 
 type Mutation {
+  adminLogin(email: String!, password: String!): String!
+  restoreAccessToken: String!
+  logout: String!
+  createAdminUser(adminCreateUserInput: AdminCreateUserInput!): AdminUser!
+  findAdminUserEmail(name: String!, phone: String!): String!
+  findAdminUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
+  updateAdminPassword(password: String!, phone: String!): String!
+  deleteAdminUser: Boolean!
   uploadImage(images: [Upload!]!): [String!]!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   udpateComment(commentId: String!, updateCommentInput: UpdateCommentInput!): Comment!
@@ -111,13 +129,12 @@ type Mutation {
   deleteProduct(productId: String!): Boolean!
   updateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
   login(email: String!, password: String!): String!
-  restoreAccessToken: String!
-  logout: String!
   createProductCategory(name: String!): ProductCategory!
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
   createProductCart(productId: String!): ProductCart!
   deleteProductCart(productId: String!): ProductCart!
   createUser(createUserInput: CreateUserInput!): User!
+  findUserEmail(name: String!, phone: String!): String!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
   deleteUser: Boolean!
@@ -125,6 +142,15 @@ type Mutation {
   checkTokenPhone(phone: String!, phoneToken: String!): String!
   createPayment(impUid: String!, point: Int!): Payment!
   canclePayment(impUid: String!, point: Int!): Payment!
+}
+
+input AdminCreateUserInput {
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  password: String!
+  add_detail: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
