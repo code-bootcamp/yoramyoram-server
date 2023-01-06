@@ -31,7 +31,7 @@ export class ProductsService {
   //-------------------------*조회*----------------------------//
   findAll(): Promise<Product[]> {
     return this.productsRepository.find({
-      relations: ['productCategory', 'productTags'],
+      relations: ['productCategory'],
     });
   }
 
@@ -44,7 +44,7 @@ export class ProductsService {
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory', 'productTags'],
+      relations: ['productCategory'],
     });
   }
 
@@ -81,7 +81,7 @@ export class ProductsService {
     const result = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
         where: { product_id: el.productProductId },
-        relations: ['productCategory', 'productTags'],
+        relations: ['productCategory'],
       });
     });
     return result;
@@ -98,7 +98,7 @@ export class ProductsService {
     const result = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
         where: { product_id: el.productProductId },
-        relations: ['productCategory', 'productTags'],
+        relations: ['productCategory'],
       });
     });
     return result;
