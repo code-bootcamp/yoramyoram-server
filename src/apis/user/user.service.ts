@@ -48,7 +48,7 @@ export class UsersService {
     console.log(userId);
 
     if (userId.phone !== phone || userId.name !== name) {
-      return '가입한 이름과 다릅니다 ';
+      return '가입한 정보와 다릅니다 ';
     }
 
     return userId.email;
