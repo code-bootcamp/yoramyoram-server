@@ -86,16 +86,16 @@ type Query {
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchCommentsWithDeleted: [Comment!]!
-  fetchProducts: [Product!]!
-  searchProducts(word: String!): [Product!]!
+  fetchProducts(page: Float!): [Product!]!
+  searchProducts(word: String!, page: Float!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
-  sortByPriceASC: [Product!]!
-  sortByPriceDESC: [Product!]!
-  sortByCommentsASC: [Product!]!
-  sortByCommentsDESC: [Product!]!
-  sortByCreatedAtASC: [Product!]!
-  sortByCreatedAtDESC: [Product!]!
+  sortByPriceASC(page: Float!): [Product!]!
+  sortByPriceDESC(page: Float!): [Product!]!
+  sortByCommentsASC(page: Float!): [Product!]!
+  sortByCommentsDESC(page: Float!): [Product!]!
+  sortByCreatedAtASC(page: Float!): [Product!]!
+  sortByCreatedAtDESC(page: Float!): [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
