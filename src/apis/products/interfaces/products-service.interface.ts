@@ -5,6 +5,7 @@ import { Product } from '../entities/product.entity';
 
 export interface IProductsServiceCreate {
   createProductInput: CreateProductInput;
+  context: IContext;
 }
 
 export interface IProductsServiceFindOne {
@@ -14,5 +15,6 @@ export interface IProductsServiceFindOne {
 export interface IProductsServiceUpdate {
   product: Product;
   updateProductInput: UpdateProductInput;
+  context: IContext;
   // images: string[]
 }

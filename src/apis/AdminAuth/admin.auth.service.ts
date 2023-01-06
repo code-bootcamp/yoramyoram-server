@@ -1,19 +1,23 @@
 import { Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
-  IAuthServiceGetAccessToken,
-  IAuthServiceSetRefreshToken,
-} from './interfaces/auth-service.interface';
+  IAdminAuthServiceGetAccessToken,
+  IAdminAuthServiceSetRefreshToken,
+} from './interfaces/admin-auth-service.interface';
 
 @Injectable()
-export class AuthService {
+export class AdminAuthService {
   constructor(
     private readonly jwtService: JwtService, //
   ) {}
 
-  setRefreshToken({ user, res, req }: IAuthServiceSetRefreshToken): string {
+  setRefreshToken({
+    adminUser,
+    res,
+    req,
+  }: IAdminAuthServiceSetRefreshToken): string {
     const refreshToken = this.jwtService.sign(
-      { email: user.email, sub: user.id },
+      { email: adminUser.email, sub: adminUser.id },
       { secret: process.env.JWT_REFRESH_KEY, expiresIn: '2w' },
     );
 
@@ -41,10 +45,10 @@ export class AuthService {
     return refreshToken;
   }
 
-  getAccessToken({ user }: IAuthServiceGetAccessToken): string {
+  getAccessToken({ adminUser }: IAdminAuthServiceGetAccessToken): string {
     return this.jwtService.sign(
-      { email: user.email, sub: user.id },
-      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1h' },
+      { email: adminUser.email, sub: adminUser.id },
+      { secret: process.env.JWT_ADMIN_KEY, expiresIn: '1h' },
     );
   }
 }
