@@ -14,13 +14,16 @@ export class ProductsResolver {
   //-------------------------*조회*----------------------------//
 
   @Query(() => [Product])
-  fetchProducts(): Promise<Product[]> {
-    return this.productsService.findAll();
+  fetchProducts(@Args('page') page: number): Promise<Product[]> {
+    return this.productsService.findAll({ page });
   }
 
   @Query(() => [Product])
-  searchProducts(@Args('word') word: string): Promise<Product[]> {
-    return this.productsService.searchAll({ word });
+  searchProducts(
+    @Args('word') word: string,
+    @Args('page') page: number,
+  ): Promise<Product[]> {
+    return this.productsService.searchAll({ word, page });
   }
 
   //조회(한개)
@@ -36,33 +39,33 @@ export class ProductsResolver {
   }
 
   @Query(() => [Product])
-  sortByPriceASC() {
-    return this.productsService.sortByPriceASC();
+  sortByPriceASC(@Args('page') page: number) {
+    return this.productsService.sortByPriceASC({ page });
   }
 
   @Query(() => [Product])
-  sortByPriceDESC() {
-    return this.productsService.sortByPriceDESC();
+  sortByPriceDESC(@Args('page') page: number) {
+    return this.productsService.sortByPriceDESC({ page });
   }
 
   @Query(() => [Product])
-  sortByCommentsASC() {
-    return this.productsService.sortByCommentsASC();
+  sortByCommentsASC(@Args('page') page: number) {
+    return this.productsService.sortByCommentsASC({ page });
   }
 
   @Query(() => [Product])
-  sortByCommentsDESC() {
-    return this.productsService.sortByCommentsDESC();
+  sortByCommentsDESC(@Args('page') page: number) {
+    return this.productsService.sortByCommentsDESC({ page });
   }
 
   @Query(() => [Product])
-  sortByCreatedAtASC() {
-    return this.productsService.sortByCreatedAtASC();
+  sortByCreatedAtASC(@Args('page') page: number) {
+    return this.productsService.sortByCreatedAtASC({ page });
   }
 
   @Query(() => [Product])
-  sortByCreatedAtDESC() {
-    return this.productsService.sortByCreatedAtDESC();
+  sortByCreatedAtDESC(@Args('page') page: number) {
+    return this.productsService.sortByCreatedAtDESC({ page });
   }
 
   //-------------------------*생성*----------------------------//

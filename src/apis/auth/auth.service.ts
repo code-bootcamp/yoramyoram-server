@@ -35,7 +35,7 @@ export class AuthService {
     );
     res.setHeader(
       'Set-Cookie',
-      `refreshToken=${refreshToken}; path=/; domain=.yoramyoram.shop; SameSite=None; Secure; httpOnly;`,
+      `refreshToken=${refreshToken}; path=/; domain=.yoramyoram-backend.shop; SameSite=None; Secure; httpOnly;`,
     );
 
     return refreshToken;
@@ -44,7 +44,7 @@ export class AuthService {
   getAccessToken({ user }: IAuthServiceGetAccessToken): string {
     return this.jwtService.sign(
       { email: user.email, sub: user.id },
-      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1m' },
+      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1h' },
     );
   }
 }

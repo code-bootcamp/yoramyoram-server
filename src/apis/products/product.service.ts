@@ -29,22 +29,35 @@ export class ProductsService {
   ) {}
 
   //-------------------------*조회*----------------------------//
-  findAll(): Promise<Product[]> {
+  findAll({ page }): Promise<Product[]> {
     return this.productsRepository.find({
-      relations: ['productCategory', 'productTags'],
+      take: 10,
+      skip: (page - 1) * 10,
+      relations: ['productCategory'],
     });
   }
 
-  async searchAll({ word }): Promise<Product[]> {
-    return await this.productsRepository.findBy({
+  async searchAll({ word, page }): Promise<Product[]> {
+    const products = await this.productsRepository.findBy({
       name: Like(`%${word}%`),
     });
+
+    if (products.length > 10) {
+      const pageNum = Math.ceil(products.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = products.slice(i * 10, (i + 1) * 10);
+      }
+      console.log(result[0].length, result[1].length);
+      return result[page - 1];
+    }
+    return products;
   }
 
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory', 'productTags'],
+      relations: ['productCategory'],
     });
   }
 
@@ -52,8 +65,10 @@ export class ProductsService {
     return this.productsRepository.createQueryBuilder().withDeleted().getMany();
   }
 
-  async sortByPriceASC() {
+  async sortByPriceASC({ page }) {
     const list = await this.productsRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       order: {
         price: 'ASC',
       },
@@ -61,8 +76,10 @@ export class ProductsService {
     return list;
   }
 
-  async sortByPriceDESC() {
+  async sortByPriceDESC({ page }) {
     const list = await this.productsRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       order: {
         price: 'DESC',
       },
@@ -70,55 +87,91 @@ export class ProductsService {
     return list;
   }
 
-  async sortByCommentsASC() {
-    const ManyComments = await this.commentRepository
+  async sortByCommentsASC({ page }) {
+    const ManyComments = await this.productsRepository
       .createQueryBuilder()
-      .select('productProductId, COUNT(productProductId) AS ManyComments')
-      .groupBy('productProductId')
-      .orderBy('ManyComments', 'ASC')
+      .select('product_id, name, commentCount')
+      .take(10)
+      .skip((page - 1) * 10)
+      .groupBy('product_id')
+      .orderBy('commentCount', 'ASC')
+      .getRawMany();
+
+    const products = ManyComments.map(async (el) => {
+      return this.productsRepository.findOne({
+        where: { product_id: el.product_id },
+        relations: ['productCategory'],
+      });
+    });
+
+    if (products.length > 10) {
+      const pageNum = Math.ceil(products.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = products.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
+    return products;
+  }
+
+  async sortByCommentsDESC({ page }) {
+    const ManyComments = await this.productsRepository
+      .createQueryBuilder()
+      .select('product_id, name, commentCount')
+      .take(10)
+      .skip((page - 1) * 10)
+      .groupBy('product_id')
+      .orderBy('commentCount', 'DESC')
       .getRawMany();
 
     const result = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
-        where: { product_id: el.productProductId },
-        relations: ['productCategory', 'productTags'],
+        where: { product_id: el.product_id },
+        relations: ['productCategory'],
       });
     });
     return result;
   }
 
-  async sortByCommentsDESC() {
-    const ManyComments = await this.commentRepository
-      .createQueryBuilder()
-      .select('productProductId, COUNT(productProductId) AS ManyComments')
-      .groupBy('productProductId')
-      .orderBy('ManyComments', 'DESC')
-      .getRawMany();
-
-    const result = ManyComments.map(async (el) => {
-      return this.productsRepository.findOne({
-        where: { product_id: el.productProductId },
-        relations: ['productCategory', 'productTags'],
-      });
+  async sortByCreatedAtASC({ page }) {
+    const products = await this.productsRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
+      order: {
+        createdAt: 'ASC',
+      },
     });
-    return result;
+
+    if (products.length > 10) {
+      const pageNum = Math.ceil(products.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = products.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
+    return products;
   }
 
-  async sortByCreatedAtASC() {
-    const list = await this.productsRepository
-      .createQueryBuilder()
-      .orderBy('createdAt', 'ASC')
-      .getMany();
-    return list;
-  }
-
-  async sortByCreatedAtDESC() {
-    const list = await this.productsRepository.find({
+  async sortByCreatedAtDESC({ page }) {
+    const products = await this.productsRepository.find({
+      take: 10,
+      skip: (page - 1) * 10,
       order: {
         createdAt: 'DESC',
       },
     });
-    return list;
+
+    if (products.length > 10) {
+      const page = Math.ceil(products.length / 10);
+      const result = new Array(page);
+      for (let i = 0; i < page; i++) {
+        result[i] = products.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
+    return products;
   }
 
   //-------------------------*생성*----------------------------//
