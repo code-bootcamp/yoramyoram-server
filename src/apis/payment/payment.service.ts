@@ -93,7 +93,10 @@ export class PaymentService {
       await queryRunner.manager.update(
         Payment,
         { id: _user.id },
-        { point: user.point + point },
+        {
+          point: user.point + point,
+          YoramPoint: user.YoramPoint + point * 0.1,
+        },
       );
       await queryRunner.commitTransaction();
 
