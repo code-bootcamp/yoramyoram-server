@@ -13,10 +13,11 @@ export class AuthService {
 
   setRefreshToken({ user, res, req }: IAuthServiceSetRefreshToken): string {
     const refreshToken = this.jwtService.sign(
-      { email: user.email, sub: user.id },
+      { role: user.role, sub: user.id },
       { secret: process.env.JWT_REFRESH_KEY, expiresIn: '2w' },
     );
 
+    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
     const allowedOrigins = [
       'http://localhost:3000',
       'http://127.0.0.1:5500',
@@ -39,12 +40,13 @@ export class AuthService {
       `refreshToken=${refreshToken}; path=/; domain=.yoramyoram-backend.shop; SameSite=None; Secure; httpOnly;`,
     );
 
+    console.log(user.role);
     return refreshToken;
   }
 
   getAccessToken({ user }: IAuthServiceGetAccessToken): string {
     return this.jwtService.sign(
-      { email: user.email, sub: user.id },
+      { role: user.role, sub: user.id },
       { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1h' },
     );
   }

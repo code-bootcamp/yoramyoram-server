@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   async create({ createUserInput }) {
-    const { name, email, phone, password, address, add_detail } =
+    const { name, email, phone, password, address, add_detail, role } =
       createUserInput;
     const user = await this.userRepository.findOne({
       where: { email: email },
@@ -36,6 +36,7 @@ export class UsersService {
       password: hashedPassword,
       address,
       add_detail,
+      role,
     });
   }
 
