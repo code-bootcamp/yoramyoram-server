@@ -21,9 +21,13 @@ import { ProductCartModule } from './apis/productsCart/productCart.module';
 
 import { productsImagesModule } from './apis/productImages/productsImages.module';
 import { productsDetailImagesModule } from './apis/productDetailImages/productDetailImages.module';
+import { AdminUsersModule } from './apis/adminUser /adminUser.module';
+import { AdminAuthModule } from './apis/AdminAuth/admin.auth.module';
 
 @Module({
   imports: [
+    AdminAuthModule,
+    AdminUsersModule,
     productsImagesModule,
     productsDetailImagesModule,
     CommentsModule,
@@ -72,8 +76,8 @@ import { productsDetailImagesModule } from './apis/productDetailImages/productDe
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
 
-      url: 'redis://10.6.144.3:6379',
-      // url: 'redis://my-redis:6379',
+      //url: 'redis://10.6.144.3:6379',
+      url: 'redis://my-redis:6379',
       isGlobal: true,
     }),
   ],
