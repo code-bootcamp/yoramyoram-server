@@ -1,6 +1,9 @@
 import { ConsoleLogger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query, Int, Context } from '@nestjs/graphql';
-import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import {
+  GqlAdmminGuard,
+  GqlAuthAccessGuard,
+} from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/types/context';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
@@ -14,13 +17,16 @@ export class ProductsResolver {
   //-------------------------*조회*----------------------------//
 
   @Query(() => [Product])
-  fetchProducts(): Promise<Product[]> {
-    return this.productsService.findAll();
+  fetchProducts(@Args('page') page: number): Promise<Product[]> {
+    return this.productsService.findAll({ page });
   }
 
   @Query(() => [Product])
-  searchProducts(@Args('word') word: string): Promise<Product[]> {
-    return this.productsService.searchAll({ word });
+  searchProducts(
+    @Args('word') word: string,
+    @Args('page') page: number,
+  ): Promise<Product[]> {
+    return this.productsService.searchAll({ word, page });
   }
 
   //조회(한개)
@@ -36,63 +42,66 @@ export class ProductsResolver {
   }
 
   @Query(() => [Product])
-  sortByPriceASC() {
-    return this.productsService.sortByPriceASC();
+  sortByPriceASC(@Args('page') page: number) {
+    return this.productsService.sortByPriceASC({ page });
   }
 
   @Query(() => [Product])
-  sortByPriceDESC() {
-    return this.productsService.sortByPriceDESC();
+  sortByPriceDESC(@Args('page') page: number) {
+    return this.productsService.sortByPriceDESC({ page });
   }
 
   @Query(() => [Product])
-  sortByCommentsASC() {
-    return this.productsService.sortByCommentsASC();
+  sortByCommentsASC(@Args('page') page: number) {
+    return this.productsService.sortByCommentsASC({ page });
   }
 
   @Query(() => [Product])
-  sortByCommentsDESC() {
-    return this.productsService.sortByCommentsDESC();
+  sortByCommentsDESC(@Args('page') page: number) {
+    return this.productsService.sortByCommentsDESC({ page });
   }
 
   @Query(() => [Product])
-  sortByCreatedAtASC() {
-    return this.productsService.sortByCreatedAtASC();
+  sortByCreatedAtASC(@Args('page') page: number) {
+    return this.productsService.sortByCreatedAtASC({ page });
   }
 
   @Query(() => [Product])
-  sortByCreatedAtDESC() {
-    return this.productsService.sortByCreatedAtDESC();
+  sortByCreatedAtDESC(@Args('page') page: number) {
+    return this.productsService.sortByCreatedAtDESC({ page });
   }
 
   //-------------------------*생성*----------------------------//
+  // @UseGuards(GqlAdmminGuard)
   @Mutation(() => Product)
   createProduct(
     @Context() context: IContext,
     @Args('createProductInput') createProductInput: CreateProductInput,
   ): Promise<Product> {
-    return this.productsService.create({ createProductInput });
+    return this.productsService.create({ createProductInput, context });
   }
   //-------------------------*삭제*----------------------------//
-  @UseGuards(GqlAuthAccessGuard)
+  // @UseGuards(GqlAdmminGuard)
   @Mutation(() => Boolean)
   deleteProduct(
     @Context() context: IContext,
     @Args('productId') productId: string, //
   ) {
-    const user = context.req.user;
-    return this.productsService.delete({ user, productId });
+    return this.productsService.delete({ context, productId });
   }
 
   //-------------------------*업데이트*----------------------------//
+  // @UseGuards(GqlAdmminGuard)
   @Mutation(() => Product)
   async updateProduct(
+    @Context() context: IContext,
     @Args('productId') productId: string,
     @Args('updateProductInput') updateProductInput: UpdateProductInput,
   ) {
     const product = await this.productsService.findOne({ productId });
 
     return this.productsService.update({
+      context,
       product,
       updateProductInput,
     });

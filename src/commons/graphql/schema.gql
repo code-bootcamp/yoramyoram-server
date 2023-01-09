@@ -10,6 +10,12 @@ type User {
   address: String!
   add_detail: String!
   point: Int!
+  role: USER_ENUM!
+}
+
+enum USER_ENUM {
+  USER
+  ADMIN
 }
 
 type Payment {
@@ -34,6 +40,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ProductImage {
+  productImage_id: String!
+  url: String!
+  isMain: Boolean!
+  product: Product!
+}
+
 type ProductCategory {
   category_id: String!
   category: String!
@@ -46,13 +59,22 @@ type Product {
   wishListCount: Int!
   commentCount: Int!
   description: String!
-  etc1Name: String!
-  etc1Value: String!
-  etc2Name: String!
-  etc2Value: String!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
   detailContent: String!
+  createdAt: DateTime!
+  productImages: [ProductImage!]!
   productCategory: ProductCategory!
   payment: Payment!
+}
+
+type ProductWishlist {
+  productwishlist_id: String!
+  isDib: Boolean!
+  user: User!
+  product: Product!
 }
 
 type Comment {
@@ -67,13 +89,6 @@ type Comment {
   payment: Payment!
 }
 
-type ProductWishlist {
-  productwishlist_id: String!
-  isDib: Boolean!
-  user: User!
-  product: Product!
-}
-
 type ProductCart {
   id: String!
   createdAt: DateTime!
@@ -86,16 +101,16 @@ type Query {
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
   fetchCommentsWithDeleted: [Comment!]!
-  fetchProducts: [Product!]!
-  searchProducts(word: String!): [Product!]!
+  fetchProducts(page: Float!): [Product!]!
+  searchProducts(word: String!, page: Float!): [Product!]!
   fetchProduct(productId: String!): Product!
   fetchProductsWithDeleted: [Product!]!
-  sortByPriceASC: [Product!]!
-  sortByPriceDESC: [Product!]!
-  sortByCommentsASC: [Product!]!
-  sortByCommentsDESC: [Product!]!
-  sortByCreatedAtASC: [Product!]!
-  sortByCreatedAtDESC: [Product!]!
+  sortByPriceASC(page: Float!): [Product!]!
+  sortByPriceDESC(page: Float!): [Product!]!
+  sortByCommentsASC(page: Float!): [Product!]!
+  sortByCommentsDESC(page: Float!): [Product!]!
+  sortByCreatedAtASC(page: Float!): [Product!]!
+  sortByCreatedAtDESC(page: Float!): [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
@@ -104,6 +119,7 @@ type Query {
 
 type Mutation {
   uploadImage(images: [Upload!]!): [String!]!
+  uploadDetailImage(images: [Upload!]!): [String!]!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   udpateComment(commentId: String!, updateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
@@ -148,10 +164,11 @@ input CreateProductInput {
   name: String!
   price: Int!
   description: String!
-  etc1Name: String!
-  etc1Value: String!
-  etc2Name: String!
-  etc2Value: String!
+  productImages: [String!]!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
   detailContent: String!
   productCategoryId: String!
 }
@@ -160,6 +177,7 @@ input UpdateProductInput {
   name: String
   price: Int
   description: String
+  productImages: [String!]
   etc1Name: String
   etc1Value: String
   etc2Name: String
@@ -180,4 +198,5 @@ input CreateUserInput {
   address: String!
   password: String!
   add_detail: String!
+  role: USER_ENUM!
 }
