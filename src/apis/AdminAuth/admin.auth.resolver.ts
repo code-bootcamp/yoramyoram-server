@@ -15,7 +15,7 @@ import {
 } from 'src/commons/auth/gql-auth.guard';
 import * as jwt from 'jsonwebtoken';
 import { Cache } from 'cache-manager';
-import { AdminUsersService } from '../adminUser /adminUser.service';
+import { AdminUsersService } from '../adminUser/adminUser.service';
 
 @Resolver()
 export class AdminAuthResolver {
