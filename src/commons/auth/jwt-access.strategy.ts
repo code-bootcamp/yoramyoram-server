@@ -19,7 +19,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
     const access_token = req.headers.authorization.replace('Bearer ', '');
 
     const result = await this.cacheManager.get(`access_token:${access_token}`);
-    console.log(result);
+
     if (result === 'accessToken') {
       throw new UnauthorizedException('이미 로그아웃된 토큰입니다.');
     }

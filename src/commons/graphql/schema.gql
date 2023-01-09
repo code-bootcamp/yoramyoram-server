@@ -10,6 +10,12 @@ type User {
   address: String!
   add_detail: String!
   point: Int!
+  role: USER_ENUM!
+}
+
+enum USER_ENUM {
+  USER
+  ADMIN
 }
 
 type Payment {
@@ -192,4 +198,5 @@ input CreateUserInput {
   address: String!
   password: String!
   add_detail: String!
+  role: USER_ENUM!
 }

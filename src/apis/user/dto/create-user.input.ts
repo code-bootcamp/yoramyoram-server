@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { USER_ENUM } from '../entities/user.entity';
 
 @InputType()
 export class CreateUserInput {
@@ -19,4 +20,7 @@ export class CreateUserInput {
 
   @Field(() => String)
   add_detail: string;
+
+  @Field(() => USER_ENUM)
+  role: string;
 }
