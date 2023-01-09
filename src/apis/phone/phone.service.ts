@@ -20,7 +20,7 @@ export class PhoneService {
         type: 'SMS',
         autoTypeDetect: false,
       });
-      console.log(result);
+      // console.log(result);
       return '인증번호 전송 완료';
     } catch (error) {
       throw new NotFoundException('인증번호 전송에 실패하였습니다.');
