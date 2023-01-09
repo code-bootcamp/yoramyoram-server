@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-import { AdminUser } from 'src/apis/adminUser /entities/user.entity';
+import { AdminUser } from 'src/apis/adminUser/entities/user.entity';
 import { IAdminAuthUser } from 'src/commons/types/context';
 
 export interface IAdminAuthServiceGetAccessToken {

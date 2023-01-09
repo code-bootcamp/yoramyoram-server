@@ -15,7 +15,7 @@ import { ProductCategory } from '../productsCategories/entities/productCategory.
 import { Comment } from '../comments/entities/comment.entity';
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 import { ProductImage } from '../productImages/entities/productImage.entity';
-import { AdminUser } from '../adminUser /entities/user.entity';
+import { AdminUser } from '../adminUser/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
