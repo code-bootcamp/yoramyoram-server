@@ -1,23 +1,26 @@
 import { Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
-  IAuthServiceGetAccessToken,
-  IAuthServiceSetRefreshToken,
-} from './interfaces/auth-service.interface';
+  IAdminAuthServiceGetAccessToken,
+  IAdminAuthServiceSetRefreshToken,
+} from './interfaces/admin-auth-service.interface';
 
 @Injectable()
-export class AuthService {
+export class AdminAuthService {
   constructor(
     private readonly jwtService: JwtService, //
   ) {}
 
-  setRefreshToken({ user, res, req }: IAuthServiceSetRefreshToken): string {
+  setRefreshToken({
+    adminUser,
+    res,
+    req,
+  }: IAdminAuthServiceSetRefreshToken): string {
     const refreshToken = this.jwtService.sign(
-      { role: user.role, sub: user.id },
+      { email: adminUser.email, sub: adminUser.id },
       { secret: process.env.JWT_REFRESH_KEY, expiresIn: '2w' },
     );
 
-    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
     const allowedOrigins = [
       'http://localhost:3000',
       'http://127.0.0.1:5500',
@@ -25,7 +28,6 @@ export class AuthService {
       'https://yoramyoram.shop',
     ];
     const origin = req.headers.origin;
-    console.log(origin);
     if (allowedOrigins.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
     }
@@ -40,14 +42,13 @@ export class AuthService {
       `refreshToken=${refreshToken}; path=/; domain=.yoramyoram-backend.shop; SameSite=None; Secure; httpOnly;`,
     );
 
-    console.log(user.role);
     return refreshToken;
   }
 
-  getAccessToken({ user }: IAuthServiceGetAccessToken): string {
+  getAccessToken({ adminUser }: IAdminAuthServiceGetAccessToken): string {
     return this.jwtService.sign(
-      { role: user.role, sub: user.id },
-      { secret: process.env.JWT_ACCESS_KEY, expiresIn: '1h' },
+      { email: adminUser.email, sub: adminUser.id },
+      { secret: process.env.JWT_ADMIN_KEY, expiresIn: '1h' },
     );
   }
 }

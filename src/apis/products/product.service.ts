@@ -57,7 +57,7 @@ export class ProductsService {
       for (let i = 0; i < pageNum; i++) {
         result[i] = products.slice(i * 10, (i + 1) * 10);
       }
-      console.log(result[0].length, result[1].length);
+      // console.log(result[0].length, result[1].length);
       return result[page - 1];
     }
     return products;
