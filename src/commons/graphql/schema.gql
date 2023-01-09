@@ -34,6 +34,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ProductImage {
+  productImage_id: String!
+  url: String!
+  isMain: Boolean!
+  product: Product!
+}
+
 type ProductCategory {
   category_id: String!
   category: String!
@@ -46,13 +53,22 @@ type Product {
   wishListCount: Int!
   commentCount: Int!
   description: String!
-  etc1Name: String!
-  etc1Value: String!
-  etc2Name: String!
-  etc2Value: String!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
   detailContent: String!
+  createdAt: DateTime!
+  productImages: [ProductImage!]!
   productCategory: ProductCategory!
   payment: Payment!
+}
+
+type ProductWishlist {
+  productwishlist_id: String!
+  isDib: Boolean!
+  user: User!
+  product: Product!
 }
 
 type Comment {
@@ -122,6 +138,7 @@ type Mutation {
   updateAdminPassword(password: String!, phone: String!): String!
   deleteAdminUser: Boolean!
   uploadImage(images: [Upload!]!): [String!]!
+  uploadDetailImage(images: [Upload!]!): [String!]!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   udpateComment(commentId: String!, updateCommentInput: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
@@ -174,10 +191,11 @@ input CreateProductInput {
   name: String!
   price: Int!
   description: String!
-  etc1Name: String!
-  etc1Value: String!
-  etc2Name: String!
-  etc2Value: String!
+  productImages: [String!]!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
   detailContent: String!
   productCategoryId: String!
 }
@@ -186,6 +204,7 @@ input UpdateProductInput {
   name: String
   price: Int
   description: String
+  productImages: [String!]
   etc1Name: String
   etc1Value: String
   etc2Name: String
