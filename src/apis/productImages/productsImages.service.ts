@@ -6,7 +6,7 @@ import { IImagesServiceUpload } from './interfaces/productsImages-service.interf
 export class ProductsImagesService {
   async upload({ images }: IImagesServiceUpload): Promise<string[]> {
     const waitedFiles = await Promise.all(images);
-    const bucket = process.env.GCP_BUCKET_NAME;
+    const bucket = 'yoram-storage';
     const storage = new Storage({
       projectId: process.env.GCP_PROJECT_ID,
       // keyFilename: '/my-secret/gcp-file-storage.json',
