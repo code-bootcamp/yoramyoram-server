@@ -15,7 +15,7 @@ import { ProductCategory } from '../productsCategories/entities/productCategory.
 import { Comment } from '../comments/entities/comment.entity';
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 import { ProductImage } from '../productImages/entities/productImage.entity';
-import { AdminUser } from '../adminUser/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -33,8 +33,8 @@ export class ProductsService {
     @InjectRepository(ProductWishlist)
     private readonly productWishListRepository: Repository<ProductWishlist>,
 
-    @InjectRepository(AdminUser)
-    private readonly AdminUsersRepository: Repository<AdminUser>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   //-------------------------*조회*----------------------------//
@@ -189,7 +189,7 @@ export class ProductsService {
     context,
   }: IProductsServiceCreate): Promise<Product> {
     const { productImages, productCategoryId, ...product } = createProductInput;
-    const user = await this.AdminUsersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
     });
@@ -236,7 +236,7 @@ export class ProductsService {
     const result = await this.productsRepository.softDelete({
       product_id: productId,
     });
-    const user = await this.AdminUsersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
     });
@@ -254,7 +254,7 @@ export class ProductsService {
   }: IProductsServiceUpdate) {
     const { productCategoryId, ...products } = updateProductInput;
 
-    const user = await this.AdminUsersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
     });
