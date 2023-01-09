@@ -189,11 +189,13 @@ export class ProductsService {
     context,
   }: IProductsServiceCreate): Promise<Product> {
     const { productImages, productCategoryId, ...product } = createProductInput;
+
     const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
     });
-    if (!user) {
+
+    if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
 
@@ -240,7 +242,7 @@ export class ProductsService {
       //
       where: { id: context.req.user.id },
     });
-    if (!user) {
+    if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
     return result.affected ? true : false;
@@ -258,7 +260,7 @@ export class ProductsService {
       //
       where: { id: context.req.user.id },
     });
-    if (!user) {
+    if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
 
