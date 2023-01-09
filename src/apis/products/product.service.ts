@@ -196,8 +196,6 @@ export class ProductsService {
     if (!user) {
       throw new ConflictException('관리권한이 없습니다');
     }
-    const { productCategoryId, ...product } = createProductInput;
-
 
     const category = await this.productsCategoriesRepository.findOne({
       where: { category_id: productCategoryId },
