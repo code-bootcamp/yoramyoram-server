@@ -10,6 +10,7 @@ import {
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
 import { Comment } from '../comments/entities/comment.entity';
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
+import { ProductImage } from '../productImages/entities/productImage.entity';
 
 @Injectable()
 export class ProductsService {
@@ -21,8 +22,8 @@ export class ProductsService {
     @InjectRepository(ProductCategory)
     private readonly productsCategoriesRepository: Repository<ProductCategory>,
 
-    @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(ProductImage)
+    private readonly productImageRepository: Repository<ProductImage>,
 
     @InjectRepository(ProductWishlist)
     private readonly productWishListRepository: Repository<ProductWishlist>,
@@ -178,7 +179,7 @@ export class ProductsService {
   async create({
     createProductInput,
   }: IProductsServiceCreate): Promise<Product> {
-    const { productCategoryId, ...product } = createProductInput;
+    const { productImages, productCategoryId, ...product } = createProductInput;
 
     const category = await this.productsCategoriesRepository.findOne({
       where: { category_id: productCategoryId },
@@ -193,6 +194,23 @@ export class ProductsService {
       ...product,
       productCategory: { category_id: productCategoryId },
     });
+
+    await Promise.all(
+      productImages.map((el, i) => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const newImage = await this.productImageRepository.save({
+              url: el,
+              isMain: i === 0 ? true : false,
+              product: { product_id: result.product_id },
+            });
+            resolve(newImage);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }),
+    );
 
     return result;
   }
@@ -218,7 +236,6 @@ export class ProductsService {
       productCategory: {
         ...categoryResult,
       },
-      ...products,
     });
     return result;
   }
