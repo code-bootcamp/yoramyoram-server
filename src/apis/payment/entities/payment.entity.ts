@@ -3,6 +3,7 @@ import { Product } from 'src/apis/products/entities/product.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 
 import {
+  Any,
   Column,
   CreateDateColumn,
   Entity,
@@ -65,4 +66,8 @@ export class Payment {
   @CreateDateColumn()
   @Field(() => Date)
   createdAt: Date;
+
+  @Column()
+  @Field(() => Int)
+  YoramPoint: number;
 }
