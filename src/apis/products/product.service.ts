@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
@@ -11,6 +15,7 @@ import { ProductCategory } from '../productsCategories/entities/productCategory.
 import { Comment } from '../comments/entities/comment.entity';
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 import { ProductImage } from '../productImages/entities/productImage.entity';
+import { AdminUser } from '../adminUser /entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -27,6 +32,9 @@ export class ProductsService {
 
     @InjectRepository(ProductWishlist)
     private readonly productWishListRepository: Repository<ProductWishlist>,
+
+    @InjectRepository(AdminUser)
+    private readonly AdminUsersRepository: Repository<AdminUser>,
   ) {}
 
   //-------------------------*조회*----------------------------//
@@ -178,8 +186,18 @@ export class ProductsService {
   //-------------------------*생성*----------------------------//
   async create({
     createProductInput,
+    context,
   }: IProductsServiceCreate): Promise<Product> {
     const { productImages, productCategoryId, ...product } = createProductInput;
+    const user = await this.AdminUsersRepository.findOne({
+      //
+      where: { id: context.req.user.id },
+    });
+    if (!user) {
+      throw new ConflictException('관리권한이 없습니다');
+    }
+    const { productCategoryId, ...product } = createProductInput;
+
 
     const category = await this.productsCategoriesRepository.findOne({
       where: { category_id: productCategoryId },
@@ -216,16 +234,36 @@ export class ProductsService {
   }
 
   //-------------------------*삭제*----------------------------//
-  async delete({ user, productId }) {
+  async delete({ context, productId }) {
     const result = await this.productsRepository.softDelete({
       product_id: productId,
     });
+    const user = await this.AdminUsersRepository.findOne({
+      //
+      where: { id: context.req.user.id },
+    });
+    if (!user) {
+      throw new ConflictException('관리권한이 없습니다');
+    }
     return result.affected ? true : false;
   }
 
   //-------------------------*업데이트*-----------------//
-  async update({ product, updateProductInput }: IProductsServiceUpdate) {
+  async update({
+    context,
+    product,
+    updateProductInput,
+  }: IProductsServiceUpdate) {
     const { productCategoryId, ...products } = updateProductInput;
+
+    const user = await this.AdminUsersRepository.findOne({
+      //
+      where: { id: context.req.user.id },
+    });
+    if (!user) {
+      throw new ConflictException('관리권한이 없습니다');
+    }
+
     const categoryResult = await this.productsCategoriesRepository.findOne({
       where: {
         category_id: productCategoryId,

@@ -1,6 +1,9 @@
 import { ConsoleLogger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query, Int, Context } from '@nestjs/graphql';
-import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import {
+  GqlAdmminGuard,
+  GqlAuthAccessGuard,
+} from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/types/context';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
@@ -69,33 +72,36 @@ export class ProductsResolver {
   }
 
   //-------------------------*생성*----------------------------//
+  @UseGuards(GqlAdmminGuard)
   @Mutation(() => Product)
   createProduct(
     @Context() context: IContext,
     @Args('createProductInput') createProductInput: CreateProductInput,
   ): Promise<Product> {
-    return this.productsService.create({ createProductInput });
+    return this.productsService.create({ createProductInput, context });
   }
   //-------------------------*삭제*----------------------------//
-  @UseGuards(GqlAuthAccessGuard)
+  @UseGuards(GqlAdmminGuard)
   @Mutation(() => Boolean)
   deleteProduct(
     @Context() context: IContext,
     @Args('productId') productId: string, //
   ) {
-    const user = context.req.user;
-    return this.productsService.delete({ user, productId });
+    return this.productsService.delete({ context, productId });
   }
 
   //-------------------------*업데이트*----------------------------//
+  @UseGuards(GqlAdmminGuard)
   @Mutation(() => Product)
   async updateProduct(
+    @Context() context: IContext,
     @Args('productId') productId: string,
     @Args('updateProductInput') updateProductInput: UpdateProductInput,
   ) {
     const product = await this.productsService.findOne({ productId });
 
     return this.productsService.update({
+      context,
       product,
       updateProductInput,
     });
