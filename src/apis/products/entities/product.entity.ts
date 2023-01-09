@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Payment } from 'src/apis/payment/entities/payment.entity';
+import { ProductImage } from 'src/apis/productImages/entities/productImage.entity';
 import {
   Entity,
   Column,
@@ -7,8 +8,7 @@ import {
   DeleteDateColumn,
   ManyToOne,
   CreateDateColumn,
-  JoinTable,
-  ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { ProductCategory } from '../../productsCategories/entities/productCategory.entity';
 
@@ -39,20 +39,20 @@ export class Product {
   @Field(() => String)
   description: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   etc1Name: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   etc1Value: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   etc2Name: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   etc2Value: string;
 
   @Column()
@@ -63,12 +63,16 @@ export class Product {
   deletedAt: Date;
 
   @CreateDateColumn()
-  // @Field(() => Date)
+  @Field(() => Date)
   createdAt: Date;
 
   @Column({ default: false })
   // @Field(() => Boolean)
   isDeleted: boolean;
+
+  @OneToMany(() => ProductImage, (productImage) => productImage.product)
+  @Field(() => [ProductImage])
+  productImages: ProductImage[];
 
   @ManyToOne(() => ProductCategory)
   @Field(() => ProductCategory)
