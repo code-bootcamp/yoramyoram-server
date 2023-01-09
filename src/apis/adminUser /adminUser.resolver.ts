@@ -33,7 +33,7 @@ export class AdminUsersResolver {
   }
 
   // ---- 아이디 찾기 -----
-  @Mutation(() => String)
+  @Query(() => String)
   async findAdminUserEmail(
     @Args('name') name: string, //
     @Args('phone') phone: string,
