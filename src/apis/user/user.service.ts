@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   async create({ createUserInput }) {
-    const { name, email, phone, password, address, add_detail } =
+    const { name, email, phone, password, address, add_detail, role } =
       createUserInput;
     const user = await this.userRepository.findOne({
       where: { email: email },
@@ -36,6 +36,7 @@ export class UsersService {
       password: hashedPassword,
       address,
       add_detail,
+      role,
     });
   }
 
@@ -48,7 +49,7 @@ export class UsersService {
     console.log(userId);
 
     if (userId.phone !== phone || userId.name !== name) {
-      return '가입한 이름과 다릅니다 ';
+      return '가입한 정보와 다릅니다 ';
     }
 
     return userId.email;
@@ -98,10 +99,13 @@ export class UsersService {
   }
 
   findLogin({ context }) {
-    return this.userRepository.findOne({
+    const user = this.userRepository.findOne({
       where: {
         email: context.req.user.email,
       },
     });
+
+    console.log(user);
+    return user;
   }
 }

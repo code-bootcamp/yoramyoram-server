@@ -15,3 +15,11 @@ export class GqlAuthRefreshGuard extends AuthGuard('refresh') {
     return gqlContext.getContext().req;
   }
 }
+
+export class GqlAdmminGuard extends AuthGuard('admin') {
+  getRequest(context: ExecutionContext) {
+    const gqlContext = GqlExecutionContext.create(context);
+    console.log(gqlContext.getContext().req);
+    return gqlContext.getContext().req;
+  }
+}

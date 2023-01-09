@@ -9,7 +9,7 @@ export class ProductsDetailImagesResolver {
   ) {}
 
   @Mutation(() => [String])
-  uploadImage(
+  uploadDetailImage(
     @Args({ name: 'images', type: () => [GraphQLUpload] }) images: FileUpload[],
   ): Promise<string[]> {
     return this.productsDetailImagesService.upload({ images });
