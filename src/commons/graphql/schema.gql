@@ -71,6 +71,16 @@ type ProductWishlist {
   product: Product!
 }
 
+type AdminUser {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  add_detail: String!
+  point: Int!
+}
+
 type Comment {
   comment_id: String!
   title: String!
@@ -83,23 +93,6 @@ type Comment {
   payment: Payment!
 }
 
-type ProductWishlist {
-  productwishlist_id: String!
-  isDib: Boolean!
-  user: User!
-  product: Product!
-}
-
-type AdminUser {
-  id: String!
-  name: String!
-  email: String!
-  phone: String!
-  address: String!
-  add_detail: String!
-  point: Int!
-}
-
 type ProductCart {
   id: String!
   createdAt: DateTime!
@@ -109,6 +102,7 @@ type ProductCart {
 }
 
 type Query {
+  findAdminUserEmail(name: String!, phone: String!): String!
   fetchLoginAdminUser: AdminUser!
   fetchComments: [Comment!]!
   fetchComment(commentId: String!): Comment!
@@ -125,6 +119,7 @@ type Query {
   sortByCreatedAtDESC(page: Float!): [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
+  findUserEmail(name: String!, phone: String!): String!
   fetchLoginUser: User!
 }
 
@@ -133,7 +128,6 @@ type Mutation {
   restoreAccessToken: String!
   logout: String!
   createAdminUser(adminCreateUserInput: AdminCreateUserInput!): AdminUser!
-  findAdminUserEmail(name: String!, phone: String!): String!
   findAdminUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updateAdminPassword(password: String!, phone: String!): String!
   deleteAdminUser: Boolean!
@@ -151,7 +145,6 @@ type Mutation {
   createProductCart(productId: String!): ProductCart!
   deleteProductCart(productId: String!): ProductCart!
   createUser(createUserInput: CreateUserInput!): User!
-  findUserEmail(name: String!, phone: String!): String!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
   deleteUser: Boolean!
