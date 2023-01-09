@@ -36,7 +36,7 @@ export class UsersResolver {
   }
 
   // ---- 아이디 찾기 -----
-  @Mutation(() => String)
+  @Query(() => String)
   async findUserEmail(
     @Args('name') name: string, //
     @Args('phone') phone: string,
