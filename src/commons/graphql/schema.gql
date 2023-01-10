@@ -191,7 +191,6 @@ input UpdateProductInput {
 
 input CreateProductWishInput {
   productId: String!
-  userId: String!
 }
 
 input CreateUserInput {
