@@ -46,8 +46,9 @@ export class ProductsService {
   }
 
   async searchAll({ word, page }): Promise<Product[]> {
-    const products = await this.productsRepository.findBy({
-      name: Like(`%${word}%`),
+    const products = await this.productsRepository.find({
+      where: { name: Like(`%${word}%`) },
+      relations: ['productCategory', 'productImages'],
     });
 
     if (products.length > 10) {
@@ -69,8 +70,24 @@ export class ProductsService {
     });
   }
 
-  findAllWithDelete(): Promise<Product[]> {
-    return this.productsRepository.createQueryBuilder().withDeleted().getMany();
+  async findCategory({ cateId, page }): Promise<Product[]> {
+    const products = await this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.productImages', 'productImages')
+      .where('productCategoryCategoryId = :productCategoryCategoryId', {
+        productCategoryCategoryId: cateId,
+      })
+      .getMany();
+
+    if (products.length > 10) {
+      const pageNum = Math.ceil(products.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = products.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
+    return products;
   }
 
   async sortByPriceASC({ page }) {
@@ -282,22 +299,24 @@ export class ProductsService {
       },
     });
 
-    await Promise.all(
-      productImages.map((el, i) => {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const newImage = await this.productImageRepository.save({
-              url: el,
-              isMain: i === 0 ? true : false,
-              product: { product_id: result.product_id },
-            });
-            resolve(newImage);
-          } catch (err) {
-            reject(err);
-          }
-        });
-      }),
-    );
+    if (productImages) {
+      await Promise.all(
+        productImages.map((el, i) => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              const newImage = await this.productImageRepository.save({
+                url: el,
+                isMain: i === 0 ? true : false,
+                product: { product_id: result.product_id },
+              });
+              resolve(newImage);
+            } catch (err) {
+              reject(err);
+            }
+          });
+        }),
+      );
+    }
 
     return result;
   }
