@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/types/context';
 import { CreateProductWishInput } from './dto/create-productwishlist.input';
 import { ProductWishlist } from './entities/productWishlist.entity';
 import { ProductWishlistService } from './productWishlist.service';
@@ -20,10 +21,12 @@ export class ProductWishlistResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   async addWishlist(
+    @Context() context: IContext,
     @Args('createProductWishInput')
     createProductWishInput: CreateProductWishInput,
   ) {
     return this.productWishlistService.createWish({
+      context,
       createProductWishInput,
     });
   }

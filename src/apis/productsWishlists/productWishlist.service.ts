@@ -12,8 +12,9 @@ export class ProductWishlistService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  async createWish({ createProductWishInput }) {
-    const { userId, productId } = createProductWishInput;
+  async createWish({ context, createProductWishInput }) {
+    const { productId } = createProductWishInput;
+    const userId = context.req.user.id;
     const isDib = await this.productWishlistRepository
       .createQueryBuilder()
       .select()
@@ -24,6 +25,7 @@ export class ProductWishlistService {
       .getOne();
 
     let checkDib = false;
+    console.log('checkDib은 ' + checkDib);
     if (isDib) {
       //이미 찜목록에 있다면
       await this.productWishlistRepository.save({
