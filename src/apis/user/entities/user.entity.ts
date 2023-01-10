@@ -56,6 +56,10 @@ export class User {
 
   @Column({ default: 0 })
   @Field(() => Int)
+  YoramPoint: number;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
   point: number;
 
   @Column({ type: 'enum', enum: USER_ENUM })

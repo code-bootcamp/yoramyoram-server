@@ -24,7 +24,6 @@ export class PaymentResolver {
   async createPayment(
     @Args('impUid') impUid: string, //
     @Args({ name: 'point', type: () => Int }) point: number,
-
     @Context() iauthUser: IContext,
   ) {
     const token = await this.iamportService.getToken();

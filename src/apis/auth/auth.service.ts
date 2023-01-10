@@ -20,12 +20,13 @@ export class AuthService {
     res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
     const allowedOrigins = [
       'http://localhost:3000',
+      'http://localhost:3001',
       'http://127.0.0.1:5500',
       'https://yoramyoram-backend.shop',
       'https://yoramyoram.shop',
     ];
     const origin = req.headers.origin;
-    console.log(origin);
+
     if (allowedOrigins.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
     }
