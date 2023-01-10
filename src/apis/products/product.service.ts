@@ -42,7 +42,7 @@ export class ProductsService {
     return this.productsRepository.find({
       take: 10,
       skip: (page - 1) * 10,
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productImages'],
     });
   }
 
@@ -66,7 +66,7 @@ export class ProductsService {
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productImages'],
     });
   }
 
@@ -109,7 +109,7 @@ export class ProductsService {
     const products = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
         where: { product_id: el.product_id },
-        relations: ['productCategory'],
+        relations: ['productCategory', 'productImages'],
       });
     });
 
@@ -137,7 +137,7 @@ export class ProductsService {
     const result = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
         where: { product_id: el.product_id },
-        relations: ['productCategory'],
+        relations: ['productCategory', 'productImages'],
       });
     });
     return result;
@@ -189,11 +189,13 @@ export class ProductsService {
     context,
   }: IProductsServiceCreate): Promise<Product> {
     const { productImages, productCategoryId, ...product } = createProductInput;
+
     const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
     });
-    if (!user) {
+
+    if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
 
@@ -233,16 +235,18 @@ export class ProductsService {
 
   //-------------------------*삭제*----------------------------//
   async delete({ context, productId }) {
-    const result = await this.productsRepository.softDelete({
-      product_id: productId,
-    });
     const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
     });
-    if (!user) {
+    if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
+
+    const result = await this.productsRepository.delete({
+      product_id: productId,
+    });
+
     return result.affected ? true : false;
   }
 
@@ -258,7 +262,7 @@ export class ProductsService {
       //
       where: { id: context.req.user.id },
     });
-    if (!user) {
+    if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
 

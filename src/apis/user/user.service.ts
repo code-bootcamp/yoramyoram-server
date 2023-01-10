@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   async create({ createUserInput }) {
-    const { name, email, phone, password, address, add_detail } =
+    const { name, email, phone, password, address, add_detail, role } =
       createUserInput;
     const user = await this.userRepository.findOne({
       where: { email: email },
@@ -36,6 +36,7 @@ export class UsersService {
       password: hashedPassword,
       address,
       add_detail,
+      role,
     });
   }
 
@@ -55,8 +56,7 @@ export class UsersService {
   }
 
   async delete({ userId }) {
-    const result = await this.userRepository.softDelete({ id: userId });
-
+    const result = await this.userRepository.delete({ id: userId });
     return result.affected ? true : false;
   }
 
@@ -100,11 +100,18 @@ export class UsersService {
   findLogin({ context }) {
     const user = this.userRepository.findOne({
       where: {
-        email: context.req.user.email,
+        id: context.req.user.id,
       },
     });
 
-    console.log(user);
     return user;
+  }
+
+  updateUser({ context, updateUserInput }) {
+    const result = this.userRepository.save({
+      id: context.req.user.id,
+      ...updateUserInput,
+    });
+    return result;
   }
 }
