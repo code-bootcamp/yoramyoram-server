@@ -44,6 +44,7 @@ import { JwtAdminStrategy } from './commons/auth/jwt-admin.strategy';
       cors: {
         origin: [
           'http://localhost:3000',
+          'http://localhost:3001',
           'https://yoramyoram-backend.shop',
           'https://yoramyoram.shop',
         ],

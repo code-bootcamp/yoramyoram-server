@@ -24,8 +24,9 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
       throw new UnauthorizedException('이미 로그아웃된 토큰입니다.');
     }
 
+    console.log(payload);
     return {
-      email: payload.email,
+      role: payload.role,
       id: payload.sub,
       exp: payload.exp,
     };
