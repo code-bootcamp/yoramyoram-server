@@ -9,6 +9,7 @@ type User {
   phone: String!
   address: String!
   add_detail: String!
+  YoramPoint: Int!
   point: Int!
   role: USER_ENUM!
 }
@@ -28,6 +29,7 @@ type Payment {
   etc2: String!
   user: User!
   createdAt: DateTime!
+  YoramPoint: Int!
 }
 
 enum PAYMENT_STATUS_ENUM {
