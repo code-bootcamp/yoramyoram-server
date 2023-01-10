@@ -235,9 +235,6 @@ export class ProductsService {
 
   //-------------------------*삭제*----------------------------//
   async delete({ context, productId }) {
-    const result = await this.productsRepository.softDelete({
-      product_id: productId,
-    });
     const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
@@ -245,6 +242,11 @@ export class ProductsService {
     if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
+
+    const result = await this.productsRepository.delete({
+      product_id: productId,
+    });
+
     return result.affected ? true : false;
   }
 

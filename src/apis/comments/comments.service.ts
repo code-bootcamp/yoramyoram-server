@@ -36,8 +36,10 @@ export class CommentsService {
       where: { comment_id: commentId },
       relations: ['user'],
     });
-    console.log("//-------------------------------------------------------------------------//")
-    console.log(a)
+    console.log(
+      '//-------------------------------------------------------------------------//',
+    );
+    console.log(a);
     return a;
   }
 
@@ -100,7 +102,7 @@ export class CommentsService {
       isDeleted: true,
     });
 
-    const result = await this.commentsRepository.softDelete({
+    const result = await this.commentsRepository.delete({
       comment_id: commentId,
     });
     return result.affected ? true : false;

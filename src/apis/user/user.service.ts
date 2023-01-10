@@ -56,8 +56,7 @@ export class UsersService {
   }
 
   async delete({ userId }) {
-    const result = await this.userRepository.softDelete({ id: userId });
-
+    const result = await this.userRepository.delete({ id: userId });
     return result.affected ? true : false;
   }
 
