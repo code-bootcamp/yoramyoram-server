@@ -48,8 +48,6 @@ export class UsersResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => User)
   fetchLoginUser(@Context() context: IContext) {
-    console.log(context.req.user);
-    console.log(context.req.user.email);
     return this.userSerivice.findLogin({ context });
   }
 
