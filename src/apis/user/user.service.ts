@@ -101,7 +101,7 @@ export class UsersService {
   findLogin({ context }) {
     const user = this.userRepository.findOne({
       where: {
-        email: context.req.user.email,
+        id: context.req.user.id,
       },
     });
 

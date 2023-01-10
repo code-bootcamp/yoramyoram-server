@@ -72,7 +72,7 @@ export class ProductsResolver {
   }
 
   //-------------------------*생성*----------------------------//
-  // @UseGuards(GqlAdmminGuard)
+  @UseGuards(GqlAdmminGuard)
   @Mutation(() => Product)
   createProduct(
     @Context() context: IContext,
@@ -81,7 +81,7 @@ export class ProductsResolver {
     return this.productsService.create({ createProductInput, context });
   }
   //-------------------------*삭제*----------------------------//
-  // @UseGuards(GqlAdmminGuard)
+  @UseGuards(GqlAdmminGuard)
   @Mutation(() => Boolean)
   deleteProduct(
     @Context() context: IContext,
@@ -91,7 +91,7 @@ export class ProductsResolver {
   }
 
   //-------------------------*업데이트*----------------------------//
-  // @UseGuards(GqlAdmminGuard)
+  @UseGuards(GqlAdmminGuard)
   @Mutation(() => Product)
   async updateProduct(
     @Context() context: IContext,

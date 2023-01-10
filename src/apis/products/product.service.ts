@@ -189,13 +189,13 @@ export class ProductsService {
     context,
   }: IProductsServiceCreate): Promise<Product> {
     const { productImages, productCategoryId, ...product } = createProductInput;
-    const user = await this.usersRepository.findOne({
-      //
-      where: { id: context.req.user.id },
-    });
-    if (!user) {
-      throw new ConflictException('관리권한이 없습니다');
-    }
+    // const user = await this.usersRepository.findOne({
+    //   //
+    //   where: { id: context.req.user.id },
+    // });
+    // if (!user) {
+    //   throw new ConflictException('관리권한이 없습니다');
+    // }
 
     const category = await this.productsCategoriesRepository.findOne({
       where: { category_id: productCategoryId },
