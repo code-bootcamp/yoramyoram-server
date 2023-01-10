@@ -12,7 +12,6 @@ import {
   IProductsServiceUpdate,
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
-import { Comment } from '../comments/entities/comment.entity';
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 import { ProductImage } from '../productImages/entities/productImage.entity';
 import { User } from '../user/entities/user.entity';
@@ -243,6 +242,10 @@ export class ProductsService {
       throw new ConflictException('관리권한이 없습니다');
     }
 
+    await this.productImageRepository.delete({
+      product: productId,
+    });
+
     const result = await this.productsRepository.delete({
       product_id: productId,
     });
@@ -256,7 +259,7 @@ export class ProductsService {
     product,
     updateProductInput,
   }: IProductsServiceUpdate) {
-    const { productCategoryId, ...products } = updateProductInput;
+    const { productImages, productCategoryId, ...rest } = updateProductInput;
 
     const user = await this.usersRepository.findOne({
       //
@@ -271,12 +274,31 @@ export class ProductsService {
         category_id: productCategoryId,
       },
     });
-    const result = this.productsRepository.save({
-      ...product,
+    const result = await this.productsRepository.save({
+      product_id: product.product_id,
+      ...rest,
       productCategory: {
         ...categoryResult,
       },
     });
+
+    await Promise.all(
+      productImages.map((el, i) => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const newImage = await this.productImageRepository.save({
+              url: el,
+              isMain: i === 0 ? true : false,
+              product: { product_id: result.product_id },
+            });
+            resolve(newImage);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }),
+    );
+
     return result;
   }
 }
