@@ -106,7 +106,7 @@ type Query {
   fetchProducts(page: Float!): [Product!]!
   searchProducts(word: String!, page: Float!): [Product!]!
   fetchProduct(productId: String!): Product!
-  fetchProductsWithDeleted: [Product!]!
+  fetchCategory(cateId: String!, page: Float!): [Product!]!
   sortByPriceASC(page: Float!): [Product!]!
   sortByPriceDESC(page: Float!): [Product!]!
   sortByCommentsASC(page: Float!): [Product!]!
