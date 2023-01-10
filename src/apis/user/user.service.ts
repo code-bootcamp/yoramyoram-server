@@ -99,14 +99,20 @@ export class UsersService {
   }
 
   findLogin({ context }) {
-    console.log(context.req.user);
     const user = this.userRepository.findOne({
       where: {
         id: context.req.user.id,
       },
     });
 
-    console.log(user);
     return user;
+  }
+
+  updateUser({ context, updateUserInput }) {
+    const result = this.userRepository.save({
+      id: context.req.user.id,
+      ...updateUserInput,
+    });
+    return result;
   }
 }

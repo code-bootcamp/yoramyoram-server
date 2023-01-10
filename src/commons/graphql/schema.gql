@@ -138,6 +138,7 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
+  updateLoginUser(updateUserInput: updateUserInput!): User!
   deleteUser: Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
@@ -201,4 +202,14 @@ input CreateUserInput {
   password: String!
   add_detail: String!
   role: USER_ENUM!
+}
+
+input updateUserInput {
+  name: String
+  email: String
+  phone: String
+  address: String
+  password: String
+  add_detail: String
+  role: USER_ENUM
 }

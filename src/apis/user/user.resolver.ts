@@ -14,6 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/types/context';
+import { updateUserInput } from './dto/update-user.input';
 
 @Resolver()
 export class UsersResolver {
@@ -81,6 +82,19 @@ export class UsersResolver {
     @Args('phone') phone: string,
   ) {
     return this.userSerivice.updatePassword({ password, phone });
+  }
+
+  // ---- 로그인한 유저 업데이트 ----
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => User)
+  updateLoginUser(
+    @Context() context: IContext,
+    @Args('updateUserInput') updateUserInput: updateUserInput,
+  ) {
+    return this.userSerivice.updateUser({
+      context,
+      updateUserInput,
+    });
   }
 
   // ---- 회원 삭제 ----
