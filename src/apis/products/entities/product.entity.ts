@@ -35,7 +35,7 @@ export class Product {
   @Field(() => Int)
   commentCount: number;
 
-  @Column()
+  @Column({ default: '' })
   @Field(() => String)
   description: string;
 
@@ -55,7 +55,7 @@ export class Product {
   @Field(() => String, { nullable: true })
   etc2Value: string;
 
-  @Column()
+  @Column({ default: '' })
   @Field(() => String)
   detailContent: string;
 
@@ -65,10 +65,6 @@ export class Product {
   @CreateDateColumn()
   @Field(() => Date)
   createdAt: Date;
-
-  @Column({ default: false })
-  // @Field(() => Boolean)
-  isDeleted: boolean;
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product)
   @Field(() => [ProductImage])
