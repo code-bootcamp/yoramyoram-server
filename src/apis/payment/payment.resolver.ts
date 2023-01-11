@@ -25,6 +25,9 @@ export class PaymentResolver {
     @Args('impUid') impUid: string, //
     @Args({ name: 'point', type: () => Int }) point: number,
     @Context() iauthUser: IContext,
+    @Args('etc1') etc1: string,
+    @Args('etc2') etc2: string,
+    //
   ) {
     const token = await this.iamportService.getToken();
     this.iamportService.checkPid({ impUid, point, token });
@@ -36,6 +39,8 @@ export class PaymentResolver {
       impUid,
       point,
       user,
+      etc1,
+      etc2,
     });
   }
 
@@ -45,8 +50,9 @@ export class PaymentResolver {
     @Args('impUid') impUid: string, // 로그인한 유저정보
     @Args({ name: 'point', type: () => Int }) point: number, //
 
-    // @CurrentUser() currentUser : ICurrentUser
     @Context() iauthUser: IContext,
+    @Args('etc1') etc1: string,
+    @Args('etc2') etc2: string,
   ): Promise<Payment> {
     const user = iauthUser.req.user;
     //검증로직들!!
@@ -66,6 +72,8 @@ export class PaymentResolver {
       impUid,
       point: canceledPoint,
       user,
+      etc1,
+      etc2,
     });
   }
 }

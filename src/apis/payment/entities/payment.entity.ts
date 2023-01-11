@@ -46,28 +46,19 @@ export class Payment {
   @Field(() => Int)
   amount: number;
 
-  @Column()
-  @Field(() => String)
-  etc1?: string;
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  etc1: string;
 
-  @Column()
-  @Field(() => String)
-  etc2?: string;
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  etc2: string;
 
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
 
-  //   @JoinColumn()
-  //   @OneToOne(() => Product)
-  //   @Field(() => Product)
-  //   product: Product;
-
   @CreateDateColumn()
   @Field(() => Date)
   createdAt: Date;
-
-  @Column()
-  @Field(() => Int)
-  YoramPoint: number;
 }

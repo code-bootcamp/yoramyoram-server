@@ -35,11 +35,11 @@ export class ProductCartResolver {
   }
 
   @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => ProductCart)
+  @Mutation(() => Boolean)
   async deleteProductCart(
     @Context() context: IContext,
     @Args('productId') product_id: string,
   ) {
-    return this.productCartService.delete({ context, product_id });
+    return await this.productCartService.delete({ context, product_id });
   } //
 }

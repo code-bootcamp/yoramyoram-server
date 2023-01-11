@@ -100,10 +100,21 @@ export class UsersResolver {
   // ---- 회원 삭제 ----
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
-  deleteUser(
+  async deleteUser(
     @Context() context: IContext, //
   ) {
     const userId = context.req.user.id;
     return this.userSerivice.delete({ userId });
+  }
+
+  // ---- 유저 포인트 찾기 ----
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => User)
+  async fetchUserPoint(
+    //
+    @Context() context: IContext,
+  ) {
+    const userId = context.req.user.id;
+    return await this.userSerivice.findPoint({ userId });
   }
 }
