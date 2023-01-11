@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  # kubectl set image deployment/yoramyoram-nestjs yoramyoram-sha256-1=asia.gcr.io/yoramyoram-373201/yoramyoram:0.5.1
+  # kubectl set image deployment/yoramyoram-nestjs yoramyoram-sha256-1=asia.gcr.io/yoramyoram-373201/yoramyoram:0.5.2
   # docker-compose -f docker-compose.prod.yaml build
   my-backend:
     image: asia.gcr.io/yoramyoram-373201/yoramyoram:0.5.3

@@ -25,26 +25,60 @@ export class CommentsService {
   ) {}
 
   //-------------------------*조회*----------------------------//
-  findAll(): Promise<Comment[]> {
+  findAllMain(): Promise<Comment[]> {
     return this.commentsRepository.find({
       relations: ['user'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
-  findOne({ commentId }: ICommentsServiceFindOne): Promise<Comment> {
-    const a = this.commentsRepository.findOne({
+  async findAll({ productId, page }): Promise<Comment[]> {
+    const comments = await this.commentsRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .where('productProductId = :productProductId', {
+        productProductId: productId,
+      })
+      .orderBy('createdAt', 'DESC')
+      .getMany();
+
+    if (comments.length > 10) {
+      const pageNum = Math.ceil(comments.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = comments.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
+    return comments;
+  }
+
+  async findAllCount({ productId }): Promise<number> {
+    // const comments = await this.commentsRepository.find({
+    //   where: { product_id: productId },
+    //   relations: ['user'],
+    // });
+
+    const comments = await this.commentsRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .where('productProductId = :productProductId', {
+        productProductId: productId,
+      })
+      .getMany();
+
+    return comments.length;
+  }
+
+  async findOne({ commentId }: ICommentsServiceFindOne): Promise<Comment> {
+    const comments = await this.commentsRepository.findOne({
       where: { comment_id: commentId },
       relations: ['user'],
     });
-    console.log(
-      '//-------------------------------------------------------------------------//',
-    );
-    console.log(a);
-    return a;
-  }
 
-  async findAllWithDelete(): Promise<Comment[]> {
-    return this.commentsRepository.createQueryBuilder().withDeleted().getMany();
+    return comments;
   }
 
   //-------------------------*생성*----------------------------//
