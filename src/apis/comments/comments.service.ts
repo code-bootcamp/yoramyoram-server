@@ -102,7 +102,7 @@ export class CommentsService {
       isDeleted: true,
     });
 
-    const result = await this.commentsRepository.softDelete({
+    const result = await this.commentsRepository.delete({
       comment_id: commentId,
     });
     return result.affected ? true : false;
