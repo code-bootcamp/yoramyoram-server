@@ -17,8 +17,18 @@ export class ProductsResolver {
   //-------------------------*조회*----------------------------//
 
   @Query(() => [Product])
-  fetchProducts(@Args('page') page: number): Promise<Product[]> {
-    return this.productsService.findAll({ page });
+  fetchProducts(
+    @Args('cateId', { nullable: true }) cateId: string,
+    @Args('page') page: number,
+  ): Promise<Product[]> {
+    return this.productsService.findAll({ cateId, page });
+  }
+
+  @Query(() => Int)
+  fetchProductsCount(
+    @Args('cateId', { nullable: true }) cateId: string,
+  ): Promise<number> {
+    return this.productsService.findAllCount({ cateId });
   }
 
   @Query(() => [Product])
@@ -29,19 +39,15 @@ export class ProductsResolver {
     return this.productsService.searchAll({ word, page });
   }
 
+  @Query(() => Int)
+  searchProductsCount(@Args('word') word: string): Promise<number> {
+    return this.productsService.searchAllCount({ word });
+  }
+
   //조회(한개)
   @Query(() => Product)
   fetchProduct(@Args('productId') productId: string): Promise<Product> {
     return this.productsService.findOne({ productId });
-  }
-
-  //soft delete로 삭제된 데이터들도 모두 나오도록
-  @Query(() => [Product])
-  fetchCategory(
-    @Args('cateId') cateId: string,
-    @Args('page') page: number,
-  ): Promise<Product[]> {
-    return this.productsService.findCategory({ cateId, page });
   }
 
   @Query(() => [Product])
