@@ -37,18 +37,54 @@ export class ProductsService {
   ) {}
 
   //-------------------------*조회*----------------------------//
-  findAll({ page }): Promise<Product[]> {
-    return this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      relations: ['productCategory', 'productImages'],
-    });
+  async findAll({ cateId, page }): Promise<Product[]> {
+    let products = [];
+    if (cateId) {
+      products = await this.productsRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.productImages', 'productImages')
+        .where('productCategoryCategoryId = :productCategoryCategoryId', {
+          productCategoryCategoryId: cateId,
+        })
+        .orderBy('createdAt', 'DESC')
+        .getMany();
+    } else {
+      products = await this.productsRepository.find({
+        take: 10,
+        skip: (page - 1) * 10,
+        relations: ['productCategory', 'productImages'],
+      });
+    }
+
+    return products;
+  }
+
+  async findAllCount({ cateId }): Promise<number> {
+    let products = [];
+    if (cateId) {
+      products = await this.productsRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.productImages', 'productImages')
+        .where('productCategoryCategoryId = :productCategoryCategoryId', {
+          productCategoryCategoryId: cateId,
+        })
+        .getMany();
+    } else {
+      products = await this.productsRepository.find({
+        relations: ['productCategory', 'productImages'],
+      });
+    }
+
+    return products.length;
   }
 
   async searchAll({ word, page }): Promise<Product[]> {
     const products = await this.productsRepository.find({
       where: { name: Like(`%${word}%`) },
       relations: ['productCategory', 'productImages'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
 
     if (products.length > 10) {
@@ -63,31 +99,20 @@ export class ProductsService {
     return products;
   }
 
+  async searchAllCount({ word }): Promise<number> {
+    const products = await this.productsRepository.find({
+      where: { name: Like(`%${word}%`) },
+      relations: ['productCategory', 'productImages'],
+    });
+
+    return products.length;
+  }
+
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
       relations: ['productCategory', 'productImages'],
     });
-  }
-
-  async findCategory({ cateId, page }): Promise<Product[]> {
-    const products = await this.productsRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.productImages', 'productImages')
-      .where('productCategoryCategoryId = :productCategoryCategoryId', {
-        productCategoryCategoryId: cateId,
-      })
-      .getMany();
-
-    if (products.length > 10) {
-      const pageNum = Math.ceil(products.length / 10);
-      const result = new Array(pageNum);
-      for (let i = 0; i < pageNum; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
-      }
-      return result[page - 1];
-    }
-    return products;
   }
 
   async sortByPriceASC({ page }) {
