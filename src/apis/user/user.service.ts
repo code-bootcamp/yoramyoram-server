@@ -112,7 +112,6 @@ export class UsersService {
     return user;
   }
 
-
   findPoint({ userId }) {
     const user = this.userRepository.findOne({
       where: {
@@ -127,6 +126,5 @@ export class UsersService {
       ...updateUserInput,
     });
     return result;
-
   }
 }
