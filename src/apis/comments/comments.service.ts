@@ -36,8 +36,10 @@ export class CommentsService {
       where: { comment_id: commentId },
       relations: ['user'],
     });
-    console.log("//-------------------------------------------------------------------------//")
-    console.log(a)
+    console.log(
+      '//-------------------------------------------------------------------------//',
+    );
+    console.log(a);
     return a;
   }
 

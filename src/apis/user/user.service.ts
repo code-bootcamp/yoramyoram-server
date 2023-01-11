@@ -109,4 +109,13 @@ export class UsersService {
     console.log(user);
     return user;
   }
+
+  findPoint({ userId }) {
+    const user = this.userRepository.findOne({
+      where: {
+        point: userId.point,
+      },
+    });
+    return user;
+  }
 }
