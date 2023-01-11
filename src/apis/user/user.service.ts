@@ -112,11 +112,21 @@ export class UsersService {
     return user;
   }
 
+
+  findPoint({ userId }) {
+    const user = this.userRepository.findOne({
+      where: {
+        point: userId.point,
+      },
+    });
+    return user;
+
   updateUser({ context, updateUserInput }) {
     const result = this.userRepository.save({
       id: context.req.user.id,
       ...updateUserInput,
     });
     return result;
+
   }
 }

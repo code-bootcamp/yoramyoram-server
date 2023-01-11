@@ -77,22 +77,28 @@ export class PorductCartService {
         productProductId: product_id,
       })
       .getOne();
+    // const product = await this.productCartRepository.findOne({
+    //   where: {
+    //     product: { product_id: product_id },
+    //     user: { id: context.req.user.id },
+    //   },
+    //   relations: ['user', 'product'],
+    // });
 
     let result;
+    console.log(product, product_id, context.req.user.id);
 
     if (product.quantity > 1) {
       result = await this.productCartRepository.save({
         id: product.id,
         quantity: product.quantity - 1,
       });
+      return result;
     } else {
       result = await this.productCartRepository.delete({
-        user: context.req.user.id,
-        product: product_id,
+        id: product.id,
       });
+      return result.affected ? true : false;
     }
-
-    return result;
-    //.affected ? true : false;
   }
 }
