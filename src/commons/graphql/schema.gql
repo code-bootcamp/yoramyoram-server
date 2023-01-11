@@ -9,6 +9,7 @@ type User {
   phone: String!
   address: String!
   add_detail: String!
+  YoramPoint: Int!
   point: Int!
   amount: Int!
   role: USER_ENUM!
@@ -29,6 +30,7 @@ type Payment {
   etc2: String
   user: User!
   createdAt: DateTime!
+  YoramPoint: Int!
 }
 
 enum PAYMENT_STATUS_ENUM {
@@ -105,7 +107,7 @@ type Query {
   fetchProducts(page: Float!): [Product!]!
   searchProducts(word: String!, page: Float!): [Product!]!
   fetchProduct(productId: String!): Product!
-  fetchProductsWithDeleted: [Product!]!
+  fetchCategory(cateId: String!, page: Float!): [Product!]!
   sortByPriceASC(page: Float!): [Product!]!
   sortByPriceDESC(page: Float!): [Product!]!
   sortByCommentsASC(page: Float!): [Product!]!
@@ -138,6 +140,7 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
+  updateLoginUser(updateUserInput: updateUserInput!): User!
   deleteUser: Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
@@ -190,7 +193,6 @@ input UpdateProductInput {
 
 input CreateProductWishInput {
   productId: String!
-  userId: String!
 }
 
 input CreateUserInput {
@@ -201,4 +203,14 @@ input CreateUserInput {
   password: String!
   add_detail: String!
   role: USER_ENUM!
+}
+
+input updateUserInput {
+  name: String
+  email: String
+  phone: String
+  address: String
+  password: String
+  add_detail: String
+  role: USER_ENUM
 }

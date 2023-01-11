@@ -12,7 +12,6 @@ import {
   IProductsServiceUpdate,
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
-import { Comment } from '../comments/entities/comment.entity';
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 import { ProductImage } from '../productImages/entities/productImage.entity';
 import { User } from '../user/entities/user.entity';
@@ -42,13 +41,14 @@ export class ProductsService {
     return this.productsRepository.find({
       take: 10,
       skip: (page - 1) * 10,
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productImages'],
     });
   }
 
   async searchAll({ word, page }): Promise<Product[]> {
-    const products = await this.productsRepository.findBy({
-      name: Like(`%${word}%`),
+    const products = await this.productsRepository.find({
+      where: { name: Like(`%${word}%`) },
+      relations: ['productCategory', 'productImages'],
     });
 
     if (products.length > 10) {
@@ -66,12 +66,28 @@ export class ProductsService {
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productImages'],
     });
   }
 
-  findAllWithDelete(): Promise<Product[]> {
-    return this.productsRepository.createQueryBuilder().withDeleted().getMany();
+  async findCategory({ cateId, page }): Promise<Product[]> {
+    const products = await this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.productImages', 'productImages')
+      .where('productCategoryCategoryId = :productCategoryCategoryId', {
+        productCategoryCategoryId: cateId,
+      })
+      .getMany();
+
+    if (products.length > 10) {
+      const pageNum = Math.ceil(products.length / 10);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = products.slice(i * 10, (i + 1) * 10);
+      }
+      return result[page - 1];
+    }
+    return products;
   }
 
   async sortByPriceASC({ page }) {
@@ -109,7 +125,7 @@ export class ProductsService {
     const products = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
         where: { product_id: el.product_id },
-        relations: ['productCategory'],
+        relations: ['productCategory', 'productImages'],
       });
     });
 
@@ -137,7 +153,7 @@ export class ProductsService {
     const result = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
         where: { product_id: el.product_id },
-        relations: ['productCategory'],
+        relations: ['productCategory', 'productImages'],
       });
     });
     return result;
@@ -235,9 +251,6 @@ export class ProductsService {
 
   //-------------------------*삭제*----------------------------//
   async delete({ context, productId }) {
-    const result = await this.productsRepository.softDelete({
-      product_id: productId,
-    });
     const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
@@ -245,6 +258,15 @@ export class ProductsService {
     if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
+
+    await this.productImageRepository.delete({
+      product: productId,
+    });
+
+    const result = await this.productsRepository.delete({
+      product_id: productId,
+    });
+
     return result.affected ? true : false;
   }
 
@@ -254,7 +276,7 @@ export class ProductsService {
     product,
     updateProductInput,
   }: IProductsServiceUpdate) {
-    const { productCategoryId, ...products } = updateProductInput;
+    const { productImages, productCategoryId, ...rest } = updateProductInput;
 
     const user = await this.usersRepository.findOne({
       //
@@ -269,12 +291,33 @@ export class ProductsService {
         category_id: productCategoryId,
       },
     });
-    const result = this.productsRepository.save({
-      ...product,
+    const result = await this.productsRepository.save({
+      product_id: product.product_id,
+      ...rest,
       productCategory: {
         ...categoryResult,
       },
     });
+
+    if (productImages) {
+      await Promise.all(
+        productImages.map((el, i) => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              const newImage = await this.productImageRepository.save({
+                url: el,
+                isMain: i === 0 ? true : false,
+                product: { product_id: result.product_id },
+              });
+              resolve(newImage);
+            } catch (err) {
+              reject(err);
+            }
+          });
+        }),
+      );
+    }
+
     return result;
   }
 }

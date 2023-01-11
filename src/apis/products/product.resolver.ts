@@ -37,8 +37,11 @@ export class ProductsResolver {
 
   //soft delete로 삭제된 데이터들도 모두 나오도록
   @Query(() => [Product])
-  fetchProductsWithDeleted(): Promise<Product[]> {
-    return this.productsService.findAllWithDelete();
+  fetchCategory(
+    @Args('cateId') cateId: string,
+    @Args('page') page: number,
+  ): Promise<Product[]> {
+    return this.productsService.findCategory({ cateId, page });
   }
 
   @Query(() => [Product])
