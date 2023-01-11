@@ -9,7 +9,6 @@ type User {
   phone: String!
   address: String!
   add_detail: String!
-  YoramPoint: Int!
   point: Int!
   amount: Int!
   role: USER_ENUM!
@@ -30,7 +29,6 @@ type Payment {
   etc2: String
   user: User!
   createdAt: DateTime!
-  YoramPoint: Int!
 }
 
 enum PAYMENT_STATUS_ENUM {
@@ -96,6 +94,8 @@ type ProductCart {
   id: String!
   createdAt: DateTime!
   quantity: Int!
+  etc1Value: String
+  etc2Value: String
   user: User!
   product: Product!
 }
@@ -137,7 +137,7 @@ type Mutation {
   logout: String!
   createProductCategory(name: String!): ProductCategory!
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
-  createProductCart(productId: String!): ProductCart!
+  createProductCart(productId: String!, etc1Value: String!, etc2Value: String!): ProductCart!
   deleteProductCart(productId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!

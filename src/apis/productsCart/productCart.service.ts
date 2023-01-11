@@ -23,7 +23,7 @@ export class PorductCartService {
 
   //장바구니 생성하면서 같은 상품을 담으면 수량 증가
 
-  async create({ context, product_id }) {
+  async create({ context, product_id, etc1Value, etc2Value }) {
     const isProduct = await this.productCartRepository
       .createQueryBuilder()
       .select()
@@ -40,6 +40,8 @@ export class PorductCartService {
       result = await this.productCartRepository.save({
         user: context.req.user.id,
         product: product_id,
+        etc1Value,
+        etc2Value,
       });
     } else {
       result = await this.productCartRepository.save({
@@ -85,20 +87,9 @@ export class PorductCartService {
     //   relations: ['user', 'product'],
     // });
 
-    let result;
-    console.log(product, product_id, context.req.user.id);
-
-    if (product.quantity > 1) {
-      result = await this.productCartRepository.save({
-        id: product.id,
-        quantity: product.quantity - 1,
-      });
-      return result;
-    } else {
-      result = await this.productCartRepository.delete({
-        id: product.id,
-      });
-      return result.affected ? true : false;
-    }
+    const result = await this.productCartRepository.delete({
+      id: product.id,
+    });
+    return result.affected ? true : false;
   }
 }
