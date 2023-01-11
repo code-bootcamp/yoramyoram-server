@@ -120,7 +120,7 @@ export class UsersService {
       },
     });
     return user;
-
+  }
   updateUser({ context, updateUserInput }) {
     const result = this.userRepository.save({
       id: context.req.user.id,
