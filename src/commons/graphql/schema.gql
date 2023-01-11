@@ -101,13 +101,15 @@ type ProductCart {
 }
 
 type Query {
-  fetchComments: [Comment!]!
+  fetchCommentsMain: [Comment!]!
+  fetchComments(productId: String!, page: Float!): [Comment!]!
+  fetchCommentsCount(productId: String!): Int!
   fetchComment(commentId: String!): Comment!
-  fetchCommentsWithDeleted: [Comment!]!
-  fetchProducts(page: Float!): [Product!]!
+  fetchProducts(cateId: String, page: Float!): [Product!]!
+  fetchProductsCount(cateId: String): Int!
   searchProducts(word: String!, page: Float!): [Product!]!
+  searchProductsCount(word: String!): Int!
   fetchProduct(productId: String!): Product!
-  fetchCategory(cateId: String!, page: Float!): [Product!]!
   sortByPriceASC(page: Float!): [Product!]!
   sortByPriceDESC(page: Float!): [Product!]!
   sortByCommentsASC(page: Float!): [Product!]!
