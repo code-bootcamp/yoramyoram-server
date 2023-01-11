@@ -56,11 +56,11 @@ export class User {
 
   @Column({ default: 0 })
   @Field(() => Int)
-  YoramPoint: number;
+  point: number;
 
   @Column({ default: 0 })
   @Field(() => Int)
-  point: number;
+  amount: number;
 
   @Column({ type: 'enum', enum: USER_ENUM })
   @Field(() => USER_ENUM)

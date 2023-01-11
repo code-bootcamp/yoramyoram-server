@@ -10,6 +10,7 @@ type User {
   address: String!
   add_detail: String!
   point: Int!
+  amount: Int!
   role: USER_ENUM!
 }
 
@@ -24,8 +25,8 @@ type Payment {
   status: PAYMENT_STATUS_ENUM!
   point: Int!
   amount: Int!
-  etc1: String!
-  etc2: String!
+  etc1: String
+  etc2: String
   user: User!
   createdAt: DateTime!
 }
@@ -115,6 +116,7 @@ type Query {
   fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
   fetchLoginUser: User!
+  fetchUserPoint: User!
 }
 
 type Mutation {
@@ -132,15 +134,15 @@ type Mutation {
   createProductCategory(name: String!): ProductCategory!
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
   createProductCart(productId: String!): ProductCart!
-  deleteProductCart(productId: String!): ProductCart!
+  deleteProductCart(productId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
   deleteUser: Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
-  createPayment(impUid: String!, point: Int!): Payment!
-  canclePayment(impUid: String!, point: Int!): Payment!
+  createPayment(impUid: String!, point: Int!, etc1: String!, etc2: String!): Payment!
+  canclePayment(impUid: String!, point: Int!, etc1: String!, etc2: String!): Payment!
 }
 
 """The `Upload` scalar type represents a file upload."""
