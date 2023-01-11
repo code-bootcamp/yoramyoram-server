@@ -21,8 +21,15 @@ export class ProductCartResolver {
     //
     @Context() context: IContext,
     @Args('productId') product_id: string,
+    @Args('etc1Value') etc1Value: string,
+    @Args('etc2Value') etc2Value: string,
   ) {
-    return await this.productCartService.create({ context, product_id });
+    return await this.productCartService.create({
+      context,
+      product_id,
+      etc1Value,
+      etc2Value,
+    });
   }
 
   @UseGuards(GqlAuthAccessGuard)
