@@ -114,7 +114,8 @@ type Query {
   sortByCommentsASC(page: Float!): [Product!]!
   sortByCommentsDESC(page: Float!): [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
-  fetchProductCart: [ProductCart!]!
+  fetchProductCart(page: Float!): [ProductCart!]!
+  fetchProductCartCount: Int!
   findUserEmail(name: String!, phone: String!): String!
   fetchLoginUser: User!
   fetchUserPoint: User!

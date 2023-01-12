@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   GqlAuthAccessGuard,
   GqlAuthRefreshGuard,
@@ -36,9 +36,19 @@ export class ProductCartResolver {
   @Query(() => [ProductCart])
   async fetchProductCart(
     @Context() context: IContext, //
+    @Args('page') page: number,
   ) {
     const user = context.req.user;
-    return await this.productCartService.fetchCart({ user });
+    return await this.productCartService.fetchCart({ user, page });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => Int)
+  fetchProductCartCount(
+    @Context() context: IContext, //
+  ): Promise<number> {
+    const user = context.req.user;
+    return this.productCartService.findAllCount({ user });
   }
 
   @UseGuards(GqlAuthAccessGuard)
