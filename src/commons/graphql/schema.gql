@@ -1,0 +1,218 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  add_detail: String!
+  cartTotal: Int!
+  point: Int!
+  amount: Int!
+  role: USER_ENUM!
+}
+
+enum USER_ENUM {
+  USER
+  ADMIN
+}
+
+type Payment {
+  id: String!
+  impUid: String!
+  status: PAYMENT_STATUS_ENUM!
+  point: Int!
+  amount: Int!
+  etc1: String
+  etc2: String
+  user: User!
+  createdAt: DateTime!
+}
+
+enum PAYMENT_STATUS_ENUM {
+  PAYMENT
+  CANCEL
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type ProductImage {
+  productImage_id: String!
+  url: String!
+  isMain: Boolean!
+  product: Product!
+}
+
+type ProductCategory {
+  category_id: String!
+  category: String!
+}
+
+type Product {
+  product_id: String!
+  name: String!
+  price: Int!
+  wishListCount: Int!
+  commentCount: Int!
+  description: String!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
+  detailContent: String!
+  createdAt: DateTime!
+  productImages: [ProductImage!]!
+  productCategory: ProductCategory!
+  payment: Payment!
+}
+
+type ProductWishlist {
+  productwishlist_id: String!
+  isDib: Boolean!
+  user: User!
+  product: Product!
+}
+
+type Comment {
+  comment_id: String!
+  star: Int!
+  content: String!
+  createdAt: DateTime!
+  isDeleted: Boolean!
+  user: User!
+  product: Product!
+  payment: Payment!
+}
+
+type ProductCart {
+  id: String!
+  createdAt: DateTime!
+  quantity: Int!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
+  user: User!
+  product: Product!
+}
+
+type Query {
+  fetchCommentsMain: [Comment!]!
+  fetchComments(productId: String!, page: Float!): [Comment!]!
+  fetchCommentsCount(productId: String!): Int!
+  fetchComment(commentId: String!): Comment!
+  fetchProducts(cateId: String, page: Float!): [Product!]!
+  fetchProductsCount(cateId: String): Int!
+  searchProducts(word: String!, page: Float!): [Product!]!
+  searchProductsCount(word: String!): Int!
+  fetchProduct(productId: String!): Product!
+  sortByPriceASC(page: Float!): [Product!]!
+  sortByPriceDESC(page: Float!): [Product!]!
+  sortByCommentsASC(page: Float!): [Product!]!
+  sortByCommentsDESC(page: Float!): [Product!]!
+  fetchmyWishlist: [ProductWishlist!]!
+  fetchProductCart(page: Float!): [ProductCart!]!
+  fetchProductCartCount: Int!
+  fetchProductCartTotalAmount: Int!
+  findUserEmail(name: String!, phone: String!): String!
+  fetchLoginUser: User!
+  fetchUserPoint: User!
+}
+
+type Mutation {
+  uploadImage(images: [Upload!]!): [String!]!
+  uploadDetailImage(images: [Upload!]!): [String!]!
+  createComment(createCommentInput: CreateCommentInput!): Comment!
+  udpateComment(commentId: String!, updateCommentInput: UpdateCommentInput!): Comment!
+  deleteComment(commentId: String!): Boolean!
+  createProduct(createProductInput: CreateProductInput!): Product!
+  deleteProduct(productId: String!): Boolean!
+  updateProduct(productId: String!, updateProductInput: UpdateProductInput!): Product!
+  login(email: String!, password: String!): String!
+  restoreAccessToken: String!
+  logout: String!
+  createProductCategory(name: String!): ProductCategory!
+  addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
+  createProductCart(productId: String!, etc1Name: String, etc1Value: String, etc2Name: String, etc2Value: String): ProductCart!
+  deleteProductCart(productCartId: String!): Boolean!
+  createUser(createUserInput: CreateUserInput!): User!
+  findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
+  updatePassword(password: String!, phone: String!): String!
+  updateLoginUser(updateUserInput: updateUserInput!): User!
+  deleteUser: Boolean!
+  sendTokentoPhone(phone: String!): String!
+  checkTokenPhone(phone: String!, phoneToken: String!): String!
+  createPayment(impUid: String!, point: Int!, etc1: String!, etc2: String!): Payment!
+  canclePayment(impUid: String!, point: Int!, etc1: String!, etc2: String!): Payment!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input CreateCommentInput {
+  star: Int!
+  content: String!
+  productId: String!
+}
+
+input UpdateCommentInput {
+  star: Int
+  content: String
+  productId: String
+}
+
+input CreateProductInput {
+  name: String!
+  price: Int!
+  description: String!
+  productImages: [String!]!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
+  detailContent: String!
+  productCategoryId: String!
+}
+
+input UpdateProductInput {
+  name: String
+  price: Int
+  description: String
+  productImages: [String!]
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
+  detailContent: String
+  productCategoryId: String
+}
+
+input CreateProductWishInput {
+  productId: String!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  password: String!
+  add_detail: String!
+  role: USER_ENUM!
+}
+
+input updateUserInput {
+  name: String
+  email: String
+  phone: String
+  address: String
+  password: String
+  add_detail: String
+  role: USER_ENUM
+}

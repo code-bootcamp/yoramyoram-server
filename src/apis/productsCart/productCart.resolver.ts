@@ -56,6 +56,15 @@ export class ProductCartResolver {
   }
 
   @UseGuards(GqlAuthAccessGuard)
+  @Query(() => Int)
+  fetchProductCartTotalAmount(
+    @Context() context: IContext, //
+  ) {
+    const user = context.req.user;
+    return this.productCartService.findTotalAmount({ user });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   async deleteProductCart(
     @Context() context: IContext,
