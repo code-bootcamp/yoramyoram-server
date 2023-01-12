@@ -23,7 +23,14 @@ export class PorductCartService {
 
   //장바구니 생성하면서 같은 상품을 담으면 수량 증가
 
-  async create({ context, product_id, etc1Value, etc2Value }) {
+  async create({
+    context,
+    product_id,
+    etc1Name,
+    etc1Value,
+    etc2Name,
+    etc2Value,
+  }) {
     const isProduct = await this.productCartRepository
       .createQueryBuilder()
       .select()
@@ -33,17 +40,19 @@ export class PorductCartService {
       })
       .getOne();
 
-    //console.log(isProduct);
-
     let result;
     if (!isProduct) {
+      //상품이 장바구니에 없으면 카트에 추가
       result = await this.productCartRepository.save({
         user: context.req.user.id,
         product: product_id,
-        etc1Value,
-        etc2Value,
+        etc1Name: etc1Name !== null ? etc1Name : '',
+        etc1Value: etc1Value !== null ? etc1Value : '',
+        etc2Name: etc2Name !== null ? etc2Name : '',
+        etc2Value: etc2Value !== null ? etc2Value : '',
       });
     } else {
+      //상품이 장바구니에 이미 있으면 갯수 올려주기
       result = await this.productCartRepository.save({
         id: isProduct.id,
         quantity: isProduct.quantity + 1,
@@ -54,21 +63,46 @@ export class PorductCartService {
 
   //로그인한 유저의 장바구니 목록 보여주기
 
-  async fetchCart({ user: _user }) {
+  async fetchCart({ user: _user, page }) {
     const user = await this.productCartRepository
       .createQueryBuilder()
       .where('userId =:userId', { userId: _user.id })
       .getMany();
 
-    const result = user.map(async (el) => {
+    const cart = user.map(async (el) => {
       return await this.productCartRepository.findOne({
         where: { id: el.id },
         relations: ['product', 'user', 'product.productImages'],
       });
     });
-    return result;
+
+    if (cart.length > 5) {
+      const pageNum = Math.ceil(cart.length / 5);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = cart.slice(i * 5, (i + 1) * 5);
+      }
+      // console.log(result[0].length, result[1].length);
+      return result[page - 1];
+    }
+    return cart;
   }
-  //삭제 이미 있는 상품은 갯수 줄이기
+
+  async findAllCount({ user: _user }): Promise<number> {
+    const user = await this.productCartRepository
+      .createQueryBuilder()
+      .where('userId =:userId', { userId: _user.id })
+      .getMany();
+
+    const cart = user.map(async (el) => {
+      return await this.productCartRepository.findOne({
+        where: { id: el.id },
+        relations: ['product', 'user', 'product.productImages'],
+      });
+    });
+
+    return cart.length;
+  }
 
   async delete({ context, productCartId }) {
     const product = await this.productCartRepository
