@@ -46,9 +46,9 @@ export class User {
   @Field(() => String)
   add_detail: string;
 
-  // @Column()
-  // @Field(() => String)
-  // birth: string;
+  @Column({ default: 0 })
+  @Field(() => Int)
+  cartTotal: number;
 
   @DeleteDateColumn()
   // @Field(() => Date)
