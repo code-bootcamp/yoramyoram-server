@@ -38,8 +38,8 @@ export class ProductCartResolver {
   @Mutation(() => Boolean)
   async deleteProductCart(
     @Context() context: IContext,
-    @Args('productId') product_id: string,
+    @Args('productCartId') productCartId: string,
   ) {
-    return await this.productCartService.delete({ context, product_id });
+    return await this.productCartService.delete({ context, productCartId });
   } //
 }

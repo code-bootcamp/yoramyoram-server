@@ -2,9 +2,6 @@ import { InputType, Field, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateCommentInput {
-  @Field(() => String)
-  title: string;
-
   @Field(() => Int)
   star: number;
 
