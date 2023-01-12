@@ -9,7 +9,9 @@ type User {
   phone: String!
   address: String!
   add_detail: String!
+  cartTotal: Int!
   point: Int!
+  amount: Int!
   role: USER_ENUM!
 }
 
@@ -24,8 +26,8 @@ type Payment {
   status: PAYMENT_STATUS_ENUM!
   point: Int!
   amount: Int!
-  etc1: String!
-  etc2: String!
+  etc1: String
+  etc2: String
   user: User!
   createdAt: DateTime!
 }
@@ -79,7 +81,6 @@ type ProductWishlist {
 
 type Comment {
   comment_id: String!
-  title: String!
   star: Int!
   content: String!
   createdAt: DateTime!
@@ -93,28 +94,35 @@ type ProductCart {
   id: String!
   createdAt: DateTime!
   quantity: Int!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
   user: User!
   product: Product!
 }
 
 type Query {
-  fetchComments: [Comment!]!
+  fetchCommentsMain: [Comment!]!
+  fetchComments(productId: String!, page: Float!): [Comment!]!
+  fetchCommentsCount(productId: String!): Int!
   fetchComment(commentId: String!): Comment!
-  fetchCommentsWithDeleted: [Comment!]!
-  fetchProducts(page: Float!): [Product!]!
+  fetchProducts(cateId: String, page: Float!): [Product!]!
+  fetchProductsCount(cateId: String): Int!
   searchProducts(word: String!, page: Float!): [Product!]!
+  searchProductsCount(word: String!): Int!
   fetchProduct(productId: String!): Product!
-  fetchProductsWithDeleted: [Product!]!
   sortByPriceASC(page: Float!): [Product!]!
   sortByPriceDESC(page: Float!): [Product!]!
   sortByCommentsASC(page: Float!): [Product!]!
   sortByCommentsDESC(page: Float!): [Product!]!
-  sortByCreatedAtASC(page: Float!): [Product!]!
-  sortByCreatedAtDESC(page: Float!): [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
-  fetchProductCart: [ProductCart!]!
+  fetchProductCart(page: Float!): [ProductCart!]!
+  fetchProductCartCount: Int!
+  fetchProductCartTotalAmount: Int!
   findUserEmail(name: String!, phone: String!): String!
   fetchLoginUser: User!
+  fetchUserPoint: User!
 }
 
 type Mutation {
@@ -131,30 +139,29 @@ type Mutation {
   logout: String!
   createProductCategory(name: String!): ProductCategory!
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
-  createProductCart(productId: String!): ProductCart!
-  deleteProductCart(productId: String!): ProductCart!
+  createProductCart(productId: String!, etc1Name: String, etc1Value: String, etc2Name: String, etc2Value: String): ProductCart!
+  deleteProductCart(productCartId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
+  updateLoginUser(updateUserInput: updateUserInput!): User!
   deleteUser: Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
-  createPayment(impUid: String!, point: Int!): Payment!
-  canclePayment(impUid: String!, point: Int!): Payment!
+  createPayment(impUid: String!, point: Int!, etc1: String!, etc2: String!): Payment!
+  canclePayment(impUid: String!, point: Int!, etc1: String!, etc2: String!): Payment!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
 input CreateCommentInput {
-  title: String!
   star: Int!
   content: String!
   productId: String!
 }
 
 input UpdateCommentInput {
-  title: String
   star: Int
   content: String
   productId: String
@@ -188,7 +195,6 @@ input UpdateProductInput {
 
 input CreateProductWishInput {
   productId: String!
-  userId: String!
 }
 
 input CreateUserInput {
@@ -199,4 +205,14 @@ input CreateUserInput {
   password: String!
   add_detail: String!
   role: USER_ENUM!
+}
+
+input updateUserInput {
+  name: String
+  email: String
+  phone: String
+  address: String
+  password: String
+  add_detail: String
+  role: USER_ENUM
 }

@@ -12,7 +12,6 @@ import {
   IProductsServiceUpdate,
 } from './interfaces/products-service.interface';
 import { ProductCategory } from '../productsCategories/entities/productCategory.entity';
-import { Comment } from '../comments/entities/comment.entity';
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 import { ProductImage } from '../productImages/entities/productImage.entity';
 import { User } from '../user/entities/user.entity';
@@ -38,24 +37,73 @@ export class ProductsService {
   ) {}
 
   //-------------------------*조회*----------------------------//
-  findAll({ page }): Promise<Product[]> {
-    return this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      relations: ['productCategory'],
-    });
+  async findAll({ cateId, page }): Promise<Product[]> {
+    let products = [];
+    if (cateId) {
+      products = await this.productsRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.productImages', 'productImages')
+        .where('productCategoryCategoryId = :productCategoryCategoryId', {
+          productCategoryCategoryId: cateId,
+        })
+        .orderBy('createdAt', 'DESC')
+        .getMany();
+
+      if (products.length > 12) {
+        const pageNum = Math.ceil(products.length / 12);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = products.slice(i * 12, (i + 1) * 12);
+        }
+        return result[page - 1];
+      }
+      return products;
+    } else {
+      products = await this.productsRepository.find({
+        take: 12,
+        skip: (page - 1) * 12,
+        relations: ['productCategory', 'productImages'],
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+      return products;
+    }
+  }
+
+  async findAllCount({ cateId }): Promise<number> {
+    let products = [];
+    if (cateId) {
+      products = await this.productsRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.productImages', 'productImages')
+        .where('productCategoryCategoryId = :productCategoryCategoryId', {
+          productCategoryCategoryId: cateId,
+        })
+        .getMany();
+    } else {
+      products = await this.productsRepository.find({
+        relations: ['productCategory', 'productImages'],
+      });
+    }
+
+    return products.length;
   }
 
   async searchAll({ word, page }): Promise<Product[]> {
-    const products = await this.productsRepository.findBy({
-      name: Like(`%${word}%`),
+    const products = await this.productsRepository.find({
+      where: { name: Like(`%${word}%`) },
+      relations: ['productCategory', 'productImages'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
 
-    if (products.length > 10) {
-      const pageNum = Math.ceil(products.length / 10);
+    if (products.length > 12) {
+      const pageNum = Math.ceil(products.length / 12);
       const result = new Array(pageNum);
       for (let i = 0; i < pageNum; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
+        result[i] = products.slice(i * 12, (i + 1) * 12);
       }
       // console.log(result[0].length, result[1].length);
       return result[page - 1];
@@ -63,35 +111,42 @@ export class ProductsService {
     return products;
   }
 
+  async searchAllCount({ word }): Promise<number> {
+    const products = await this.productsRepository.find({
+      where: { name: Like(`%${word}%`) },
+      relations: ['productCategory', 'productImages'],
+    });
+
+    return products.length;
+  }
+
   findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
     return this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory'],
+      relations: ['productCategory', 'productImages'],
     });
-  }
-
-  findAllWithDelete(): Promise<Product[]> {
-    return this.productsRepository.createQueryBuilder().withDeleted().getMany();
   }
 
   async sortByPriceASC({ page }) {
     const list = await this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
+      take: 12,
+      skip: (page - 1) * 12,
       order: {
         price: 'ASC',
       },
+      relations: ['productCategory', 'productImages'],
     });
     return list;
   }
 
   async sortByPriceDESC({ page }) {
     const list = await this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
+      take: 12,
+      skip: (page - 1) * 12,
       order: {
         price: 'DESC',
       },
+      relations: ['productCategory', 'productImages'],
     });
     return list;
   }
@@ -100,8 +155,8 @@ export class ProductsService {
     const ManyComments = await this.productsRepository
       .createQueryBuilder()
       .select('product_id, name, commentCount')
-      .take(10)
-      .skip((page - 1) * 10)
+      .take(12)
+      .skip((page - 1) * 12)
       .groupBy('product_id')
       .orderBy('commentCount', 'ASC')
       .getRawMany();
@@ -109,15 +164,15 @@ export class ProductsService {
     const products = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
         where: { product_id: el.product_id },
-        relations: ['productCategory'],
+        relations: ['productCategory', 'productImages'],
       });
     });
 
-    if (products.length > 10) {
-      const pageNum = Math.ceil(products.length / 10);
+    if (products.length > 12) {
+      const pageNum = Math.ceil(products.length / 12);
       const result = new Array(pageNum);
       for (let i = 0; i < pageNum; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
+        result[i] = products.slice(i * 12, (i + 1) * 12);
       }
       return result[page - 1];
     }
@@ -128,8 +183,8 @@ export class ProductsService {
     const ManyComments = await this.productsRepository
       .createQueryBuilder()
       .select('product_id, name, commentCount')
-      .take(10)
-      .skip((page - 1) * 10)
+      .take(12)
+      .skip((page - 1) * 12)
       .groupBy('product_id')
       .orderBy('commentCount', 'DESC')
       .getRawMany();
@@ -137,50 +192,10 @@ export class ProductsService {
     const result = ManyComments.map(async (el) => {
       return this.productsRepository.findOne({
         where: { product_id: el.product_id },
-        relations: ['productCategory'],
+        relations: ['productCategory', 'productImages'],
       });
     });
     return result;
-  }
-
-  async sortByCreatedAtASC({ page }) {
-    const products = await this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      order: {
-        createdAt: 'ASC',
-      },
-    });
-
-    if (products.length > 10) {
-      const pageNum = Math.ceil(products.length / 10);
-      const result = new Array(pageNum);
-      for (let i = 0; i < pageNum; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
-      }
-      return result[page - 1];
-    }
-    return products;
-  }
-
-  async sortByCreatedAtDESC({ page }) {
-    const products = await this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      order: {
-        createdAt: 'DESC',
-      },
-    });
-
-    if (products.length > 10) {
-      const page = Math.ceil(products.length / 10);
-      const result = new Array(page);
-      for (let i = 0; i < page; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
-      }
-      return result[page - 1];
-    }
-    return products;
   }
 
   //-------------------------*생성*----------------------------//
@@ -188,7 +203,8 @@ export class ProductsService {
     createProductInput,
     context,
   }: IProductsServiceCreate): Promise<Product> {
-    const { productImages, productCategoryId, ...product } = createProductInput;
+    const { productImages, productCategoryId, etc1Name, etc2Name, ...product } =
+      createProductInput;
 
     const user = await this.usersRepository.findOne({
       //
@@ -210,6 +226,8 @@ export class ProductsService {
     //제품등록
     const result = await this.productsRepository.save({
       ...product,
+      etc1Name: etc1Name === '옵션을 선택하세요.' ? '' : etc1Name,
+      etc2Name: etc2Name === '옵션을 선택하세요.' ? '' : etc2Name,
       productCategory: { category_id: productCategoryId },
     });
 
@@ -235,9 +253,6 @@ export class ProductsService {
 
   //-------------------------*삭제*----------------------------//
   async delete({ context, productId }) {
-    const result = await this.productsRepository.softDelete({
-      product_id: productId,
-    });
     const user = await this.usersRepository.findOne({
       //
       where: { id: context.req.user.id },
@@ -245,6 +260,15 @@ export class ProductsService {
     if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
+
+    await this.productImageRepository.delete({
+      product: productId,
+    });
+
+    const result = await this.productsRepository.delete({
+      product_id: productId,
+    });
+
     return result.affected ? true : false;
   }
 
@@ -254,7 +278,7 @@ export class ProductsService {
     product,
     updateProductInput,
   }: IProductsServiceUpdate) {
-    const { productCategoryId, ...products } = updateProductInput;
+    const { productImages, productCategoryId, ...rest } = updateProductInput;
 
     const user = await this.usersRepository.findOne({
       //
@@ -269,12 +293,33 @@ export class ProductsService {
         category_id: productCategoryId,
       },
     });
-    const result = this.productsRepository.save({
-      ...product,
+    const result = await this.productsRepository.save({
+      product_id: product.product_id,
+      ...rest,
       productCategory: {
         ...categoryResult,
       },
     });
+
+    if (productImages) {
+      await Promise.all(
+        productImages.map((el, i) => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              const newImage = await this.productImageRepository.save({
+                url: el,
+                isMain: i === 0 ? true : false,
+                product: { product_id: result.product_id },
+              });
+              resolve(newImage);
+            } catch (err) {
+              reject(err);
+            }
+          });
+        }),
+      );
+    }
+
     return result;
   }
 }

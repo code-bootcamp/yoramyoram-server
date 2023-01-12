@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ConsoleLogger,
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -53,21 +54,54 @@ export class PaymentService {
     if (User.point < paymentCheck.point)
       throw new UnprocessableEntityException('결제금액이 부족합니다');
   }
-  async cancel({ impUid, point, user }) {
-    const result = await this.create({
-      impUid,
-      point: -point,
-      user,
-      status: PAYMENT_STATUS_ENUM.CANCEL,
-    });
-    return result;
+  async cancel({ impUid, point, user: _user, etc1, etc2 }) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    await queryRunner.startTransaction('SERIALIZABLE');
+
+    try {
+      const payment = this.paymentRepository.create({
+        impUid,
+        point,
+        user: _user,
+        status: PAYMENT_STATUS_ENUM.CANCEL,
+        etc1,
+        etc2,
+      });
+      const result = await queryRunner.manager.save(payment);
+
+      // console.log('id' + _user.id);
+      const user = await queryRunner.manager.findOne(User, {
+        where: { id: _user.id },
+        lock: { mode: 'pessimistic_write' },
+      });
+      // console.log('user' + user);
+      await queryRunner.manager.update(
+        User,
+        { id: _user.id },
+        {
+          amount: user.amount - point,
+          point: user.point - point * 0.1,
+        },
+      );
+      await queryRunner.commitTransaction();
+
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
+
   async create({
     impUid,
     point,
-
     user: _user,
-    status = PAYMENT_STATUS_ENUM.PAYMENT, //
+    status = PAYMENT_STATUS_ENUM.PAYMENT,
+    etc1,
+    etc2,
   }) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -79,6 +113,8 @@ export class PaymentService {
       point,
       user: _user,
       status,
+      etc1,
+      etc2,
     });
 
     try {
@@ -91,11 +127,11 @@ export class PaymentService {
       });
       // console.log('user' + user);
       await queryRunner.manager.update(
-        Payment,
+        User,
         { id: _user.id },
         {
-          point: user.point + point,
-          YoramPoint: user.YoramPoint + point * 0.1,
+          amount: user.amount + point,
+          point: user.point + point * 0.1,
         },
       );
       await queryRunner.commitTransaction();

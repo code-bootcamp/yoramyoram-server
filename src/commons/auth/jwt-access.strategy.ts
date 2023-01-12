@@ -25,7 +25,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
     }
 
     return {
-      email: payload.email,
+      role: payload.role,
       id: payload.sub,
       exp: payload.exp,
     };

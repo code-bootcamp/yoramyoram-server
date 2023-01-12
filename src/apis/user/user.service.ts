@@ -3,14 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { findBreakingChanges } from 'graphql';
 import { IUsersServiceFindOne } from './interfaces/users-service.interface';
+import { Comment } from '../comments/entities/comment.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>, //
+
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
 
   async create({ createUserInput }) {
@@ -56,8 +59,9 @@ export class UsersService {
   }
 
   async delete({ userId }) {
-    const result = await this.userRepository.softDelete({ id: userId });
+    await this.commentRepository.delete({ user: userId });
 
+    const result = await this.userRepository.delete({ id: userId });
     return result.affected ? true : false;
   }
 
@@ -99,14 +103,28 @@ export class UsersService {
   }
 
   findLogin({ context }) {
-    console.log(context.req.user);
     const user = this.userRepository.findOne({
       where: {
         id: context.req.user.id,
       },
     });
 
-    console.log(user);
     return user;
+  }
+
+  findPoint({ userId }) {
+    const user = this.userRepository.findOne({
+      where: {
+        point: userId.point,
+      },
+    });
+    return user;
+  }
+  updateUser({ context, updateUserInput }) {
+    const result = this.userRepository.save({
+      id: context.req.user.id,
+      ...updateUserInput,
+    });
+    return result;
   }
 }

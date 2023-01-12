@@ -46,9 +46,9 @@ export class User {
   @Field(() => String)
   add_detail: string;
 
-  // @Column()
-  // @Field(() => String)
-  // birth: string;
+  @Column({ default: 0 })
+  @Field(() => Int)
+  cartTotal: number;
 
   @DeleteDateColumn()
   // @Field(() => Date)
@@ -56,11 +56,11 @@ export class User {
 
   @Column({ default: 0 })
   @Field(() => Int)
-  YoramPoint: number;
+  point: number;
 
   @Column({ default: 0 })
   @Field(() => Int)
-  point: number;
+  amount: number;
 
   @Column({ type: 'enum', enum: USER_ENUM })
   @Field(() => USER_ENUM)
