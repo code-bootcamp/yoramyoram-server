@@ -93,6 +93,8 @@ type ProductCart {
   id: String!
   createdAt: DateTime!
   quantity: Int!
+  etc1Value: String
+  etc2Value: String
   user: User!
   product: Product!
 }
