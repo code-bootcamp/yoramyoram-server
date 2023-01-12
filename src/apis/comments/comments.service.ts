@@ -44,11 +44,11 @@ export class CommentsService {
       .orderBy('createdAt', 'DESC')
       .getMany();
 
-    if (comments.length > 10) {
-      const pageNum = Math.ceil(comments.length / 10);
+    if (comments.length > 5) {
+      const pageNum = Math.ceil(comments.length / 5);
       const result = new Array(pageNum);
       for (let i = 0; i < pageNum; i++) {
-        result[i] = comments.slice(i * 10, (i + 1) * 10);
+        result[i] = comments.slice(i * 5, (i + 1) * 5);
       }
       return result[page - 1];
     }

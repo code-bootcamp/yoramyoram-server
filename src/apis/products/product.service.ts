@@ -48,15 +48,27 @@ export class ProductsService {
         })
         .orderBy('createdAt', 'DESC')
         .getMany();
+
+      if (products.length > 12) {
+        const pageNum = Math.ceil(products.length / 12);
+        const result = new Array(pageNum);
+        for (let i = 0; i < pageNum; i++) {
+          result[i] = products.slice(i * 12, (i + 1) * 12);
+        }
+        return result[page - 1];
+      }
+      return products;
     } else {
       products = await this.productsRepository.find({
-        take: 10,
-        skip: (page - 1) * 10,
+        take: 12,
+        skip: (page - 1) * 12,
         relations: ['productCategory', 'productImages'],
+        order: {
+          createdAt: 'DESC',
+        },
       });
+      return products;
     }
-
-    return products;
   }
 
   async findAllCount({ cateId }): Promise<number> {
@@ -87,11 +99,11 @@ export class ProductsService {
       },
     });
 
-    if (products.length > 10) {
-      const pageNum = Math.ceil(products.length / 10);
+    if (products.length > 12) {
+      const pageNum = Math.ceil(products.length / 12);
       const result = new Array(pageNum);
       for (let i = 0; i < pageNum; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
+        result[i] = products.slice(i * 12, (i + 1) * 12);
       }
       // console.log(result[0].length, result[1].length);
       return result[page - 1];
@@ -117,8 +129,8 @@ export class ProductsService {
 
   async sortByPriceASC({ page }) {
     const list = await this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
+      take: 12,
+      skip: (page - 1) * 12,
       order: {
         price: 'ASC',
       },
@@ -128,8 +140,8 @@ export class ProductsService {
 
   async sortByPriceDESC({ page }) {
     const list = await this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
+      take: 12,
+      skip: (page - 1) * 12,
       order: {
         price: 'DESC',
       },
@@ -141,8 +153,8 @@ export class ProductsService {
     const ManyComments = await this.productsRepository
       .createQueryBuilder()
       .select('product_id, name, commentCount')
-      .take(10)
-      .skip((page - 1) * 10)
+      .take(12)
+      .skip((page - 1) * 12)
       .groupBy('product_id')
       .orderBy('commentCount', 'ASC')
       .getRawMany();
@@ -154,11 +166,11 @@ export class ProductsService {
       });
     });
 
-    if (products.length > 10) {
-      const pageNum = Math.ceil(products.length / 10);
+    if (products.length > 12) {
+      const pageNum = Math.ceil(products.length / 12);
       const result = new Array(pageNum);
       for (let i = 0; i < pageNum; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
+        result[i] = products.slice(i * 12, (i + 1) * 12);
       }
       return result[page - 1];
     }
@@ -169,8 +181,8 @@ export class ProductsService {
     const ManyComments = await this.productsRepository
       .createQueryBuilder()
       .select('product_id, name, commentCount')
-      .take(10)
-      .skip((page - 1) * 10)
+      .take(12)
+      .skip((page - 1) * 12)
       .groupBy('product_id')
       .orderBy('commentCount', 'DESC')
       .getRawMany();
@@ -182,46 +194,6 @@ export class ProductsService {
       });
     });
     return result;
-  }
-
-  async sortByCreatedAtASC({ page }) {
-    const products = await this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      order: {
-        createdAt: 'ASC',
-      },
-    });
-
-    if (products.length > 10) {
-      const pageNum = Math.ceil(products.length / 10);
-      const result = new Array(pageNum);
-      for (let i = 0; i < pageNum; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
-      }
-      return result[page - 1];
-    }
-    return products;
-  }
-
-  async sortByCreatedAtDESC({ page }) {
-    const products = await this.productsRepository.find({
-      take: 10,
-      skip: (page - 1) * 10,
-      order: {
-        createdAt: 'DESC',
-      },
-    });
-
-    if (products.length > 10) {
-      const page = Math.ceil(products.length / 10);
-      const result = new Array(page);
-      for (let i = 0; i < page; i++) {
-        result[i] = products.slice(i * 10, (i + 1) * 10);
-      }
-      return result[page - 1];
-    }
-    return products;
   }
 
   //-------------------------*생성*----------------------------//

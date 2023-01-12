@@ -80,7 +80,6 @@ type ProductWishlist {
 
 type Comment {
   comment_id: String!
-  title: String!
   star: Int!
   content: String!
   createdAt: DateTime!
@@ -114,8 +113,6 @@ type Query {
   sortByPriceDESC(page: Float!): [Product!]!
   sortByCommentsASC(page: Float!): [Product!]!
   sortByCommentsDESC(page: Float!): [Product!]!
-  sortByCreatedAtASC(page: Float!): [Product!]!
-  sortByCreatedAtDESC(page: Float!): [Product!]!
   fetchmyWishlist: [ProductWishlist!]!
   fetchProductCart: [ProductCart!]!
   findUserEmail(name: String!, phone: String!): String!
@@ -137,8 +134,8 @@ type Mutation {
   logout: String!
   createProductCategory(name: String!): ProductCategory!
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
-  createProductCart(productId: String!, etc1Value: String!, etc2Value: String!): ProductCart!
-  deleteProductCart(productId: String!): Boolean!
+  createProductCart(productId: String!): ProductCart!
+  deleteProductCart(productCartId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
@@ -154,14 +151,12 @@ type Mutation {
 scalar Upload
 
 input CreateCommentInput {
-  title: String!
   star: Int!
   content: String!
   productId: String!
 }
 
 input UpdateCommentInput {
-  title: String
   star: Int
   content: String
   productId: String

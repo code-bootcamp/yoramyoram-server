@@ -70,16 +70,6 @@ export class ProductsResolver {
     return this.productsService.sortByCommentsDESC({ page });
   }
 
-  @Query(() => [Product])
-  sortByCreatedAtASC(@Args('page') page: number) {
-    return this.productsService.sortByCreatedAtASC({ page });
-  }
-
-  @Query(() => [Product])
-  sortByCreatedAtDESC(@Args('page') page: number) {
-    return this.productsService.sortByCreatedAtDESC({ page });
-  }
-
   //-------------------------*생성*----------------------------//
   @UseGuards(GqlAdmminGuard)
   @Mutation(() => Product)
