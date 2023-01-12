@@ -54,21 +54,46 @@ export class PorductCartService {
 
   //로그인한 유저의 장바구니 목록 보여주기
 
-  async fetchCart({ user: _user }) {
+  async fetchCart({ user: _user, page }) {
     const user = await this.productCartRepository
       .createQueryBuilder()
       .where('userId =:userId', { userId: _user.id })
       .getMany();
 
-    const result = user.map(async (el) => {
+    const cart = user.map(async (el) => {
       return await this.productCartRepository.findOne({
         where: { id: el.id },
         relations: ['product', 'user', 'product.productImages'],
       });
     });
-    return result;
+
+    if (cart.length > 5) {
+      const pageNum = Math.ceil(cart.length / 5);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = cart.slice(i * 5, (i + 1) * 5);
+      }
+      // console.log(result[0].length, result[1].length);
+      return result[page - 1];
+    }
+    return cart;
   }
-  //삭제 이미 있는 상품은 갯수 줄이기
+
+  async findAllCount({ user: _user }): Promise<number> {
+    const user = await this.productCartRepository
+      .createQueryBuilder()
+      .where('userId =:userId', { userId: _user.id })
+      .getMany();
+
+    const cart = user.map(async (el) => {
+      return await this.productCartRepository.findOne({
+        where: { id: el.id },
+        relations: ['product', 'user', 'product.productImages'],
+      });
+    });
+
+    return cart.length;
+  }
 
   async delete({ context, productCartId }) {
     const product = await this.productCartRepository
