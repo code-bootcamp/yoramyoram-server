@@ -201,7 +201,8 @@ export class ProductsService {
     createProductInput,
     context,
   }: IProductsServiceCreate): Promise<Product> {
-    const { productImages, productCategoryId, ...product } = createProductInput;
+    const { productImages, productCategoryId, etc1Name, etc2Name, ...product } =
+      createProductInput;
 
     const user = await this.usersRepository.findOne({
       //
@@ -223,6 +224,8 @@ export class ProductsService {
     //제품등록
     const result = await this.productsRepository.save({
       ...product,
+      etc1Name: etc1Name === '옵션을 선택하세요.' ? '' : etc1Name,
+      etc2Name: etc2Name === '옵션을 선택하세요.' ? '' : etc2Name,
       productCategory: { category_id: productCategoryId },
     });
 
