@@ -1,4 +1,9 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
@@ -32,13 +37,23 @@ export class PorductCartService {
     etc2Value,
   }) {
     const isProduct = await this.productCartRepository
-      .createQueryBuilder()
-      .select()
+      .createQueryBuilder('cart')
+      .leftJoinAndSelect('cart.product', 'product')
       .where('userId =:userId', { userId: context.req.user.id })
       .andWhere('productProductId =:productProductId ', {
         productProductId: product_id,
       })
       .getOne();
+
+    const user = await this.userRepository.findOne({
+      where: { id: context.req.user.id },
+    });
+
+    const product = await this.productsRepository.findOne({
+      where: { product_id: product_id },
+    });
+
+    console.log(isProduct);
 
     let result;
     if (!isProduct) {
@@ -51,11 +66,28 @@ export class PorductCartService {
         etc2Name: etc2Name !== null ? etc2Name : '',
         etc2Value: etc2Value !== null ? etc2Value : '',
       });
+
+      //유저테이블의 장바구니total금액도 추가
+      await this.userRepository.save({
+        id: user.id,
+        cartTotal: user.cartTotal + product.price,
+      });
     } else {
       //상품이 장바구니에 이미 있으면 갯수 올려주기
       result = await this.productCartRepository.save({
         id: isProduct.id,
         quantity: isProduct.quantity + 1,
+        etc1Name: etc1Name !== null ? etc1Name : '',
+        etc1Value:
+          etc1Name !== null ? isProduct.etc1Value + `,${etc1Value}` : '',
+        etc2Name: etc2Name !== null ? etc2Name : '',
+        etc2Value:
+          etc2Name !== null ? isProduct.etc2Value + `,${etc2Value}` : '',
+      });
+
+      this.userRepository.save({
+        id: user.id,
+        cartTotal: user.cartTotal + product.price,
       });
     }
     return result;
@@ -82,7 +114,6 @@ export class PorductCartService {
       for (let i = 0; i < pageNum; i++) {
         result[i] = cart.slice(i * 5, (i + 1) * 5);
       }
-      // console.log(result[0].length, result[1].length);
       return result[page - 1];
     }
     return cart;
@@ -104,18 +135,54 @@ export class PorductCartService {
     return cart.length;
   }
 
-  async delete({ context, productCartId }) {
-    const product = await this.productCartRepository
+  async findTotalAmount({ user: _user }) {
+    const user = await this.productCartRepository
       .createQueryBuilder()
-      .select()
+      .where('userId =:userId', { userId: _user.id })
+      .getMany();
+
+    const result = await Promise.all(
+      user.map((el) => {
+        return this.productCartRepository.findOne({
+          where: { id: el.id },
+          relations: ['product', 'user', 'product.productImages'],
+        });
+      }),
+    );
+
+    let sum = 0;
+    for (let i = 0; i < result.length; i++) {
+      sum += Number(result[i].quantity) * Number(result[i].product.price);
+    }
+    return sum;
+  }
+
+  async delete({ context, productCartId }) {
+    const cart = await this.productCartRepository
+      .createQueryBuilder('cart')
+      .leftJoinAndSelect('cart.product', 'product')
       .where('userId =:userId', { userId: context.req.user.id })
       .andWhere('id =:id ', {
         id: productCartId,
       })
       .getOne();
 
+    const user = await this.userRepository.findOne({
+      where: { id: context.req.user.id },
+    });
+
+    if (user.cartTotal < Number(cart.quantity) * Number(cart.product.price)) {
+      throw new UnprocessableEntityException('삭제하려는 금액이 너무 큽니다');
+    }
+
+    this.userRepository.save({
+      id: user.id,
+      cartTotal:
+        user.cartTotal - Number(cart.quantity) * Number(cart.product.price),
+    });
+
     const result = await this.productCartRepository.delete({
-      id: product.id,
+      id: cart.id,
     });
     return result.affected ? true : false;
   }

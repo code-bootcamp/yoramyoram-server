@@ -134,6 +134,7 @@ export class ProductsService {
       order: {
         price: 'ASC',
       },
+      relations: ['productCategory', 'productImages'],
     });
     return list;
   }
@@ -145,6 +146,7 @@ export class ProductsService {
       order: {
         price: 'DESC',
       },
+      relations: ['productCategory', 'productImages'],
     });
     return list;
   }
