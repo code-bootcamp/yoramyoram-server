@@ -23,7 +23,14 @@ export class PorductCartService {
 
   //장바구니 생성하면서 같은 상품을 담으면 수량 증가
 
-  async create({ context, product_id, etc1Value, etc2Value }) {
+  async create({
+    context,
+    product_id,
+    etc1Name,
+    etc1Value,
+    etc2Name,
+    etc2Value,
+  }) {
     const isProduct = await this.productCartRepository
       .createQueryBuilder()
       .select()
@@ -33,17 +40,19 @@ export class PorductCartService {
       })
       .getOne();
 
-    //console.log(isProduct);
-
     let result;
     if (!isProduct) {
+      //상품이 장바구니에 없으면 카트에 추가
       result = await this.productCartRepository.save({
         user: context.req.user.id,
         product: product_id,
-        etc1Value,
-        etc2Value,
+        etc1Name: etc1Name !== null ? etc1Name : '',
+        etc1Value: etc1Value !== null ? etc1Value : '',
+        etc2Name: etc2Name !== null ? etc2Name : '',
+        etc2Value: etc2Value !== null ? etc2Value : '',
       });
     } else {
+      //상품이 장바구니에 이미 있으면 갯수 올려주기
       result = await this.productCartRepository.save({
         id: isProduct.id,
         quantity: isProduct.quantity + 1,

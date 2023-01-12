@@ -21,13 +21,17 @@ export class ProductCartResolver {
     //
     @Context() context: IContext,
     @Args('productId') product_id: string,
-    @Args('etc1Value') etc1Value: string,
-    @Args('etc2Value') etc2Value: string,
+    @Args('etc1Name', { nullable: true }) etc1Name: string,
+    @Args('etc1Value', { nullable: true }) etc1Value: string,
+    @Args('etc2Name', { nullable: true }) etc2Name: string,
+    @Args('etc2Value', { nullable: true }) etc2Value: string,
   ) {
     return await this.productCartService.create({
       context,
       product_id,
+      etc1Name,
       etc1Value,
+      etc2Name,
       etc2Value,
     });
   }
