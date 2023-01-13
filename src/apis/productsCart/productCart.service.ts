@@ -31,6 +31,7 @@ export class PorductCartService {
   async create({
     context,
     product_id,
+    quantity,
     etc1Name,
     etc1Value,
     etc2Name,
@@ -53,14 +54,13 @@ export class PorductCartService {
       where: { product_id: product_id },
     });
 
-    console.log(isProduct);
-
     let result;
     if (!isProduct) {
       //상품이 장바구니에 없으면 카트에 추가
       result = await this.productCartRepository.save({
         user: context.req.user.id,
         product: product_id,
+        quantity: quantity > 1 ? quantity : 1,
         etc1Name: etc1Name !== null ? etc1Name : '',
         etc1Value: etc1Value !== null ? etc1Value : '',
         etc2Name: etc2Name !== null ? etc2Name : '',
@@ -70,13 +70,14 @@ export class PorductCartService {
       //유저테이블의 장바구니total금액도 추가
       await this.userRepository.save({
         id: user.id,
-        cartTotal: user.cartTotal + product.price,
+        cartTotal: user.cartTotal + product.price * quantity,
       });
     } else {
       //상품이 장바구니에 이미 있으면 갯수 올려주기
       result = await this.productCartRepository.save({
         id: isProduct.id,
-        quantity: isProduct.quantity + 1,
+        quantity:
+          quantity > 1 ? isProduct.quantity + quantity : isProduct.quantity + 1,
         etc1Name: etc1Name !== null ? etc1Name : '',
         etc1Value:
           etc1Name !== null ? isProduct.etc1Value + `,${etc1Value}` : '',
@@ -87,7 +88,7 @@ export class PorductCartService {
 
       this.userRepository.save({
         id: user.id,
-        cartTotal: user.cartTotal + product.price,
+        cartTotal: user.cartTotal + product.price * quantity,
       });
     }
     return result;

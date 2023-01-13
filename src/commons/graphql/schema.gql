@@ -49,6 +49,18 @@ type ProductImage {
   product: Product!
 }
 
+type ProductCart {
+  id: String!
+  createdAt: DateTime!
+  quantity: Int!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
+  user: User!
+  product: Product!
+}
+
 type ProductCategory {
   category_id: String!
   category: String!
@@ -68,6 +80,7 @@ type Product {
   detailContent: String!
   createdAt: DateTime!
   productImages: [ProductImage!]!
+  productCart: ProductCart!
   productCategory: ProductCategory!
   payment: Payment!
 }
@@ -88,18 +101,6 @@ type Comment {
   user: User!
   product: Product!
   payment: Payment!
-}
-
-type ProductCart {
-  id: String!
-  createdAt: DateTime!
-  quantity: Int!
-  etc1Name: String
-  etc1Value: String
-  etc2Name: String
-  etc2Value: String
-  user: User!
-  product: Product!
 }
 
 type Query {
@@ -139,7 +140,7 @@ type Mutation {
   logout: String!
   createProductCategory(name: String!): ProductCategory!
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
-  createProductCart(productId: String!, etc1Name: String, etc1Value: String, etc2Name: String, etc2Value: String): ProductCart!
+  createProductCart(productId: String!, quantity: Float!, etc1Name: String, etc1Value: String, etc2Name: String, etc2Value: String): ProductCart!
   deleteProductCart(productCartId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
