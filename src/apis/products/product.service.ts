@@ -15,6 +15,7 @@ import { ProductCategory } from '../productsCategories/entities/productCategory.
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 import { ProductImage } from '../productImages/entities/productImage.entity';
 import { User } from '../user/entities/user.entity';
+import { ProductCart } from '../productsCart/entities/productCart.entity';
 
 @Injectable()
 export class ProductsService {
@@ -31,6 +32,9 @@ export class ProductsService {
 
     @InjectRepository(ProductWishlist)
     private readonly productWishListRepository: Repository<ProductWishlist>,
+
+    @InjectRepository(ProductCart)
+    private readonly productCartRepository: Repository<ProductCart>,
 
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
@@ -254,16 +258,54 @@ export class ProductsService {
   //-------------------------*삭제*----------------------------//
   async delete({ context, productId }) {
     const user = await this.usersRepository.findOne({
-      //
       where: { id: context.req.user.id },
     });
     if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
 
-    await this.productImageRepository.delete({
-      product: productId,
-    });
+    const productCart = await this.productCartRepository
+      .createQueryBuilder('productCart')
+      // .leftJoinAndSelect('product.productCart', 'productCart')
+      .where('productProductId =:productProductId', {
+        productProductId: productId,
+      })
+      .getOne();
+
+    console.log(productCart);
+    if (productCart) {
+      await this.productCartRepository.delete({
+        id: productCart.id,
+      });
+    }
+
+    const productImages = await this.productImageRepository
+      .createQueryBuilder('productImage')
+      .where('productProductId =:productProductId', {
+        productProductId: productId,
+      })
+      .getMany();
+
+    console.log(productImages);
+    // if (productImage) {
+    //   await this.productImageRepository.delete({
+    //     productImage_id: productImage.productImage_id,
+    //   });
+    // }
+    await Promise.all(
+      productImages.map((el, i) => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const newImage = await this.productImageRepository.delete({
+              productImage_id: productImages[i].productImage_id,
+            });
+            resolve(newImage);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }),
+    );
 
     const result = await this.productsRepository.delete({
       product_id: productId,
