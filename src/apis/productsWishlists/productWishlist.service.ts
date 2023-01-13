@@ -48,6 +48,7 @@ export class ProductWishlistService {
     const product = await this.productRepository.findOne({
       where: { product_id: productId },
     });
+
     if (checkDib) {
       await this.productRepository.save({
         product_id: productId,
@@ -63,6 +64,8 @@ export class ProductWishlistService {
   }
 
   findAll(): Promise<ProductWishlist[]> {
-    return this.productWishlistRepository.find({});
+    return this.productWishlistRepository.find({
+      relations: ['product', 'product.productImages'],
+    });
   }
 }
