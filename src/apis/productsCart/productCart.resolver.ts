@@ -5,9 +5,6 @@ import {
   GqlAuthRefreshGuard,
 } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/types/context';
-import { threadId } from 'worker_threads';
-import { Product } from '../products/entities/product.entity';
-import { User } from '../user/entities/user.entity';
 import { ProductCart } from './entities/productCart.entity';
 import { PorductCartService } from './productCart.service';
 
@@ -21,6 +18,7 @@ export class ProductCartResolver {
     //
     @Context() context: IContext,
     @Args('productId') product_id: string,
+    @Args('quantity') quantity: number,
     @Args('etc1Name', { nullable: true }) etc1Name: string,
     @Args('etc1Value', { nullable: true }) etc1Value: string,
     @Args('etc2Name', { nullable: true }) etc2Name: string,
@@ -29,6 +27,7 @@ export class ProductCartResolver {
     return await this.productCartService.create({
       context,
       product_id,
+      quantity,
       etc1Name,
       etc1Value,
       etc2Name,
