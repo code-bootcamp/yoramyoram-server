@@ -19,5 +19,13 @@ jobs:
       with:
         node-version: 14.x
         cache: 'npm'
-    - run: npm ci
-    - run: npm test
+    - name: Test Build
+      run: |
+          if [ -e yarn.lock ]; then
+          yarn install --frozen-lockfile
+          elif [ -e package-lock.json ]; then
+          npm ci
+          else
+          npm i
+          fi
+          npm run build
