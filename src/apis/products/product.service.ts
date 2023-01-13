@@ -53,24 +53,36 @@ export class ProductsService {
         .orderBy('createdAt', 'DESC')
         .getMany();
 
-      if (products.length > 12) {
-        const pageNum = Math.ceil(products.length / 12);
-        const result = new Array(pageNum);
-        for (let i = 0; i < pageNum; i++) {
-          result[i] = products.slice(i * 12, (i + 1) * 12);
+      if (page) {
+        if (products.length > 12) {
+          const pageNum = Math.ceil(products.length / 12);
+          const result = new Array(pageNum);
+          for (let i = 0; i < pageNum; i++) {
+            result[i] = products.slice(i * 12, (i + 1) * 12);
+          }
+          return result[page - 1];
         }
-        return result[page - 1];
       }
       return products;
     } else {
-      products = await this.productsRepository.find({
-        take: 12,
-        skip: (page - 1) * 12,
-        relations: ['productCategory', 'productImages'],
-        order: {
-          createdAt: 'DESC',
-        },
-      });
+      if (page) {
+        products = await this.productsRepository.find({
+          take: 12,
+          skip: (page - 1) * 12,
+          relations: ['productCategory', 'productImages'],
+          order: {
+            createdAt: 'DESC',
+          },
+        });
+      } else {
+        products = await this.productsRepository.find({
+          relations: ['productCategory', 'productImages'],
+          order: {
+            createdAt: 'DESC',
+          },
+        });
+      }
+
       return products;
     }
   }
