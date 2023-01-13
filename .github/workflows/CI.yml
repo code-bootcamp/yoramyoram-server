@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    runs-on: Ubuntu 22.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup node.js 14.x
