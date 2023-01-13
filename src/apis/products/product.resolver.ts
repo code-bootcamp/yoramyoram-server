@@ -19,7 +19,7 @@ export class ProductsResolver {
   @Query(() => [Product])
   fetchProducts(
     @Args('cateId', { nullable: true }) cateId: string,
-    @Args('page') page: number,
+    @Args('page', { nullable: true }) page: number,
   ): Promise<Product[]> {
     return this.productsService.findAll({ cateId, page });
   }
