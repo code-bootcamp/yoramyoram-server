@@ -36,7 +36,7 @@ export class UsersService {
       name,
       email,
       phone,
-      hashedPassword,
+      password: hashedPassword,
       address,
       add_detail,
       role,

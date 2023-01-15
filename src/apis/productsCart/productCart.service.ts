@@ -97,26 +97,13 @@ export class PorductCartService {
   //로그인한 유저의 장바구니 목록 보여주기
 
   async fetchCart({ user: _user, page }) {
-    const user = await this.productCartRepository
-      .createQueryBuilder()
-      .where('userId =:userId', { userId: _user.id })
-      .getMany();
-
-    const cart = user.map(async (el) => {
-      return await this.productCartRepository.findOne({
-        where: { id: el.id },
-        relations: ['product', 'user', 'product.productImages'],
-      });
+    const cart = await this.productCartRepository.find({
+      where: { user: { id: _user.id } },
+      relations: ['product', 'user', 'product.productImages'],
+      take: 5,
+      skip: (page - 1) * 5,
     });
 
-    if (cart.length > 5) {
-      const pageNum = Math.ceil(cart.length / 5);
-      const result = new Array(pageNum);
-      for (let i = 0; i < pageNum; i++) {
-        result[i] = cart.slice(i * 5, (i + 1) * 5);
-      }
-      return result[page - 1];
-    }
     return cart;
   }
 
