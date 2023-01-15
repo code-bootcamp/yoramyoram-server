@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Payment } from 'src/apis/payment/entities/payment.entity';
 import { ProductImage } from 'src/apis/productImages/entities/productImage.entity';
 import { ProductCart } from 'src/apis/productsCart/entities/productCart.entity';
+import { ProductWishlist } from 'src/apis/productsWishlists/entities/productWishlist.entity';
 import {
   Entity,
   Column,
@@ -74,6 +75,13 @@ export class Product {
   @OneToMany(() => ProductCart, (productCart) => productCart.product)
   @Field(() => ProductCart)
   productCart: ProductCart;
+
+  @OneToMany(
+    () => ProductWishlist,
+    (productWishlist) => productWishlist.product,
+  )
+  @Field(() => [ProductWishlist])
+  productWishlist: ProductWishlist[];
 
   @ManyToOne(() => ProductCategory)
   @Field(() => ProductCategory)

@@ -63,6 +63,7 @@ export class ProductsService {
           return result[page - 1];
         }
       }
+
       return products;
     } else {
       if (page) {
@@ -136,11 +137,13 @@ export class ProductsService {
     return products.length;
   }
 
-  findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
-    return this.productsRepository.findOne({
+  async findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
+    const result = await this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory', 'productImages'],
+      relations: ['productCategory', 'productImages', 'productWishlist'],
     });
+    console.log(result);
+    return result;
   }
 
   async sortByPriceASC({ page }) {

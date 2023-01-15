@@ -32,7 +32,7 @@ export class ProductWishlist {
   @Field(() => User)
   user: User;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, (product) => product.productWishlist)
   @Field(() => Product)
   product: Product;
 }
