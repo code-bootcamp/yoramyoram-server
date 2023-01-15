@@ -3,6 +3,7 @@ import { Product } from 'src/apis/products/entities/product.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   DeleteDateColumn,
   Entity,
   ManyToOne,
@@ -22,6 +23,10 @@ export class ProductWishlist {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @CreateDateColumn()
+  @Field(() => Date)
+  createdAt: Date;
 
   @ManyToOne(() => User)
   @Field(() => User)
