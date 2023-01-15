@@ -14,8 +14,11 @@ export class ProductWishlistResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [ProductWishlist])
-  async fetchmyWishlist(): Promise<ProductWishlist[]> {
-    return this.productWishlistService.findAll();
+  async fetchmyWishlist(
+    @Context() context: IContext,
+    @Args('page') page: number,
+  ): Promise<ProductWishlist[]> {
+    return this.productWishlistService.findAll({ context, page });
   }
 
   @UseGuards(GqlAuthAccessGuard)
