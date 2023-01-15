@@ -11,7 +11,7 @@ type User {
   add_detail: String!
   cartTotal: Int!
   point: Int!
-  amount: Int!
+  paid: Int!
   role: USER_ENUM!
 }
 
@@ -22,9 +22,9 @@ enum USER_ENUM {
 
 type Payment {
   id: String!
-  impUid: String!
   status: PAYMENT_STATUS_ENUM!
   point: Int!
+  totalAmount: Int!
   amount: Int!
   etc1: String
   etc2: String
@@ -61,6 +61,14 @@ type ProductCart {
   product: Product!
 }
 
+type ProductWishlist {
+  productwishlist_id: String!
+  isDib: Boolean!
+  createdAt: DateTime!
+  user: User!
+  product: Product!
+}
+
 type ProductCategory {
   category_id: String!
   category: String!
@@ -81,16 +89,9 @@ type Product {
   createdAt: DateTime!
   productImages: [ProductImage!]!
   productCart: ProductCart!
+  productWishlist: [ProductWishlist!]!
   productCategory: ProductCategory!
   payment: Payment!
-}
-
-type ProductWishlist {
-  productwishlist_id: String!
-  isDib: Boolean!
-  createdAt: DateTime!
-  user: User!
-  product: Product!
 }
 
 type Comment {
@@ -150,8 +151,7 @@ type Mutation {
   deleteUser: Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
-  createPayment(impUid: String!, point: Int!, etc1: String!, etc2: String!): Payment!
-  canclePayment(impUid: String!, point: Int!, etc1: String!, etc2: String!): Payment!
+  createPayment(point: Int!, totalAmount: Float!): Payment!
 }
 
 """The `Upload` scalar type represents a file upload."""
