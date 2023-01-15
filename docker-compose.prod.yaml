@@ -1,10 +1,10 @@
 version: '3.7'
 
 services:
-  # kubectl set image deployment/yoramyoram-nestjs yoramyoram-sha256-1=asia.gcr.io/yoramyoram-373201/yoramyoram:0.7.4
+  # kubectl set image deployment/yoramyoram-nestjs yoramyoram-sha256-1=asia.gcr.io/yoramyoram-373201/yoramyoram:0.8.0
   # docker-compose -f docker-compose.prod.yaml build
   my-backend:
-    image: asia.gcr.io/yoramyoram-373201/yoramyoram:0.7.4
+    image: asia.gcr.io/yoramyoram-373201/yoramyoram:0.8.0
     platform: linux/x86_64
     build:
       context: .
@@ -24,3 +24,17 @@ services:
   #     MYSQL_ROOT_PASSWORD: 'root'
   #   ports:
   #     - 3306:3306
+
+  #---------------------------------------------------- 
+# version: '3.7'
+
+# services:
+#   my-backend:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.prod
+#     ports:
+#       - 3000:3000
+#     env_file:
+#       - ./.env.docker
+

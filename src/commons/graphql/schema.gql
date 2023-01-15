@@ -88,6 +88,7 @@ type Product {
 type ProductWishlist {
   productwishlist_id: String!
   isDib: Boolean!
+  createdAt: DateTime!
   user: User!
   product: Product!
 }
@@ -117,7 +118,7 @@ type Query {
   sortByPriceDESC(page: Float!): [Product!]!
   sortByCommentsASC(page: Float!): [Product!]!
   sortByCommentsDESC(page: Float!): [Product!]!
-  fetchmyWishlist: [ProductWishlist!]!
+  fetchmyWishlist(page: Float!): [ProductWishlist!]!
   fetchProductCart(page: Float!): [ProductCart!]!
   fetchProductCartCount: Int!
   fetchProductCartTotalAmount: Int!

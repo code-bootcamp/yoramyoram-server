@@ -291,6 +291,20 @@ export class ProductsService {
       });
     }
 
+    const wishList = await this.productWishListRepository
+      .createQueryBuilder('wishList')
+      .where('productProductId =:productProductId', {
+        productProductId: productId,
+      })
+      .getOne();
+
+    console.log(wishList);
+    if (wishList) {
+      await this.productWishListRepository.delete({
+        productwishlist_id: wishList.productwishlist_id,
+      });
+    }
+
     const productImages = await this.productImageRepository
       .createQueryBuilder('productImage')
       .where('productProductId =:productProductId', {
@@ -299,11 +313,12 @@ export class ProductsService {
       .getMany();
 
     console.log(productImages);
-    // if (productImage) {
+    // if (productImages) {
     //   await this.productImageRepository.delete({
-    //     productImage_id: productImage.productImage_id,
+    //     productImage_id: productImages.productImage_id,
     //   });
     // }
+
     await Promise.all(
       productImages.map((el, i) => {
         return new Promise(async (resolve, reject) => {
@@ -355,7 +370,23 @@ export class ProductsService {
       },
     });
 
+    console.log(productImages);
     if (productImages) {
+      await Promise.all(
+        productImages.map((el, i) => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              const newImage = await this.productImageRepository.delete({
+                productImage_id: product.productImages[i].productImage_id,
+              });
+              resolve(newImage);
+            } catch (err) {
+              reject(err);
+            }
+          });
+        }),
+      );
+
       await Promise.all(
         productImages.map((el, i) => {
           return new Promise(async (resolve, reject) => {
