@@ -22,86 +22,86 @@ export class PaymentService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async checkDuplicate({ impUid }) {
-    const result = await this.paymentRepository.findOne({ where: { impUid } });
+  // async checkDuplicate({ impUid }) {
+  //   const result = await this.paymentRepository.findOne({ where: { impUid } });
 
-    if (result) throw new ConflictException('이미 결제된 아이디입니다.');
-  }
+  //   if (result) throw new ConflictException('이미 결제된 아이디입니다.');
+  // }
 
-  async checkCanaeled({ impUid }) {
-    const paymentStatus = await this.paymentRepository.findOne({
-      where: {
-        impUid,
-        status: PAYMENT_STATUS_ENUM.CANCEL,
-      },
-    });
-    if (paymentStatus) throw new ConflictException('이미취소된 결제 입니다');
-  }
+  // async checkCanaeled({ impUid }) {
+  //   const paymentStatus = await this.paymentRepository.findOne({
+  //     where: {
+  //       impUid,
+  //       status: PAYMENT_STATUS_ENUM.CANCEL,
+  //     },
+  //   });
+  //   if (paymentStatus) throw new ConflictException('이미취소된 결제 입니다');
+  // }
 
   //결제취소 할 수 있는 잔액화인
-  async checkCanCelPayment({ impUid, user }) {
-    const paymentCheck = await this.paymentRepository.findOne({
-      where: {
-        impUid,
-        user: { id: user.id },
-        status: PAYMENT_STATUS_ENUM.PAYMENT,
-      },
-    });
-    if (!paymentCheck)
-      throw new UnprocessableEntityException('결제 기록이 존재하지 않습니다.');
+  // async checkCanCelPayment({ impUid, user }) {
+  //   const paymentCheck = await this.paymentRepository.findOne({
+  //     where: {
+  //       impUid,
+  //       user: { id: user.id },
+  //       status: PAYMENT_STATUS_ENUM.PAYMENT,
+  //     },
+  //   });
+  //   if (!paymentCheck)
+  //     throw new UnprocessableEntityException('결제 기록이 존재하지 않습니다.');
 
-    const User = await this.usersRepository.findOne({ where: { id: user.id } });
-    if (User.point < paymentCheck.point)
-      throw new UnprocessableEntityException('결제금액이 부족합니다');
-  }
-  async cancel({ impUid, point, user: _user, etc1, etc2 }) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
+  //   const User = await this.usersRepository.findOne({ where: { id: user.id } });
+  //   if (User.point < paymentCheck.point)
+  //     throw new UnprocessableEntityException('결제금액이 부족합니다');
+  // }
 
-    await queryRunner.startTransaction('SERIALIZABLE');
+  // async cancel({ impUid, point, user: _user, etc1, etc2 }) {
+  //   const queryRunner = this.dataSource.createQueryRunner();
+  //   await queryRunner.connect();
 
-    try {
-      const payment = this.paymentRepository.create({
-        impUid,
-        point,
-        user: _user,
-        status: PAYMENT_STATUS_ENUM.CANCEL,
-        etc1,
-        etc2,
-      });
-      const result = await queryRunner.manager.save(payment);
+  //   await queryRunner.startTransaction('SERIALIZABLE');
 
-      // console.log('id' + _user.id);
-      const user = await queryRunner.manager.findOne(User, {
-        where: { id: _user.id },
-        lock: { mode: 'pessimistic_write' },
-      });
-      // console.log('user' + user);
-      await queryRunner.manager.update(
-        User,
-        { id: _user.id },
-        {
-          amount: user.amount - point,
-          point: user.point - point * 0.1,
-        },
-      );
-      await queryRunner.commitTransaction();
+  //   try {
+  //     const payment = this.paymentRepository.create({
+  //       impUid,
+  //       point,
+  //       user: _user,
+  //       status: PAYMENT_STATUS_ENUM.CANCEL,
+  //       etc1,
+  //       etc2,
+  //     });
+  //     const result = await queryRunner.manager.save(payment);
 
-      return result;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
-  }
+  //     // console.log('id' + _user.id);
+  //     const user = await queryRunner.manager.findOne(User, {
+  //       where: { id: _user.id },
+  //       lock: { mode: 'pessimistic_write' },
+  //     });
+  //     // console.log('user' + user);
+  //     await queryRunner.manager.update(
+  //       User,
+  //       { id: _user.id },
+  //       {
+  //         amount: user.amount - point,
+  //         point: user.point - point * 0.1,
+  //       },
+  //     );
+  //     await queryRunner.commitTransaction();
+
+  //     return result;
+  //   } catch (error) {
+  //     await queryRunner.rollbackTransaction();
+  //   } finally {
+  //     await queryRunner.release();
+  //   }
+  // }
 
   async create({
-    impUid,
+    // impUid,
     point,
     user: _user,
     status = PAYMENT_STATUS_ENUM.PAYMENT,
-    etc1,
-    etc2,
+    totalAmount,
   }) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -109,13 +109,20 @@ export class PaymentService {
     await queryRunner.startTransaction('SERIALIZABLE');
 
     const payment = this.paymentRepository.create({
-      impUid,
+      // impUid,
       point,
       user: _user,
+      totalAmount,
       status,
-      etc1,
-      etc2,
     });
+
+    const user = await this.usersRepository.findOne({
+      where: { id: _user.id },
+    });
+
+    if (user.point < point) {
+      throw new ConflictException('보유하신 포인트가 충분하지 않습니다');
+    }
 
     try {
       const result = await queryRunner.manager.save(payment);
@@ -125,13 +132,17 @@ export class PaymentService {
         where: { id: _user.id },
         lock: { mode: 'pessimistic_write' },
       });
-      // console.log('user' + user);
+
+      console.log('user' + user.point);
+      console.log(totalAmount * 0.1);
+      console.log(point);
+      console.log(user.point + totalAmount * 0.1 - point);
       await queryRunner.manager.update(
         User,
         { id: _user.id },
         {
-          amount: user.amount + point,
-          point: user.point + point * 0.1,
+          paid: user.paid + totalAmount,
+          point: user.point + totalAmount * 0.1 - point,
         },
       );
       await queryRunner.commitTransaction();

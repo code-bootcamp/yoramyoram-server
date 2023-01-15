@@ -60,7 +60,7 @@ export class User {
 
   @Column({ default: 0 })
   @Field(() => Int)
-  amount: number;
+  paid: number;
 
   @Column({ type: 'enum', enum: USER_ENUM })
   @Field(() => USER_ENUM)
