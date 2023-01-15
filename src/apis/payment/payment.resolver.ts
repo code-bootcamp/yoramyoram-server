@@ -22,58 +22,56 @@ export class PaymentResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Payment)
   async createPayment(
-    @Args('impUid') impUid: string, //
+    // @Args('impUid') impUid: string, //
     @Args({ name: 'point', type: () => Int }) point: number,
     @Context() iauthUser: IContext,
-    @Args('etc1') etc1: string,
-    @Args('etc2') etc2: string,
+    @Args('totalAmount') totalAmount: number,
     //
   ) {
-    const token = await this.iamportService.getToken();
-    this.iamportService.checkPid({ impUid, point, token });
+    // const token = await this.iamportService.getToken();
+    // this.iamportService.checkPid({ impUid, point, token });
 
-    this.paymentService.checkDuplicate({ impUid });
+    // this.paymentService.checkDuplicate({ impUid });
     const user = iauthUser.req.user;
 
-    this.paymentService.create({
-      impUid,
+    return this.paymentService.create({
+      // impUid,
       point,
       user,
-      etc1,
-      etc2,
+      totalAmount,
     });
   }
 
-  @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => Payment)
-  async canclePayment(
-    @Args('impUid') impUid: string, // 로그인한 유저정보
-    @Args({ name: 'point', type: () => Int }) point: number, //
+  // @UseGuards(GqlAuthAccessGuard)
+  // @Mutation(() => Payment)
+  // async canclePayment(
+  //   @Args('impUid') impUid: string, // 로그인한 유저정보
+  //   @Args({ name: 'point', type: () => Int }) point: number, //
 
-    @Context() iauthUser: IContext,
-    @Args('etc1') etc1: string,
-    @Args('etc2') etc2: string,
-  ): Promise<Payment> {
-    const user = iauthUser.req.user;
-    //검증로직들!!
+  //   @Context() iauthUser: IContext,
+  //   @Args('etc1') etc1: string,
+  //   @Args('etc2') etc2: string,
+  // ): Promise<Payment> {
+  //   const user = iauthUser.req.user;
+  //   //검증로직들!!
 
-    // 1. 이미 취소된 건인지 확인
+  //   // 1. 이미 취소된 건인지 확인
 
-    await this.paymentService.checkCanaeled({ impUid });
-    // 2.취소하기에 충분한 내 포인트 잔액 남아 있는지
+  //   await this.paymentService.checkCanaeled({ impUid });
+  //   // 2.취소하기에 충분한 내 포인트 잔액 남아 있는지
 
-    await this.paymentService.checkCanCelPayment({ impUid, user });
-    // 3. 실제로 아임포트에 취소 요청
+  //   await this.paymentService.checkCanCelPayment({ impUid, user });
+  //   // 3. 실제로 아임포트에 취소 요청
 
-    const token = await this.iamportService.getToken();
-    const canceledPoint = await this.iamportService.cancel({ impUid, token });
-    // payment 테이블에 결제 취소 등록
-    return await this.paymentService.cancel({
-      impUid,
-      point: canceledPoint,
-      user,
-      etc1,
-      etc2,
-    });
-  }
+  //   const token = await this.iamportService.getToken();
+  //   const canceledPoint = await this.iamportService.cancel({ impUid, token });
+  //   // payment 테이블에 결제 취소 등록
+  //   return await this.paymentService.cancel({
+  //     impUid,
+  //     point: canceledPoint,
+  //     user,
+  //     etc1,
+  //     etc2,
+  //   });
+  // }
 }

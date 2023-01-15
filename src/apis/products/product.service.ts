@@ -53,24 +53,37 @@ export class ProductsService {
         .orderBy('createdAt', 'DESC')
         .getMany();
 
-      if (products.length > 12) {
-        const pageNum = Math.ceil(products.length / 12);
-        const result = new Array(pageNum);
-        for (let i = 0; i < pageNum; i++) {
-          result[i] = products.slice(i * 12, (i + 1) * 12);
+      if (page) {
+        if (products.length > 12) {
+          const pageNum = Math.ceil(products.length / 12);
+          const result = new Array(pageNum);
+          for (let i = 0; i < pageNum; i++) {
+            result[i] = products.slice(i * 12, (i + 1) * 12);
+          }
+          return result[page - 1];
         }
-        return result[page - 1];
       }
+
       return products;
     } else {
-      products = await this.productsRepository.find({
-        take: 12,
-        skip: (page - 1) * 12,
-        relations: ['productCategory', 'productImages'],
-        order: {
-          createdAt: 'DESC',
-        },
-      });
+      if (page) {
+        products = await this.productsRepository.find({
+          take: 12,
+          skip: (page - 1) * 12,
+          relations: ['productCategory', 'productImages'],
+          order: {
+            createdAt: 'DESC',
+          },
+        });
+      } else {
+        products = await this.productsRepository.find({
+          relations: ['productCategory', 'productImages'],
+          order: {
+            createdAt: 'DESC',
+          },
+        });
+      }
+
       return products;
     }
   }
@@ -124,11 +137,13 @@ export class ProductsService {
     return products.length;
   }
 
-  findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
-    return this.productsRepository.findOne({
+  async findOne({ productId }: IProductsServiceFindOne): Promise<Product> {
+    const result = await this.productsRepository.findOne({
       where: { product_id: productId },
-      relations: ['productCategory', 'productImages'],
+      relations: ['productCategory', 'productImages', 'productWishlist'],
     });
+    console.log(result);
+    return result;
   }
 
   async sortByPriceASC({ page }) {
@@ -279,6 +294,20 @@ export class ProductsService {
       });
     }
 
+    const wishList = await this.productWishListRepository
+      .createQueryBuilder('wishList')
+      .where('productProductId =:productProductId', {
+        productProductId: productId,
+      })
+      .getOne();
+
+    console.log(wishList);
+    if (wishList) {
+      await this.productWishListRepository.delete({
+        productwishlist_id: wishList.productwishlist_id,
+      });
+    }
+
     const productImages = await this.productImageRepository
       .createQueryBuilder('productImage')
       .where('productProductId =:productProductId', {
@@ -287,11 +316,12 @@ export class ProductsService {
       .getMany();
 
     console.log(productImages);
-    // if (productImage) {
+    // if (productImages) {
     //   await this.productImageRepository.delete({
-    //     productImage_id: productImage.productImage_id,
+    //     productImage_id: productImages.productImage_id,
     //   });
     // }
+
     await Promise.all(
       productImages.map((el, i) => {
         return new Promise(async (resolve, reject) => {
@@ -343,7 +373,23 @@ export class ProductsService {
       },
     });
 
+    console.log(productImages);
     if (productImages) {
+      await Promise.all(
+        productImages.map((el, i) => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              const newImage = await this.productImageRepository.delete({
+                productImage_id: product.productImages[i].productImage_id,
+              });
+              resolve(newImage);
+            } catch (err) {
+              reject(err);
+            }
+          });
+        }),
+      );
+
       await Promise.all(
         productImages.map((el, i) => {
           return new Promise(async (resolve, reject) => {

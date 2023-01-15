@@ -23,12 +23,12 @@ export class UsersService {
       where: { email: email },
     });
 
-    const isphone = await this.userRepository.findOne({
-      where: { phone: phone },
+    const isphone = await this.findOnePhone({
+      phone,
     });
     if (user) throw new ConflictException('이미 등록된 이메일입니다!');
 
-    // if (isphone) throw new ConflictException('이미 등록된 전화번호 입니다!');
+    if (isphone) throw new ConflictException('이미 등록된 전화번호 입니다!');
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -44,7 +44,6 @@ export class UsersService {
   }
 
   async findOneEmail({ name, phone }) {
-    console.log(name, phone);
     const userId = await this.userRepository.findOne({
       where: { phone },
     });
