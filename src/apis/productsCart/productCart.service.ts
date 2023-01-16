@@ -159,10 +159,6 @@ export class PorductCartService {
       where: { id: context.req.user.id },
     });
 
-    if (user.cartTotal < Number(cart.quantity) * Number(cart.product.price)) {
-      throw new UnprocessableEntityException('삭제하려는 금액이 너무 큽니다');
-    }
-
     this.userRepository.save({
       id: user.id,
       cartTotal:
