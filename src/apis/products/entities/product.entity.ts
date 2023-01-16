@@ -1,6 +1,8 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Payment } from 'src/apis/payment/entities/payment.entity';
 import { ProductImage } from 'src/apis/productImages/entities/productImage.entity';
+import { ProductCart } from 'src/apis/productsCart/entities/productCart.entity';
+import { ProductWishlist } from 'src/apis/productsWishlists/entities/productWishlist.entity';
 import {
   Entity,
   Column,
@@ -35,7 +37,7 @@ export class Product {
   @Field(() => Int)
   commentCount: number;
 
-  @Column()
+  @Column({ default: '' })
   @Field(() => String)
   description: string;
 
@@ -55,7 +57,7 @@ export class Product {
   @Field(() => String, { nullable: true })
   etc2Value: string;
 
-  @Column()
+  @Column({ default: '' })
   @Field(() => String)
   detailContent: string;
 
@@ -66,13 +68,20 @@ export class Product {
   @Field(() => Date)
   createdAt: Date;
 
-  @Column({ default: false })
-  // @Field(() => Boolean)
-  isDeleted: boolean;
-
   @OneToMany(() => ProductImage, (productImage) => productImage.product)
   @Field(() => [ProductImage])
   productImages: ProductImage[];
+
+  @OneToMany(() => ProductCart, (productCart) => productCart.product)
+  @Field(() => ProductCart)
+  productCart: ProductCart;
+
+  @OneToMany(
+    () => ProductWishlist,
+    (productWishlist) => productWishlist.product,
+  )
+  @Field(() => [ProductWishlist])
+  productWishlist: ProductWishlist[];
 
   @ManyToOne(() => ProductCategory)
   @Field(() => ProductCategory)

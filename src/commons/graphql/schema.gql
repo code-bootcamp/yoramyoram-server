@@ -9,17 +9,25 @@ type User {
   phone: String!
   address: String!
   add_detail: String!
+  cartTotal: Int!
   point: Int!
+  paid: Int!
+  role: USER_ENUM!
+}
+
+enum USER_ENUM {
+  USER
+  ADMIN
 }
 
 type Payment {
   id: String!
-  impUid: String!
   status: PAYMENT_STATUS_ENUM!
   point: Int!
+  totalAmount: Int!
   amount: Int!
-  etc1: String!
-  etc2: String!
+  etc1: String
+  etc2: String
   user: User!
   createdAt: DateTime!
 }
@@ -38,6 +46,26 @@ type ProductImage {
   productImage_id: String!
   url: String!
   isMain: Boolean!
+  product: Product!
+}
+
+type ProductCart {
+  id: String!
+  createdAt: DateTime!
+  quantity: Int!
+  etc1Name: String
+  etc1Value: String
+  etc2Name: String
+  etc2Value: String
+  user: User!
+  product: Product!
+}
+
+type ProductWishlist {
+  productwishlist_id: String!
+  isDib: Boolean!
+  createdAt: DateTime!
+  user: User!
   product: Product!
 }
 
@@ -60,20 +88,14 @@ type Product {
   detailContent: String!
   createdAt: DateTime!
   productImages: [ProductImage!]!
+  productCart: ProductCart!
+  productWishlist: [ProductWishlist!]!
   productCategory: ProductCategory!
   payment: Payment!
 }
 
-type ProductWishlist {
-  productwishlist_id: String!
-  isDib: Boolean!
-  user: User!
-  product: Product!
-}
-
 type Comment {
   comment_id: String!
-  title: String!
   star: Int!
   content: String!
   createdAt: DateTime!
@@ -83,32 +105,27 @@ type Comment {
   payment: Payment!
 }
 
-type ProductCart {
-  id: String!
-  createdAt: DateTime!
-  quantity: Int!
-  user: User!
-  product: Product!
-}
-
 type Query {
-  fetchComments: [Comment!]!
+  fetchCommentsMain: [Comment!]!
+  fetchComments(productId: String!, page: Float!): [Comment!]!
+  fetchCommentsCount(productId: String!): Int!
   fetchComment(commentId: String!): Comment!
-  fetchCommentsWithDeleted: [Comment!]!
-  fetchProducts(page: Float!): [Product!]!
+  fetchProducts(cateId: String, page: Float): [Product!]!
+  fetchProductsCount(cateId: String): Int!
   searchProducts(word: String!, page: Float!): [Product!]!
+  searchProductsCount(word: String!): Int!
   fetchProduct(productId: String!): Product!
-  fetchProductsWithDeleted: [Product!]!
   sortByPriceASC(page: Float!): [Product!]!
   sortByPriceDESC(page: Float!): [Product!]!
   sortByCommentsASC(page: Float!): [Product!]!
   sortByCommentsDESC(page: Float!): [Product!]!
-  sortByCreatedAtASC(page: Float!): [Product!]!
-  sortByCreatedAtDESC(page: Float!): [Product!]!
-  fetchmyWishlist: [ProductWishlist!]!
-  fetchProductCart: [ProductCart!]!
+  fetchmyWishlist(page: Float!): [ProductWishlist!]!
+  fetchProductCart(page: Float!): [ProductCart!]!
+  fetchProductCartCount: Int!
+  fetchProductCartTotalAmount: Int!
   findUserEmail(name: String!, phone: String!): String!
   fetchLoginUser: User!
+  fetchUserPoint: User!
 }
 
 type Mutation {
@@ -125,30 +142,28 @@ type Mutation {
   logout: String!
   createProductCategory(name: String!): ProductCategory!
   addWishlist(createProductWishInput: CreateProductWishInput!): Boolean!
-  createProductCart(productId: String!): ProductCart!
-  deleteProductCart(productId: String!): ProductCart!
+  createProductCart(productId: String!, quantity: Float!, etc1Name: String, etc1Value: String, etc2Name: String, etc2Value: String): ProductCart!
+  deleteProductCart(productCartId: String!): Boolean!
   createUser(createUserInput: CreateUserInput!): User!
   findUserPassword(name: String!, phone: String!, email: String!, token: String!): String!
   updatePassword(password: String!, phone: String!): String!
+  updateLoginUser(updateUserInput: updateUserInput!): User!
   deleteUser: Boolean!
   sendTokentoPhone(phone: String!): String!
   checkTokenPhone(phone: String!, phoneToken: String!): String!
-  createPayment(impUid: String!, point: Int!): Payment!
-  canclePayment(impUid: String!, point: Int!): Payment!
+  createPayment(point: Int!, totalAmount: Float!): Payment!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
 input CreateCommentInput {
-  title: String!
   star: Int!
   content: String!
   productId: String!
 }
 
 input UpdateCommentInput {
-  title: String
   star: Int
   content: String
   productId: String
@@ -182,7 +197,6 @@ input UpdateProductInput {
 
 input CreateProductWishInput {
   productId: String!
-  userId: String!
 }
 
 input CreateUserInput {
@@ -192,4 +206,15 @@ input CreateUserInput {
   address: String!
   password: String!
   add_detail: String!
+  role: USER_ENUM!
+}
+
+input updateUserInput {
+  name: String
+  email: String
+  phone: String
+  address: String
+  password: String
+  add_detail: String
+  role: USER_ENUM
 }
