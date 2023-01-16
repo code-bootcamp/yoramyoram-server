@@ -3,29 +3,32 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { findBreakingChanges } from 'graphql';
 import { IUsersServiceFindOne } from './interfaces/users-service.interface';
+import { Comment } from '../comments/entities/comment.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>, //
+
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
 
   async create({ createUserInput }) {
-    const { name, email, phone, password, address, add_detail } =
+    const { name, email, phone, password, address, add_detail, role } =
       createUserInput;
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
 
-    const isphone = await this.userRepository.findOne({
-      where: { phone: phone },
+    const isphone = await this.findOnePhone({
+      phone,
     });
     if (user) throw new ConflictException('이미 등록된 이메일입니다!');
 
-    // if (isphone) throw new ConflictException('이미 등록된 전화번호 입니다!');
+    if (isphone) throw new ConflictException('이미 등록된 전화번호 입니다!');
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -36,11 +39,11 @@ export class UsersService {
       password: hashedPassword,
       address,
       add_detail,
+      role,
     });
   }
 
   async findOneEmail({ name, phone }) {
-    console.log(name, phone);
     const userId = await this.userRepository.findOne({
       where: { phone },
     });
@@ -55,8 +58,9 @@ export class UsersService {
   }
 
   async delete({ userId }) {
-    const result = await this.userRepository.softDelete({ id: userId });
+    await this.commentRepository.delete({ user: userId });
 
+    const result = await this.userRepository.delete({ id: userId });
     return result.affected ? true : false;
   }
 
@@ -100,11 +104,26 @@ export class UsersService {
   findLogin({ context }) {
     const user = this.userRepository.findOne({
       where: {
-        email: context.req.user.email,
+        id: context.req.user.id,
       },
     });
 
-    console.log(user);
     return user;
+  }
+
+  findPoint({ userId }) {
+    const user = this.userRepository.findOne({
+      where: {
+        point: userId.point,
+      },
+    });
+    return user;
+  }
+  updateUser({ context, updateUserInput }) {
+    const result = this.userRepository.save({
+      id: context.req.user.id,
+      ...updateUserInput,
+    });
+    return result;
   }
 }

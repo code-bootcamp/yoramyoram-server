@@ -21,10 +21,6 @@ export class Comment {
   comment_id: string;
 
   @Column()
-  @Field(() => String)
-  title: string;
-
-  @Column()
   @Field(() => Int)
   star: number;
 

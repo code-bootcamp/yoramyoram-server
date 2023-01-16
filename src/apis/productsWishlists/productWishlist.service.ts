@@ -1,6 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
+import { User } from '../user/entities/user.entity';
 import { ProductWishlist } from './entities/productWishlist.entity';
 
 export class ProductWishlistService {
@@ -10,10 +11,14 @@ export class ProductWishlistService {
 
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  async createWish({ createProductWishInput }) {
-    const { userId, productId } = createProductWishInput;
+  async createWish({ context, createProductWishInput }) {
+    const { productId } = createProductWishInput;
+    const userId = context.req.user.id;
     const isDib = await this.productWishlistRepository
       .createQueryBuilder()
       .select()
@@ -24,6 +29,7 @@ export class ProductWishlistService {
       .getOne();
 
     let checkDib = false;
+    console.log('checkDib은 ' + checkDib);
     if (isDib) {
       //이미 찜목록에 있다면
       await this.productWishlistRepository.save({
@@ -46,6 +52,7 @@ export class ProductWishlistService {
     const product = await this.productRepository.findOne({
       where: { product_id: productId },
     });
+
     if (checkDib) {
       await this.productRepository.save({
         product_id: productId,
@@ -60,7 +67,19 @@ export class ProductWishlistService {
     return checkDib;
   }
 
-  findAll(): Promise<ProductWishlist[]> {
-    return this.productWishlistRepository.find({});
+  async findAll({ context, page }): Promise<ProductWishlist[]> {
+    const userId = context.req.user.id;
+
+    const wishList = await this.productWishlistRepository.find({
+      where: { user: { id: userId }, isDib: true },
+      relations: ['product', 'user', 'product.productImages'],
+      take: 5,
+      skip: (page - 1) * 5,
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    return wishList;
   }
 }

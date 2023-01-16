@@ -8,6 +8,7 @@ import { Comment } from '../comments/entities/comment.entity';
 import { ProductWishlist } from '../productsWishlists/entities/productWishlist.entity';
 import { ProductImage } from '../productImages/entities/productImage.entity';
 import { User } from '../user/entities/user.entity';
+import { ProductCart } from '../productsCart/entities/productCart.entity';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { User } from '../user/entities/user.entity';
       Product,
       ProductCategory,
       Comment,
+      ProductCart,
       ProductWishlist,
       ProductImage,
       User,

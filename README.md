@@ -1,6 +1,6 @@
 # TEAM VIEWPOINT
 
-<!-- !(https://user-images.githubusercontent.com/107927849/193513415-c07e95f0-04fb-42fb-a65b-366fc02db5b8.jpg) -->
+![1673508122842-thumbnail](https://user-images.githubusercontent.com/114714566/212004372-9428c83f-f9c7-460e-98ff-4c19a1d79975.jpeg)
 
 <br><br>
 
@@ -30,24 +30,21 @@
 
 <br><br>
 
-# Flow Chart
+# DATA FLOW
 
-<!--
-![user-flow chart](https://user-images.githubusercontent.com/107927849/193515816-da9e294c-b227-4c7f-b3c9-463fc7c1cc21.png) -->
+![스크린샷_2023-01-10_오후_4 55 33](https://user-images.githubusercontent.com/114714566/212039653-28077dae-6056-466f-b5df-e4d50f2d7afe.png)
 
 <br><br>
 
 # ERD
 
-<!--
-![Dangder 2 0](https://user-images.githubusercontent.com/107927849/193516288-abebf469-8698-4548-b86c-83743b45b082.png) -->
+![스크린샷 2023-01-12 오후 5 52 52](https://user-images.githubusercontent.com/114714566/212021590-699c1cb1-aecf-46b1-b00b-ccaeb29053d7.png)
 
 <br><br>
 
 # API
 
-<!--
-![api](https://user-images.githubusercontent.com/107927849/193517291-a4bce0da-82fb-43bc-a476-8aa22f16b780.png) -->
+![스크린샷 2023-01-12 오후 7 09 53](https://user-images.githubusercontent.com/114714566/212038927-100fbbf6-f57b-4a6c-8894-192ecc54d3b3.png)
 
 <br><br>
 
@@ -91,6 +88,12 @@
  ┃ ┃ ┃ ┣ 📜phone.module.ts
  ┃ ┃ ┃ ┣ 📜phone.resolver.ts
  ┃ ┃ ┃ ┗ 📜phone.service.ts
+ ┃ ┃ ┣ 📂productDetailImages
+ ┃ ┃ ┃ ┣ 📂interfaces
+ ┃ ┃ ┃ ┃ ┗ 📜productsDetailImages-service.interface.ts
+ ┃ ┃ ┃ ┣ 📜productsDetailImages.module.ts
+ ┃ ┃ ┃ ┣ 📜productsDetailImages.resolver.ts
+ ┃ ┃ ┃ ┗ 📜productsDetailImages.service.ts
  ┃ ┃ ┣ 📂productimages
  ┃ ┃ ┃ ┣ 📂interfaces
  ┃ ┃ ┃ ┃ ┗ 📜productsImages-service.interface.ts
@@ -147,6 +150,7 @@
  ┃ ┃ ┣ 📂auth
  ┃ ┃ ┃ ┣ 📜gql-auth.guard.ts
  ┃ ┃ ┃ ┣ 📜jwt-access.strategy.ts
+ ┃ ┃ ┃ ┣ 📜jwt-admin.strategy.ts
  ┃ ┃ ┃ ┣ 📜jwt-refresh.strategy.ts
  ┃ ┃ ┣ 📂filter
  ┃ ┃ ┃ ┗ 📜http-exception.filter.ts
@@ -165,6 +169,7 @@
  ┣ 📜.eslintrc.js
  ┣ 📜.gitignore
  ┣ 📜.prettierrc
+ ┣ 📜cloudbuild.yaml
  ┣ 📜docker-compose.prod.yaml
  ┣ 📜docker-compose.yaml
  ┣ 📜Dockerfile
@@ -197,14 +202,6 @@ DATABASE_DATABASE
 JWT_ACCESS_SECRET
 JWT_REFRESH_SECRET
 
-# Open API ServiceKey
-OPENAPI_SERVICEKEY
-
-# MAILER ENV with GMAIL
-MAILER_GMAIL_USER
-MAILER_GMAIL_PASS
-MAILER_GMAIL_SENDER
-
 # GCP API
 STORAGE_BUCKET
 STORAGE_PROJECT_ID
@@ -213,16 +210,5 @@ STORAGE_KET_FILENAME
 # IAMPORT KEY
 IAMPORT_REST_API_KEY
 IAMPORT_REST_API_SECRET
-
-# REDIS URL
-CACHE_REDIS_URL
-
-# ADMIN TOKEN SECRET
-JWT_ADMIN_ACCESS_SECRET
-JWT_ADMIN_REFRESH_SECRET
-
-# BCRYPT SALT
-BCRYPT_USER_SALT=3.141592
-BCRYPT_ADMIN_SALT=1.414213
 
 ```

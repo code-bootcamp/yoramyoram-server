@@ -25,21 +25,60 @@ export class CommentsService {
   ) {}
 
   //-------------------------*조회*----------------------------//
-  findAll(): Promise<Comment[]> {
+  findAllMain(): Promise<Comment[]> {
     return this.commentsRepository.find({
       relations: ['user'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
-  findOne({ commentId }: ICommentsServiceFindOne): Promise<Comment> {
-    return this.commentsRepository.findOne({
+  async findAll({ productId, page }): Promise<Comment[]> {
+    const comments = await this.commentsRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .where('productProductId = :productProductId', {
+        productProductId: productId,
+      })
+      .orderBy('createdAt', 'DESC')
+      .getMany();
+
+    if (comments.length > 5) {
+      const pageNum = Math.ceil(comments.length / 5);
+      const result = new Array(pageNum);
+      for (let i = 0; i < pageNum; i++) {
+        result[i] = comments.slice(i * 5, (i + 1) * 5);
+      }
+      return result[page - 1];
+    }
+    return comments;
+  }
+
+  async findAllCount({ productId }): Promise<number> {
+    // const comments = await this.commentsRepository.find({
+    //   where: { product_id: productId },
+    //   relations: ['user'],
+    // });
+
+    const comments = await this.commentsRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .where('productProductId = :productProductId', {
+        productProductId: productId,
+      })
+      .getMany();
+
+    return comments.length;
+  }
+
+  async findOne({ commentId }: ICommentsServiceFindOne): Promise<Comment> {
+    const comments = await this.commentsRepository.findOne({
       where: { comment_id: commentId },
       relations: ['user'],
     });
-  }
 
-  async findAllWithDelete(): Promise<Comment[]> {
-    return this.commentsRepository.createQueryBuilder().withDeleted().getMany();
+    return comments;
   }
 
   //-------------------------*생성*----------------------------//
@@ -63,17 +102,17 @@ export class CommentsService {
     if (!user)
       throw new UnprocessableEntityException('구매자 정보를 입력해주세요');
 
-    //유저 다중으로 안해놓으면 상품이 바뀌어도 유저id로 한번밖에 글 작성을 못함
-    // const userDuplicate = await this.commentsRepository.findOne({
-    //   where: { user: { id: userId } },
-    // });
+    // 유저 다중으로 안해놓으면 상품이 바뀌어도 유저id로 한번밖에 글 작성을 못함
+    const userDuplicate = await this.commentsRepository.findOne({
+      where: { user: { id: userId } },
+    });
 
-    // if (userDuplicate) {
-    //   throw new UnprocessableEntityException(
-    //     user.name +
-    //       '님은 이미 구매평을 작성하셨습니다. 1인당 1개의 구매평만 작성 가능합니다',
-    //   );
-    // }
+    if (userDuplicate) {
+      throw new UnprocessableEntityException(
+        user.name +
+          '님은 이미 구매평을 작성하셨습니다. 1인당 1개의 구매평만 작성 가능합니다',
+      );
+    }
 
     const result = await this.commentsRepository.save({
       ...createCommentInput,
@@ -97,7 +136,7 @@ export class CommentsService {
       isDeleted: true,
     });
 
-    const result = await this.commentsRepository.softDelete({
+    const result = await this.commentsRepository.delete({
       comment_id: commentId,
     });
     return result.affected ? true : false;

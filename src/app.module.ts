@@ -21,6 +21,7 @@ import { ProductCartModule } from './apis/productsCart/productCart.module';
 
 import { productsImagesModule } from './apis/productImages/productsImages.module';
 import { productsDetailImagesModule } from './apis/productDetailImages/productDetailImages.module';
+import { JwtAdminStrategy } from './commons/auth/jwt-admin.strategy';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { productsDetailImagesModule } from './apis/productDetailImages/productDe
       cors: {
         origin: [
           'http://localhost:3000',
+          'http://localhost:3001',
           'https://yoramyoram-backend.shop',
           'https://yoramyoram.shop',
         ],
@@ -72,13 +74,13 @@ import { productsDetailImagesModule } from './apis/productDetailImages/productDe
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
 
-      // url: 'redis://10.6.144.3:6379',
-      url: 'redis://my-redis:6379',
+      url: 'redis://10.6.144.3:6379',
+      // url: 'redis://my-redis:6379',
       isGlobal: true,
     }),
   ],
 
   controllers: [AppController],
-  providers: [JwtAccessStrategy, JwtRefreshStrategy],
+  providers: [JwtAccessStrategy, JwtRefreshStrategy, JwtAdminStrategy],
 })
 export class AppModule {}

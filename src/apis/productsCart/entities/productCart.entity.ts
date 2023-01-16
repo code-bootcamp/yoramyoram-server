@@ -24,6 +24,22 @@ export class ProductCart {
   @Field(() => Int)
   quantity: number;
 
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  etc1Name: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  etc1Value: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  etc2Name: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  etc2Value: string;
+
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
