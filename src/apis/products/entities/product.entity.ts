@@ -37,7 +37,7 @@ export class Product {
   @Field(() => Int)
   commentCount: number;
 
-  @Column({ default: '' })
+  @Column({ length: 1500 })
   @Field(() => String)
   description: string;
 
@@ -57,7 +57,7 @@ export class Product {
   @Field(() => String, { nullable: true })
   etc2Value: string;
 
-  @Column({ default: '' })
+  @Column({ length: 1500 })
   @Field(() => String)
   detailContent: string;
 
