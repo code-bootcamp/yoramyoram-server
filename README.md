@@ -1,50 +1,52 @@
-# TEAM VIEWPOINT
+# TEAM LOGO
 
-![1673508122842-thumbnail](https://user-images.githubusercontent.com/114714566/212004372-9428c83f-f9c7-460e-98ff-4c19a1d79975.jpeg)
+<div align="center">
+<img src="https://user-images.githubusercontent.com/114714566/212859073-86cb8fb4-f9d5-4630-8cf8-aa6fa107039b.png" />
+</div>
 
-<br><br>
 
-# Yoram2Yoram
 
-📌  최근 매장 내 빨대 없애기, 편의점 비닐봉투 사용금지 등 많은 기업들도 환경보호에 관심을 가지면서 요즘 우리의 가장 큰 관심사 중 하나는 ‘쓰레기 줄이기’입니다.
+# 서비스 기획의도
 
-저희 ‘요람요람🌎’조도 이런 시대의 흐름에 발맞춰 쓰레기를 최소화하자는 ‘Zero-Waste’ 운동을 소비자들에게 알리고 이를 개개인의 생활로까지 이끌어낼 수 있도록 하자는 취지를 가지고 있습니다.
+📌  최근 매장 내 빨대 없애기, 편의점 비닐봉투 사용금지 등 많은 기업들도 환경보호에 관심을 가지면서 
 
-팀명인 ‘요람요람’은 관용어 중에 처음부터 끝까지를 의미하는 ‘요람부터 무덤까지’라는 어구를 착안해 한번 사용한 상품들을 버리는 것이 아니라 다시 다음 생산의 재료로 쓰는 ‘요람 to 요람’ 시스템을 만들자는 의미입니다.
+요즘 우리의 가장 큰 관심사 중 하나는 ‘쓰레기 줄이기’입니다.
 
-저희 서비스에서는 서울지역의 제로웨이스팅 상점들을 소개시켜주고, 제로웨이스팅 상품들을 온라인에서도 거래할 수 있는 온라인 샵을 마련함으로써 소비자들의 제로웨이스팅 생활화를 도모하고자 합니다.
+저희 ‘요람요람🌎’ 도 이런 시대의 흐름에 발맞춰 쓰레기를 최소화하자는 ‘Zero-Waste’ 운동을 소비자들에게 알리고 
+
+이를 개개인의 생활로까지 이끌어낼 수 있도록 하자는 취지를 가지고 있습니다.
+
+팀명인 ‘요람요람’은 관용어 중에 처음부터 끝까지를 의미하는 ‘요람부터 무덤까지’라는 어구를 착안해 
+
+한번 사용한 상품들을 버리는 것이 아니라 다시 다음 생산의 재료로 쓰는 ‘요람 to 요람’ 시스템을 만들자는 의미입니다.
+
+저희 서비스에서는 서울지역의 제로웨이스팅 상점들을 소개시켜주고, 
+
+제로웨이스팅 상품들을 온라인에서도 거래할 수 있는 온라인 샵을 마련함으로써 소비자들의 제로웨이스팅 생활화를 도모하고자 합니다.
 
 <br><br>
 
 # 팀원 소개
 
-<!--
-<img width="1512" alt="스크린샷 2022-10-03 오후 3 34 37" src="https://user-images.githubusercontent.com/107927849/193514820-1b343fd7-2eec-4fa3-b69c-5720ceeb7a1a.png"> -->
+<img width="1154" alt="스크린샷 2023-01-17 오후 6 23 04" src="https://user-images.githubusercontent.com/114714566/212860285-5c187191-7d6e-4fc9-949d-67ca06c04f78.png">
 
 <br><br>
 
 # 기술 스택
 
-<!--
-<img width="1512" alt="스크린샷 2022-10-03 오후 3 37 20" src="https://user-images.githubusercontent.com/107927849/193515151-8791aa1c-e6a3-43d0-8dec-5450a82a4bfd.png"> -->
-
-<br><br>
-
-# DATA FLOW
-
-![스크린샷_2023-01-10_오후_4 55 33](https://user-images.githubusercontent.com/114714566/212039653-28077dae-6056-466f-b5df-e4d50f2d7afe.png)
+<img width="1154" alt="스크린샷 2023-01-17 오후 6 23 28" src="https://user-images.githubusercontent.com/114714566/212859981-99d21754-286b-4e15-8fcf-0110058da6f5.png">
 
 <br><br>
 
 # ERD
 
-![스크린샷 2023-01-12 오후 5 52 52](https://user-images.githubusercontent.com/114714566/212021590-699c1cb1-aecf-46b1-b00b-ccaeb29053d7.png)
+<img width="1155" alt="스크린샷 2023-01-17 오후 6 23 46" src="https://user-images.githubusercontent.com/114714566/212860123-58963954-6467-4450-8e35-6ce55a9faf26.png">
 
 <br><br>
 
-# API
+# API DOCS
 
-![스크린샷 2023-01-12 오후 7 09 53](https://user-images.githubusercontent.com/114714566/212038927-100fbbf6-f57b-4a6c-8894-192ecc54d3b3.png)
+<img width="952" alt="스크린샷 2023-01-17 오후 6 31 37" src="https://user-images.githubusercontent.com/114714566/212861655-c96514a5-2105-4e05-8d9f-4c30296e7356.png">
 
 <br><br>
 
@@ -202,13 +204,20 @@ DATABASE_DATABASE
 JWT_ACCESS_SECRET
 JWT_REFRESH_SECRET
 
-# GCP API
-STORAGE_BUCKET
-STORAGE_PROJECT_ID
-STORAGE_KET_FILENAME
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
+GOOGLE_CALLBACK_URL
 
-# IAMPORT KEY
-IAMPORT_REST_API_KEY
-IAMPORT_REST_API_SECRET
+NAVER_CLIENT_ID
+NAVER_CLIENT_SECRET
+NAVER_CALLBACK_URL
+
+KAKAO_CLIENT_ID
+KAKAO_CLIENT_SECRET
+KAKAO_CALLBACK_URL
+
+IAMPORT_KEY
+IAMPORT_SECRET
+
 
 ```
