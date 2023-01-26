@@ -1,6 +1,8 @@
 # TEAM LOGO
 
+<div align="center">
 ![YORAM YORAM](https://user-images.githubusercontent.com/114714566/212859073-86cb8fb4-f9d5-4630-8cf8-aa6fa107039b.png)
+</div>
 
 <br><br>
 
