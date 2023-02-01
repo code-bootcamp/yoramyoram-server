@@ -32,6 +32,153 @@
 
 <br><br>
 
+# 시연 GIF
+
+메인페이지
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/main.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)main.gif" style="height:400px">
+</div>
+
+
+<br>
+
+<br>
+
+---
+
+소개페이지
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/introduction.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)intro.gif" style="height:400px">
+</div>
+
+
+
+<br>
+
+<br>
+
+---
+
+회원가입
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/signup.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)signup.gif" style="height:400px">
+</div>
+
+
+<br>
+
+<br>
+
+---
+
+로그인페이지
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/login.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)login.gif" style="height:400px">
+</div>
+
+<br>
+
+<br>
+
+---
+
+오프라인 지도([스마트서울맵 api](https://map.seoul.go.kr/smgis2/openApi)사용)
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/offline.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)offline.gif" style="height:400px">
+</div>
+
+<br>
+
+<br>
+
+---
+
+상품목록
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/list.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)list.gif" style="height:400px">
+</div>
+
+<br>
+
+<br>
+
+상품검색
+
+<div style="display:flex; justify-content:center;">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/search.gif" style="height:400px">
+</div>
+
+
+<br>
+
+<br>
+
+---
+
+상품 상세페이지
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/detail.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)detail.gif" style="height:400px">
+</div>
+
+<br>
+
+<br>
+
+---
+
+찜목록
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/wishlist.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)wishlist.gif" style="height:400px">
+</div>
+
+
+
+<br>
+
+<br>
+
+---
+
+장바구니
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/cart.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)cart.gif" style="height:400px">
+</div>
+
+<br>
+
+<br>
+
+---
+
+상품등록
+
+<div style="display:flex;flex-direction:row;justify-content : space-between">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/register.gif" style="width:600px">
+  <img src="https://soraji.github.io/assets/img/work/yoramyoram/(m)register.gif" style="height:400px">
+</div>
+
+<br>
+
+<br>
+
 # 기술 스택
 
 <img width="1154" alt="스크린샷 2023-01-17 오후 6 23 28" src="https://user-images.githubusercontent.com/114714566/212859981-99d21754-286b-4e15-8fcf-0110058da6f5.png">
@@ -203,18 +350,6 @@ DATABASE_DATABASE
 # TOKEN SECRET
 JWT_ACCESS_SECRET
 JWT_REFRESH_SECRET
-
-GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET
-GOOGLE_CALLBACK_URL
-
-NAVER_CLIENT_ID
-NAVER_CLIENT_SECRET
-NAVER_CALLBACK_URL
-
-KAKAO_CLIENT_ID
-KAKAO_CLIENT_SECRET
-KAKAO_CALLBACK_URL
 
 IAMPORT_KEY
 IAMPORT_SECRET
