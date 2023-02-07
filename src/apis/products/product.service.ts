@@ -230,13 +230,17 @@ export class ProductsService {
       where: { id: context.req.user.id },
     });
 
+    if (!user) {
+      throw new UnprocessableEntityException('유저가 존재하지 않습니다');
+    }
+
     if (user.role !== 'ADMIN') {
       throw new ConflictException('관리권한이 없습니다');
     }
-
     const category = await this.productsCategoriesRepository.findOne({
       where: { category_id: productCategoryId },
     });
+
     if (!category)
       throw new UnprocessableEntityException(
         '상품카테고리와 함께 상품을 등록해주세요.',
