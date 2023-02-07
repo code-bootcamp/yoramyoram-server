@@ -30,6 +30,20 @@
 
 <br><br>
 
+# CI / CD
+
+github actions를 이용한 CI
+
+![ci](/assets/ci.gif)
+
+<br>
+
+google cloud build를 이용한 CD
+
+![cd](/assets/cd.gif)
+
+<br><br>
+
 # 시연 GIF
 
 메인페이지
@@ -38,8 +52,6 @@
   <img src="assets/main.gif" style="height:285px">
   <img src="assets/(m)main.gif" style="height:400px">
 </div>
-
-<!-- ![main](/assets/main.gif) -->
 
 <br>
 
